@@ -102,6 +102,37 @@ The two functions differ in the output format:
 
 ``` r
 if (FALSE) { # \dontrun{
-## TODO
+## Load needed packages
+library(duckh3)
+library(duckspatial)
+
+## Load example data
+points_tbl <- read.csv(
+  system.file("extdata/example_pts.csv", package = "duckh3")
+)
+
+## Convert to duckspatial_df
+points_ddbs <- ddbs_as_spatial(points_tbl)
+
+## TO H3 strings/ubigint ------------
+
+## Add column with h3 strings at resolution 8
+points_strings_ddbs <- ddbh3_points_to_h3(points_ddbs, 8)
+
+## Add column with h3 ubigint at resolution 10
+points_bigint_ddbs <- ddbh3_points_to_h3(
+  points_ddbs, 
+  resolution = 8,
+  new_column = "h3bigint",
+  h3_format = "bigint"
+)
+
+## TO SPATIAL -----------------
+
+## Convert from POINTS to H3 POLYGONS of res 8
+polygons_8_ddbs <- ddbh3_points_to_spatial(points_ddbs, 8)
+
+## Collect as sf
+polygons_8_sf <- ddbs_collect(polygons_8_ddbs)
 } # }
 ```

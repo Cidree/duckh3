@@ -245,7 +245,38 @@ each point as a spatial geometry</p></li>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="co">## TODO</span></span></span>
+<span class="r-in"><span><span class="co">## Load needed packages</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cidree.github.io/duckh3/">duckh3</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cidree.github.io/duckspatial/" class="external-link">duckspatial</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Load example data</span></span></span>
+<span class="r-in"><span><span class="va">points_tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/example_pts.csv"</span>, package <span class="op">=</span> <span class="st">"duckh3"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Convert to duckspatial_df</span></span></span>
+<span class="r-in"><span><span class="va">points_ddbs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://cidree.github.io/duckspatial/reference/ddbs_as_spatial.html" class="external-link">ddbs_as_spatial</a></span><span class="op">(</span><span class="va">points_tbl</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## TO H3 strings/ubigint ------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Add column with h3 strings at resolution 8</span></span></span>
+<span class="r-in"><span><span class="va">points_strings_ddbs</span> <span class="op">&lt;-</span> <span class="fu">ddbh3_points_to_h3</span><span class="op">(</span><span class="va">points_ddbs</span>, <span class="fl">8</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Add column with h3 ubigint at resolution 10</span></span></span>
+<span class="r-in"><span><span class="va">points_bigint_ddbs</span> <span class="op">&lt;-</span> <span class="fu">ddbh3_points_to_h3</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">points_ddbs</span>, </span></span>
+<span class="r-in"><span>  resolution <span class="op">=</span> <span class="fl">8</span>,</span></span>
+<span class="r-in"><span>  new_column <span class="op">=</span> <span class="st">"h3bigint"</span>,</span></span>
+<span class="r-in"><span>  h3_format <span class="op">=</span> <span class="st">"bigint"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## TO SPATIAL -----------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Convert from POINTS to H3 POLYGONS of res 8</span></span></span>
+<span class="r-in"><span><span class="va">polygons_8_ddbs</span> <span class="op">&lt;-</span> <span class="fu">ddbh3_points_to_spatial</span><span class="op">(</span><span class="va">points_ddbs</span>, <span class="fl">8</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Collect as sf</span></span></span>
+<span class="r-in"><span><span class="va">polygons_8_sf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://cidree.github.io/duckspatial/reference/ddbs_collect.html" class="external-link">ddbs_collect</a></span><span class="op">(</span><span class="va">polygons_8_ddbs</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

@@ -89,6 +89,21 @@ invisibly.
 
 ``` r
 if (FALSE) { # \dontrun{
-## TODO
+## Load needed packages
+library(duckh3)
+
+## Load example data
+points_tbl <- read.csv(
+  system.file("extdata/example_pts.csv", package = "duckh3")
+)
+
+## Add h3 strings
+points_tbl <- ddbh3_lonlat_to_h3(points_tbl, resolution = 6)
+
+## Get level 8 children
+children_8_tbl <- ddbh3_get_children(points_tbl, 8)
+
+## Get level 8 children in a nested list
+children_8_nested_tbl <- ddbh3_get_children(points_tbl, 8, nested = TRUE)
 } # }
 ```
