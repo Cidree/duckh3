@@ -178,8 +178,7 @@ reference:
 - title: H3 representations
   desc: Converts from/to different H3 representations
   contents:
-  - ddbh3_bigint_to
-  - ddbh3_strings_to
+  - ddbh3_h3_to
   - ddbh3_lonlat_to
 
 # ── Navbar ──────────────────────────────────────────────────────────────────────

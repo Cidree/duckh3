@@ -2,23 +2,10 @@
 % Please edit documentation in R/h3_lonlat_to.R
 \name{ddbh3_lonlat_to}
 \alias{ddbh3_lonlat_to}
-\alias{ddbh3_lonlat_to_strings}
-\alias{ddbh3_lonlat_to_bigint}
+\alias{ddbh3_lonlat_to_h3}
 \alias{ddbh3_lonlat_to_spatial}
 \title{Convert longitude and latitude to H3 cell representations}
 \usage{
-ddbh3_lonlat_to_strings(
-  x,
-  lon = "lon",
-  lat = "lat",
-  resolution = 8,
-  conn = NULL,
-  name = NULL,
-  new_column = "h3string",
-  overwrite = FALSE,
-  quiet = FALSE
-)
-
 ddbh3_lonlat_to_spatial(
   x,
   lon = "lon",
@@ -30,14 +17,15 @@ ddbh3_lonlat_to_spatial(
   quiet = FALSE
 )
 
-ddbh3_lonlat_to_bigint(
+ddbh3_lonlat_to_h3(
   x,
   lon = "lon",
   lat = "lat",
   resolution = 8,
   conn = NULL,
   name = NULL,
-  new_column = "h3bigint",
+  new_column = "h3string",
+  h3_format = "string",
   overwrite = FALSE,
   quiet = FALSE
 )
@@ -67,14 +55,17 @@ or a character string of length two specifying the schema and table
 names. If \code{NULL} (the default), the function returns the result as an
 \code{sf} object}
 
-\item{new_column}{Name of the new column to create on the input data. If NULL,
-the function will return a vector with the result}
-
 \item{overwrite}{Boolean. whether to overwrite the existing table if it exists. Defaults
 to \code{FALSE}. This argument is ignored when \code{name} is \code{NULL}.}
 
 \item{quiet}{A logical value. If \code{TRUE}, suppresses any informational messages.
 Defaults to \code{FALSE}.}
+
+\item{new_column}{Name of the new column to create on the input data. If NULL,
+the function will return a vector with the result}
+
+\item{h3_format}{Character. The format of the H3 cell index: \code{string} or
+\code{bigint}}
 }
 \value{
 A \code{tbl_lazy} if \code{x} is not spatial, or a \code{duckspatial_df} if \code{x}
@@ -88,8 +79,8 @@ representations at a specified resolution, with different output formats
 \details{
 The three functions differ only in the output format of the H3 cell index:
 \itemize{
-\item \code{ddbh3_lonlat_to_strings()} returns H3 cell indexes as strings (e.g. \code{"8928308280fffff"})
-\item \code{ddbh3_lonlat_to_bigint()} returns H3 cell indexes as unsigned 64-bit integers (\code{UBIGINT})
+\item \code{ddbh3_lonlat_to_h3()} returns H3 cell indexes as strings (e.g. \code{"8928308280fffff"})
+or as unsigned 64-bit integers (\code{UBIGINT})
 \item \code{ddbh3_lonlat_to_spatial()} returns H3 cells as spatial hexagon polygons
 }
 }

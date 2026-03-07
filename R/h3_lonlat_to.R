@@ -10,13 +10,15 @@
 #' @template conn_null
 #' @template name
 #' @template new_column
+#' @param h3_format Character. The format of the H3 cell index: `string` or
+#' `bigint`
 #' @template overwrite
 #' @template quiet
 #' 
 #' @details
 #' The three functions differ only in the output format of the H3 cell index:
-#' * `ddbh3_lonlat_to_strings()` returns H3 cell indexes as strings (e.g. `"8928308280fffff"`)
-#' * `ddbh3_lonlat_to_bigint()` returns H3 cell indexes as unsigned 64-bit integers (`UBIGINT`)
+#' * `ddbh3_lonlat_to_h3()` returns H3 cell indexes as strings (e.g. `"8928308280fffff"`) 
+#' or as unsigned 64-bit integers (`UBIGINT`)
 #' * `ddbh3_lonlat_to_spatial()` returns H3 cells as spatial hexagon polygons
 #'
 #' @template desc_formats
@@ -25,7 +27,7 @@
 #'
 #' @name ddbh3_lonlat_to
 #' @rdname ddbh3_lonlat_to
-#' @aliases ddbh3_lonlat_to_strings ddbh3_lonlat_to_bigint ddbh3_lonlat_to_spatial
+#' @aliases ddbh3_lonlat_to_h3 ddbh3_lonlat_to_spatial
 #'
 #' @examples
 #' \dontrun{
@@ -33,44 +35,6 @@
 #' }
 NULL
 
-
-
-#' @rdname ddbh3_lonlat_to
-#' @export
-ddbh3_lonlat_to_strings <- function(
-    x,
-    lon = "lon",
-    lat = "lat",
-    resolution = 8,
-    conn = NULL,
-    name = NULL,
-    new_column = "h3string",
-    overwrite = FALSE,
-    quiet = FALSE
-) {
-
-
-  # 0. Handle function-specific errors
-  duckspatial:::assert_character_scalar(lon, "lon")
-  duckspatial:::assert_character_scalar(lat, "lat")
-  duckspatial:::assert_integer_scalar(resolution, "resolution")
-  duckspatial:::assert_numeric_interval(resolution, 0, 18, "resolution")
-
-   # 1. Build parameters string
-  built_fun <- glue::glue("h3_latlng_to_cell_string({lat}, {lon}, {resolution})")
-
-  # 2. Pass to template
-  template_h3_base(
-    x = x,
-    conn = conn,
-    name = name,
-    new_column = new_column,
-    overwrite = overwrite,
-    quiet = quiet,
-    fun = built_fun
-  ) 
-
-}
 
 
 
@@ -121,14 +85,15 @@ ddbh3_lonlat_to_spatial <- function(
 
 #' @rdname ddbh3_lonlat_to
 #' @export
-ddbh3_lonlat_to_bigint <- function(
+ddbh3_lonlat_to_h3 <- function(
     x,
     lon = "lon",
     lat = "lat",
     resolution = 8,
     conn = NULL,
     name = NULL,
-    new_column = "h3bigint",
+    new_column = "h3string",
+    h3_format = "string",
     overwrite = FALSE,
     quiet = FALSE
 ) {
@@ -140,12 +105,13 @@ ddbh3_lonlat_to_bigint <- function(
   duckspatial:::assert_integer_scalar(resolution, "resolution")
   duckspatial:::assert_numeric_interval(resolution, 0, 18, "resolution")
 
-   # 1. Build parameters string
-  built_fun <- glue::glue("
-    h3_string_to_h3(
-      h3_latlng_to_cell({lat}, {lon}, {resolution})
-    )::UBIGINT
-  ")
+  # 1. Build parameters string
+  built_fun <- switch(
+    h3_format,
+    "string" = glue::glue("h3_latlng_to_cell_string({lat}, {lon}, {resolution})"),
+    "bigint" = glue::glue("h3_latlng_to_cell({lat}, {lon}, {resolution})"),
+    cli::cli_abort("The {.arg h3_format} is not valid. Valid options: {.val {c('string', 'bigint')}}")
+  )
 
   # 2. Pass to template
   template_h3_base(
