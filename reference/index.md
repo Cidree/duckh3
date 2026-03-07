@@ -20,6 +20,9 @@ Converts from/to different H3 representations
 - [`ddbh3_lonlat_to_spatial()`](https://cidree.github.io/duckh3/reference/ddbh3_lonlat_to.md)
   [`ddbh3_lonlat_to_h3()`](https://cidree.github.io/duckh3/reference/ddbh3_lonlat_to.md)
   : Convert longitude and latitude to H3 cell representations
+- [`ddbh3_points_to_spatial()`](https://cidree.github.io/duckh3/reference/ddbh3_points_to.md)
+  [`ddbh3_points_to_h3()`](https://cidree.github.io/duckh3/reference/ddbh3_points_to.md)
+  : Convert spatial points to H3 cell representations
 
 ## H3 hierarchy
 
