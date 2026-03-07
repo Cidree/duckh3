@@ -1,0 +1,78 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# duckh3 <a href="https://cidree.github.io/duckh3/"><img src="man/figures/logo.png" alt="duckh3 website" align="right" height="138"/></a>
+
+<!-- badges: start -->
+
+[![CRAN status](https://www.r-pkg.org/badges/version/duckh3)](https://CRAN.R-project.org/package=duckh3) [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental) [![Codecov test coverage](https://codecov.io/gh/Cidree/duckh3/graph/badge.svg)](https://app.codecov.io/gh/Cidree/duckh3) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active) [![check](https://github.com/Cidree/duckh3/workflows/check/badge.svg)](https://github.com/Cidree/duckh3/actions)
+
+<!-- badges: end -->
+
+**{duckh3}** provides fast, memory-efficient functions for analysing and manipulating large spatial/non-spatial datasets using the [H3 hierarchical indexing system](https://h3geo.org/) in R. It bridges [DuckDB's H3 extension](https://duckdb.org/docs/stable/core_extensions/h3) with R's data and spatial ecosystems — in particular **{dplyr}** and **{sf}** — so you can leverage DuckDB's analytical power without leaving your familiar R workflow.
+
+### How it works
+
+{duckh3} operates on regular R data frames, `tibble`s, `dbplyr` lazy tables, and `duckspatial_df` objects. Unlike purely spatial workflows, H3 operations do not require your data to be spatial — any table with longitude/latitude columns, or an existing H3 index column, is a valid starting point.
+
+When a DuckDB connection is used, all H3 operations run inside that connection with the H3 extension enabled, letting DuckDB apply its own query optimisations before any data reaches R. Results are returned lazily and only materialised when you explicitly collect them.
+
+### Naming conventions
+
+All functions follow the `ddbh3_*()` prefix (*DuckDB H3*). Function names are structured around the conversion they perform, making it easy to discover the right function:
+
+- `ddbh3_lonlat_to_*()` — from longitude/latitude coordinates to H3 representations
+- `ddbh3_bigint_to_*()` — from H3 `UBIGINT` indexes to other representations
+- `ddbh3_strings_to_*()` — from H3 string indexes to other representations
+
+## Installation
+
+Install the stable release from CRAN (not available yet):
+``` r
+# install.packages("pak")
+pak::pak("duckh3")
+```
+
+Install the latest GitHub version (more features, fewer accumulated bugs):
+``` r
+pak::pak("Cidree/duckh3")
+```
+
+Install the development version (may be unstable):
+``` r
+pak::pak("Cidree/duckh3@dev")
+```
+
+## Core idea: flexible H3 workflows
+
+A central design principle of {duckh3} is that the same H3 operation can be used in different ways depending on how your data is stored and what output format you need.
+
+Most functions support three complementary output formats:
+
+| Function suffix | Output                              |
+|-----------------|-------------------------------------|
+| `*_to_strings`  | H3 index as string                  |
+| `*_to_bigint`   | H3 index as `UBIGINT`               |
+| `*_to_spatial`  | H3 cell as spatial hexagon polygon  |
+| `*_to_lon`      | Longitude of H3 cell centroid       |
+| `*_to_lat`      | Latitude of H3 cell centroid        |
+
+Inputs can be plain R data frames, lazy `dbplyr` tables, `sf` objects, or `duckspatial_df` objects, making {duckh3} easy to integrate into both non-spatial and spatial pipelines. See the [Get Started vignette](https://Cidree.github.io/duckh3/articles/duckh3.html) for worked examples of each workflow.
+
+## Contributing
+
+Bug reports, feature requests, and pull requests are very welcome!
+
+-   [Raise an issue](https://github.com/Cidree/duckh3/issues)
+-   [Open a pull request](https://github.com/Cidree/duckh3/pulls)

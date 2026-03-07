@@ -1,0 +1,11 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+
+internal/*
+/docs/
+private
+/doc/
+/Meta/
+docs
