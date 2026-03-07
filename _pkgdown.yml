@@ -190,6 +190,11 @@ reference:
   - ddbh3_get_children
   - ddbh3_get_parent
 
+- title: H3 properties
+  desc: Check properties of H3 cell indexes
+  contents:
+  - ddbh3_is
+
 # ── Navbar ──────────────────────────────────────────────────────────────────────
 navbar:
   title: duckh3
