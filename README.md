@@ -20,6 +20,11 @@ developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.re
 
 <!-- badges: end -->
 
+> ⚠️ 🦆 {duckh3} is a work in progress! We’re actively building and
+> refining the package. Function names, arguments, and behaviour may
+> change as the API matures. Feedback and bug reports are very welcome
+> via GitHub Issues. Thanks for being an early user! 🙏
+
 **{duckh3}** provides fast, memory-efficient functions for analysing and
 manipulating large spatial/non-spatial datasets using the [H3
 hierarchical indexing system](https://h3geo.org/) in R. It bridges

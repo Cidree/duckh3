@@ -3,6 +3,7 @@ output: github_document
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -20,6 +21,8 @@ knitr::opts_chunk$set(
 
 <!-- badges: end -->
 
+> ⚠️ 🦆 {duckh3} is a work in progress! We're actively building and refining the package. Function names, arguments, and behaviour may change as the API matures. Feedback and bug reports are very welcome via GitHub Issues. Thanks for being an early user! 🙏
+
 **{duckh3}** provides fast, memory-efficient functions for analysing and manipulating large spatial/non-spatial datasets using the [H3 hierarchical indexing system](https://h3geo.org/) in R. It bridges [DuckDB's H3 extension](https://duckdb.org/community_extensions/extensions/h3) with R's data and spatial ecosystems — in particular **{duckspatial}**, **{dplyr}** and **{sf}** — so you can leverage DuckDB's analytical power without leaving your familiar R workflow.
 
 ### How it works
@@ -32,24 +35,27 @@ When a DuckDB connection is used, all H3 operations run inside that connection w
 
 All functions follow the `ddbh3_*()` prefix (*DuckDB H3*). Function names are structured around the conversion they perform, making it easy to discover the right function:
 
-- `ddbh3_lonlat_to_*()` — from longitude/latitude coordinates to H3 representations
-- `ddbh3_bigint_to_*()` — from H3 `UBIGINT` indexes to other representations
-- `ddbh3_strings_to_*()` — from H3 string indexes to other representations
+-   `ddbh3_lonlat_to_*()` — from longitude/latitude coordinates to H3 representations
+-   `ddbh3_bigint_to_*()` — from H3 `UBIGINT` indexes to other representations
+-   `ddbh3_strings_to_*()` — from H3 string indexes to other representations
 
 ## Installation
 
 Install the stable release from CRAN (not available yet):
+
 ``` r
 # install.packages("pak")
 pak::pak("duckh3")
 ```
 
 Install the latest GitHub version (more features, fewer accumulated bugs):
+
 ``` r
 pak::pak("Cidree/duckh3")
 ```
 
 Install the development version (may be unstable):
+
 ``` r
 pak::pak("Cidree/duckh3@dev")
 ```
@@ -60,13 +66,13 @@ A central design principle of {duckh3} is that the same H3 operation can be used
 
 Most functions support three complementary output formats:
 
-| Function suffix | Output                              |
-|-----------------|-------------------------------------|
-| `*_to_strings`  | H3 index as string                  |
-| `*_to_bigint`   | H3 index as `UBIGINT`               |
-| `*_to_spatial`  | H3 cell as spatial hexagon polygon  |
-| `*_to_lon`      | Longitude of H3 cell centroid       |
-| `*_to_lat`      | Latitude of H3 cell centroid        |
+| Function suffix | Output                             |
+|-----------------|------------------------------------|
+| `*_to_strings`  | H3 index as string                 |
+| `*_to_bigint`   | H3 index as `UBIGINT`              |
+| `*_to_spatial`  | H3 cell as spatial hexagon polygon |
+| `*_to_lon`      | Longitude of H3 cell centroid      |
+| `*_to_lat`      | Latitude of H3 cell centroid       |
 
 Inputs can be plain R data frames, lazy `dbplyr` tables, `sf` objects, or `duckspatial_df` objects, making {duckh3} easy to integrate into both non-spatial and spatial pipelines. See the [Get Started vignette](https://Cidree.github.io/duckh3/articles/duckh3.html) for worked examples of each workflow.
 
