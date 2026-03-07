@@ -253,7 +253,81 @@ or as unsigned 64-bit integers (<code>UBIGINT</code>)</p></li>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="co">## TODO</span></span></span>
+<span class="r-in"><span><span class="co">## Load needed packages</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r.duckdb.org/" class="external-link">duckdb</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cidree.github.io/duckh3/">duckh3</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cidree.github.io/duckspatial/" class="external-link">duckspatial</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Load example data</span></span></span>
+<span class="r-in"><span><span class="va">points_tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/example_pts.csv"</span>, package <span class="op">=</span> <span class="st">"duckh3"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Create a connection with spatial and h3 extensions</span></span></span>
+<span class="r-in"><span><span class="va">conn</span> <span class="op">&lt;-</span> <span class="fu"><a href="ddbh3_create_conn.html">ddbh3_create_conn</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## TO H3 ------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Add h3 strings as a new column (res 5)</span></span></span>
+<span class="r-in"><span><span class="va">points_strings_5_tbl</span> <span class="op">&lt;-</span> <span class="fu">ddbh3_lonlat_to_h3</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">points_tbl</span>,</span></span>
+<span class="r-in"><span>  resolution <span class="op">=</span> <span class="fl">5</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Add h3 UBIGINT as a new column (res 8 by default)</span></span></span>
+<span class="r-in"><span><span class="va">points_bigint_8_tbl</span> <span class="op">&lt;-</span> <span class="fu">ddbh3_lonlat_to_h3</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">points_tbl</span>,</span></span>
+<span class="r-in"><span>  new_column <span class="op">=</span> <span class="st">"h3bigint"</span>,</span></span>
+<span class="r-in"><span>  h3_format  <span class="op">=</span> <span class="st">"bigint"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## If column names are different from lon/lat:</span></span></span>
+<span class="r-in"><span><span class="va">points_renamed</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span><span class="va">points_tbl</span>, long <span class="op">=</span> <span class="va">lon</span>, lati <span class="op">=</span> <span class="va">lat</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">ddbh3_lonlat_to_h3</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">points_renamed</span>,</span></span>
+<span class="r-in"><span>  lon <span class="op">=</span> <span class="st">"long"</span>,</span></span>
+<span class="r-in"><span>  lat <span class="op">=</span> <span class="st">"lati"</span>,</span></span>
+<span class="r-in"><span>  resolution <span class="op">=</span> <span class="fl">10</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Create a new table in the connection</span></span></span>
+<span class="r-in"><span><span class="fu">ddbh3_lonlat_to_h3</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">points_tbl</span>,</span></span>
+<span class="r-in"><span>  conn <span class="op">=</span> <span class="va">conn</span>,</span></span>
+<span class="r-in"><span>  name <span class="op">=</span> <span class="st">"points_strings_8"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Open the created table lazily</span></span></span>
+<span class="r-in"><span><span class="va">points_lazy</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/tbl.html" class="external-link">tbl</a></span><span class="op">(</span><span class="va">conn</span>, <span class="st">"points_strings_8"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Read it in memory</span></span></span>
+<span class="r-in"><span><span class="va">points_eager</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dbi.r-dbi.org/reference/dbReadTable.html" class="external-link">dbReadTable</a></span><span class="op">(</span><span class="va">conn</span>, <span class="st">"points_strings_8"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## TO SPATIAL -----------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Add h3 strings as a new column (res 5)</span></span></span>
+<span class="r-in"><span><span class="va">points_5_ddbs</span> <span class="op">&lt;-</span> <span class="fu">ddbh3_lonlat_to_spatial</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">points_tbl</span>,</span></span>
+<span class="r-in"><span>  resolution <span class="op">=</span> <span class="fl">5</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Create a new table in the connection</span></span></span>
+<span class="r-in"><span><span class="fu">ddbh3_lonlat_to_spatial</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">points_tbl</span>,</span></span>
+<span class="r-in"><span>  conn <span class="op">=</span> <span class="va">conn</span>,</span></span>
+<span class="r-in"><span>  name <span class="op">=</span> <span class="st">"points_strings_spatial"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Open the created table lazily</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://cidree.github.io/duckspatial/reference/as_duckspatial_df.html" class="external-link">as_duckspatial_df</a></span><span class="op">(</span><span class="st">"points_strings_spatial"</span>, <span class="va">conn</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Read it in memory as an sf object</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://cidree.github.io/duckspatial/reference/ddbs_read_table.html" class="external-link">ddbs_read_table</a></span><span class="op">(</span><span class="va">conn</span>, <span class="st">"points_strings_spatial"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

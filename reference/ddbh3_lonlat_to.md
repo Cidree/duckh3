@@ -113,6 +113,80 @@ index:
 
 ``` r
 if (FALSE) { # \dontrun{
-## TODO
+## Load needed packages
+library(duckdb)
+library(duckh3)
+library(duckspatial)
+library(dplyr)
+
+## Load example data
+points_tbl <- read.csv(
+  system.file("extdata/example_pts.csv", package = "duckh3")
+)
+
+## Create a connection with spatial and h3 extensions
+conn <- ddbh3_create_conn()
+
+## TO H3 ------------
+
+## Add h3 strings as a new column (res 5)
+points_strings_5_tbl <- ddbh3_lonlat_to_h3(
+  points_tbl,
+  resolution = 5
+)
+
+## Add h3 UBIGINT as a new column (res 8 by default)
+points_bigint_8_tbl <- ddbh3_lonlat_to_h3(
+  points_tbl,
+  new_column = "h3bigint",
+  h3_format  = "bigint"
+)
+
+## If column names are different from lon/lat:
+points_renamed <- rename(points_tbl, long = lon, lati = lat)
+
+ddbh3_lonlat_to_h3(
+  points_renamed,
+  lon = "long",
+  lat = "lati",
+  resolution = 10
+)
+
+
+## Create a new table in the connection
+ddbh3_lonlat_to_h3(
+  points_tbl,
+  conn = conn,
+  name = "points_strings_8"
+)
+
+## Open the created table lazily
+points_lazy <- dplyr::tbl(conn, "points_strings_8")
+
+## Read it in memory
+points_eager <- dbReadTable(conn, "points_strings_8")
+
+
+## TO SPATIAL -----------
+
+## Add h3 strings as a new column (res 5)
+points_5_ddbs <- ddbh3_lonlat_to_spatial(
+  points_tbl,
+  resolution = 5
+)
+
+## Create a new table in the connection
+ddbh3_lonlat_to_spatial(
+  points_tbl,
+  conn = conn,
+  name = "points_strings_spatial"
+)
+
+## Open the created table lazily
+as_duckspatial_df("points_strings_spatial", conn)
+
+## Read it in memory as an sf object
+ddbs_read_table(conn, "points_strings_spatial")
+
 } # }
 ```
