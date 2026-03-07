@@ -143,7 +143,7 @@ ddbh3_lonlat_to_bigint <- function(
    # 1. Build parameters string
   built_fun <- glue::glue("
     h3_string_to_h3(
-      h3_latlng_to_cell_string({lat}, {lon}, {resolution})
+      h3_latlng_to_cell({lat}, {lon}, {resolution})
     )::UBIGINT
   ")
 

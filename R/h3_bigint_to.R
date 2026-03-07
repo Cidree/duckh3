@@ -89,11 +89,7 @@ ddbh3_bigint_to_lon <- function(
 
 
   # 1. Build parameters string
-  built_fun <- glue::glue("
-    h3_cell_to_lng(
-      h3_h3_to_string({h3bigint})
-    )
-  ")
+  built_fun <- glue::glue("h3_cell_to_lng({h3bigint})")
 
 
   # 2. Pass to template
@@ -132,11 +128,7 @@ ddbh3_bigint_to_lat <- function(
 
 
   # 1. Build parameters string
-  built_fun <- glue::glue("
-    h3_cell_to_lat(
-      h3_h3_to_string({h3bigint})
-    )
-  ")
+  built_fun <- glue::glue("h3_cell_to_lat({h3bigint})")
 
   
   # 2. Pass to template
@@ -173,11 +165,10 @@ ddbh3_bigint_to_spatial <- function(
   # 1. Build parameters string
   built_fun <- glue::glue("
     ST_GeomFromWKB(
-      h3_cell_to_boundary_wkb(
-        h3_h3_to_string({h3bigint})
-      )
+      h3_cell_to_boundary_wkb({h3bigint})
     )"
   )
+  
 
   # 2. Pass to template
   template_h3_to_spatial(
