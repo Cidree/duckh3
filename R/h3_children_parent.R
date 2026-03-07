@@ -17,7 +17,25 @@
 #'
 #' @examples
 #' \dontrun{
-#' ## TODO
+#' ## Load needed packages
+#' library(duckh3)
+#' 
+#' ## Load example data
+#' points_tbl <- read.csv(
+#'   system.file("extdata/example_pts.csv", package = "duckh3")
+#' )
+#' 
+#' ## Add h3 strings
+#' points_tbl <- ddbh3_lonlat_to_h3(points_tbl, resolution = 10)
+#' 
+#' ## Get resolution-7 parent
+#' points_parent_tbl <- ddbh3_get_parent(points_tbl, 7)
+#' 
+#' ## Check the resolution
+#' ddbh3_get_resolution(
+#'   points_parent_tbl,
+#'   h3 = "h3parent"
+#' )
 #' }
 ddbh3_get_parent <- function(
     x,
@@ -81,7 +99,22 @@ ddbh3_get_parent <- function(
 #'
 #' @examples
 #' \dontrun{
-#' ## TODO
+#' ## Load needed packages
+#' library(duckh3)
+#' 
+#' ## Load example data
+#' points_tbl <- read.csv(
+#'   system.file("extdata/example_pts.csv", package = "duckh3")
+#' )
+#' 
+#' ## Add h3 strings
+#' points_tbl <- ddbh3_lonlat_to_h3(points_tbl, resolution = 6)
+#' 
+#' ## Get level 8 children
+#' children_8_tbl <- ddbh3_get_children(points_tbl, 8)
+#' 
+#' ## Get level 8 children in a nested list
+#' children_8_nested_tbl <- ddbh3_get_children(points_tbl, 8, nested = TRUE)
 #' }
 ddbh3_get_children <- function(
     x,
@@ -149,7 +182,19 @@ ddbh3_get_children <- function(
 #'
 #' @examples
 #' \dontrun{
-#' ## TODO
+#' ## Load needed packages
+#' library(duckh3)
+#' 
+#' ## Load example data
+#' points_tbl <- read.csv(
+#'   system.file("extdata/example_pts.csv", package = "duckh3")
+#' )
+#' 
+#' ## Add h3 strings
+#' points_tbl <- ddbh3_lonlat_to_h3(points_tbl, resolution = 6)
+#' 
+#' ## Get number of children of resolution 9
+#' ddbh3_get_n_children(points_tbl, 9)
 #' }
 ddbh3_get_n_children <- function(
     x,

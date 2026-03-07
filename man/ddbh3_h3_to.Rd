@@ -109,6 +109,55 @@ The four functions differ only in the output format:
 }
 \examples{
 \dontrun{
-## TODO
+## Load needed packages
+library(duckh3)
+library(duckspatial)
+library(dplyr)
+
+## Load example data
+points_tbl <- read.csv(
+  system.file("extdata/example_pts.csv", package = "duckh3")
+)
+
+## Add H3 string column
+points_tbl <- ddbh3_lonlat_to_h3(points_tbl, resolution = 6) |> 
+  select(-lon, -lat)
+
+## TO LON/LAT ------------
+
+## Add longitude and latitude of the H3 string
+points_coords_tbl <- points_tbl |> 
+  ddbh3_h3_to_lat() |> 
+  ddbh3_h3_to_lon()
+
+## Add lon/lat with other names
+points_coords_2_tbl <- points_tbl |> 
+  ddbh3_h3_to_lat(new_column = "latitude") |> 
+  ddbh3_h3_to_lon(new_column = "longitude")
+
+## TO SPATIAL -----------------
+
+## Convert h3 strings to spatial polygons
+points_ddbs <- ddbh3_h3_to_spatial(points_tbl)
+
+## Collect as sf
+points_sf <- ddbs_collect(points_ddbs)
+
+## FROM STRING TO UBIGINT -----
+
+## Add ubigint, and remove strings
+points_bigint_tbl <- ddbh3_strings_to_bigint(
+  points_tbl, 
+  new_column = "h3_integers"
+) |> 
+  select(-h3string)
+
+## FROM UBIGINT TO STRING -----
+
+## Add column with strings
+points_strings_tbl <- ddbh3_bigint_to_strings(
+  points_bigint_tbl, 
+  h3 = "h3_integers"
+) 
 }
 }

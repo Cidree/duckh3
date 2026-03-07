@@ -59,6 +59,18 @@ Get the number of children of H3 cell indexes stored as strings or unsigned
 }
 \examples{
 \dontrun{
-## TODO
+## Load needed packages
+library(duckh3)
+
+## Load example data
+points_tbl <- read.csv(
+  system.file("extdata/example_pts.csv", package = "duckh3")
+)
+
+## Add h3 strings
+points_tbl <- ddbh3_lonlat_to_h3(points_tbl, resolution = 6)
+
+## Get number of children of resolution 9
+ddbh3_get_n_children(points_tbl, 9)
 }
 }

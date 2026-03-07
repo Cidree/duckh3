@@ -59,6 +59,24 @@ Get the parent H3 cell of H3 cell indexes stored as strings or unsigned
 }
 \examples{
 \dontrun{
-## TODO
+## Load needed packages
+library(duckh3)
+
+## Load example data
+points_tbl <- read.csv(
+  system.file("extdata/example_pts.csv", package = "duckh3")
+)
+
+## Add h3 strings
+points_tbl <- ddbh3_lonlat_to_h3(points_tbl, resolution = 10)
+
+## Get resolution-7 parent
+points_parent_tbl <- ddbh3_get_parent(points_tbl, 7)
+
+## Check the resolution
+ddbh3_get_resolution(
+  points_parent_tbl,
+  h3 = "h3parent"
+)
 }
 }
