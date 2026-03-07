@@ -5,9 +5,9 @@ manipulating large spatial/non-spatial datasets using the [H3
 hierarchical indexing system](https://h3geo.org/) in R. It bridges
 [DuckDB’s H3
 extension](https://duckdb.org/community_extensions/extensions/h3) with
-R’s data and spatial ecosystems — in particular **{dplyr}** and **{sf}**
-— so you can leverage DuckDB’s analytical power without leaving your
-familiar R workflow.
+R’s data and spatial ecosystems — in particular **{duckspatial}**,
+**{dplyr}** and **{sf}** — so you can leverage DuckDB’s analytical power
+without leaving your familiar R workflow.
 
 ### How it works
 

@@ -144,7 +144,7 @@ spatial and h3 extensions"><meta property="og:image" content="https://cidree.git
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Create a DuckDB connection with spatial and h3 extensions</h1>
-      <small class="dont-index">Source: <a href="https://github.com/Cidree/duckh3/blob/main/R/ddbh3_extension.R" class="external-link"><code>R/ddbh3_extension.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/Cidree/duckh3/blob/main/R/h3_extension.R" class="external-link"><code>R/h3_extension.R</code></a></small>
       <div class="d-none name"><code>ddbh3_create_conn.Rd</code></div>
     </div>
 
@@ -163,7 +163,8 @@ spatial and h3 extensions</p>
 
 
 <dl><dt id="arg-dbdir">dbdir<a class="anchor" aria-label="anchor" href="#arg-dbdir"></a></dt>
-<dd><p>String. Either <code>"tempdir"</code> or <code>"memory"</code>. Defaults to <code>"memory"</code>.</p></dd>
+<dd><p>String. Either "tempdir", "memory", or file path with .duckdb
+or .db extension. Defaults to "memory".</p></dd>
 
 
 <dt id="arg-threads">threads<a class="anchor" aria-label="anchor" href="#arg-threads"></a></dt>
@@ -190,9 +191,9 @@ spatial and h3 extensions</p>
 <span class="r-in"><span><span class="va">conn</span> <span class="op">&lt;-</span> <span class="fu">ddbh3_create_conn</span><span class="op">(</span>dbdir <span class="op">=</span> <span class="st">"memory"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># create a duckdb database in disk</span></span></span>
-<span class="r-in"><span><span class="va">conn</span> <span class="op">&lt;-</span> <span class="fu">ddbh3_create_conn</span><span class="op">(</span>dbdir <span class="op">=</span> <span class="st">"tempdir"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">conn</span> <span class="op">&lt;-</span> <span class="fu">ddbh3_create_conn</span><span class="op">(</span>dbdir <span class="op">=</span> <span class="st">"my_database.duckdb"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># create a connection with 1 thread and 2GB memory limit</span></span></span>
+<span class="r-in"><span><span class="co"># create an in-memory connection with 1 thread and 2GB memory limit</span></span></span>
 <span class="r-in"><span><span class="va">conn</span> <span class="op">&lt;-</span> <span class="fu">ddbh3_create_conn</span><span class="op">(</span>threads <span class="op">=</span> <span class="fl">1</span>, memory_limit_gb <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://cidree.github.io/duckspatial/reference/ddbs_stop_conn.html" class="external-link">ddbs_stop_conn</a></span><span class="op">(</span><span class="va">conn</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
