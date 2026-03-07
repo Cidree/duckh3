@@ -1,31 +1,56 @@
-# Convert longitude and latitude to H3 cell representations
+# Convert H3 string or UBIGINT indexes to other representations
 
-Convert geographic coordinates (longitude and latitude) into H3 cell
-representations at a specified resolution, with different output formats
+Convert H3 cell indexes stored as strings or UBIGINT into other
+representations (e.g. `lon`, `lat`, `spatial`)
 
 ## Usage
 
 ``` r
-ddbh3_lonlat_to_spatial(
+ddbh3_h3_to_lon(
   x,
-  lon = "lon",
-  lat = "lat",
-  resolution = 8,
+  h3 = "h3string",
+  conn = NULL,
+  name = NULL,
+  new_column = "lon",
+  overwrite = FALSE,
+  quiet = FALSE
+)
+
+ddbh3_h3_to_lat(
+  x,
+  h3 = "h3string",
+  conn = NULL,
+  name = NULL,
+  new_column = "lat",
+  overwrite = FALSE,
+  quiet = FALSE
+)
+
+ddbh3_h3_to_spatial(
+  x,
+  h3 = "h3string",
   conn = NULL,
   name = NULL,
   overwrite = FALSE,
   quiet = FALSE
 )
 
-ddbh3_lonlat_to_h3(
+ddbh3_strings_to_bigint(
   x,
-  lon = "lon",
-  lat = "lat",
-  resolution = 8,
+  h3 = "h3string",
+  conn = NULL,
+  name = NULL,
+  new_column = "h3bigint",
+  overwrite = FALSE,
+  quiet = FALSE
+)
+
+ddbh3_bigint_to_strings(
+  x,
+  h3 = "h3bigint",
   conn = NULL,
   name = NULL,
   new_column = "h3string",
-  h3_format = "string",
   overwrite = FALSE,
   quiet = FALSE
 )
@@ -47,18 +72,10 @@ ddbh3_lonlat_to_h3(
 
   Data is returned from this object.
 
-- lon:
+- h3:
 
-  The name of a column in `x` containing the longitude
-
-- lat:
-
-  The name of a column in `x` containing the latitude
-
-- resolution:
-
-  A number specifying the resolution level of the H3 string (between 0
-  and 15)
+  The name of a column in `x` containing the H3 strings or H3 unsigned
+  64-bit integers (`UBIGINT`)
 
 - conn:
 
@@ -72,6 +89,11 @@ ddbh3_lonlat_to_h3(
   names. If `NULL` (the default), the function returns the result as an
   `sf` object
 
+- new_column:
+
+  Name of the new column to create on the input data. If NULL, the
+  function will return a vector with the result
+
 - overwrite:
 
   Boolean. whether to overwrite the existing table if it exists.
@@ -82,15 +104,6 @@ ddbh3_lonlat_to_h3(
   A logical value. If `TRUE`, suppresses any informational messages.
   Defaults to `FALSE`.
 
-- new_column:
-
-  Name of the new column to create on the input data. If NULL, the
-  function will return a vector with the result
-
-- h3_format:
-
-  Character. The format of the H3 cell index: `string` or `bigint`
-
 ## Value
 
 A `tbl_lazy` if `x` is not spatial, or a `duckspatial_df` if `x` is
@@ -100,14 +113,20 @@ invisibly.
 
 ## Details
 
-The three functions differ only in the output format of the H3 cell
-index:
+The four functions differ only in the output format:
 
-- `ddbh3_lonlat_to_h3()` returns H3 cell indexes as strings (e.g.
-  `"8928308280fffff"`) or as unsigned 64-bit integers (`UBIGINT`)
-
-- `ddbh3_lonlat_to_spatial()` returns H3 cells as spatial hexagon
+- `ddbh3_h3_to_spatial()` converts H3 indexes to spatial hexagon
   polygons
+
+- `ddbh3_h3_to_lon()` extracts the longitude of the H3 cell centroid
+
+- `ddbh3_h3_to_lat()` extracts the latitude of the H3 cell centroid
+
+- `ddbh3_strings_to_bigint()` converts H3 indexes to unsigned 64-bit
+  integers (`UBIGINT`)
+
+- `ddbh3_bigint_to_strings()` converts H3 indexes to strings (e.g.
+  `"8928308280fffff"`)
 
 ## Examples
 
