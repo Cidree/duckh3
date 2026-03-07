@@ -57,7 +57,7 @@ ddbh3_lonlat_to_spatial <- function(
   duckspatial:::assert_character_scalar(lon, "lon")
   duckspatial:::assert_character_scalar(lat, "lat")
   duckspatial:::assert_integer_scalar(resolution, "resolution")
-  duckspatial:::assert_numeric_interval(resolution, 0, 18, "resolution")
+  duckspatial:::assert_numeric_interval(resolution, 0, 15, "resolution")
 
   # 1. Build parameters string
   built_fun <- glue::glue("
@@ -103,7 +103,7 @@ ddbh3_lonlat_to_h3 <- function(
   duckspatial:::assert_character_scalar(lon, "lon")
   duckspatial:::assert_character_scalar(lat, "lat")
   duckspatial:::assert_integer_scalar(resolution, "resolution")
-  duckspatial:::assert_numeric_interval(resolution, 0, 18, "resolution")
+  duckspatial:::assert_numeric_interval(resolution, 0, 15, "resolution")
 
   # 1. Build parameters string
   built_fun <- switch(

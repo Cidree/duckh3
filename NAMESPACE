@@ -2,6 +2,10 @@
 
 export(ddbh3_bigint_to_strings)
 export(ddbh3_create_conn)
+export(ddbh3_get_children)
+export(ddbh3_get_n_children)
+export(ddbh3_get_parent)
+export(ddbh3_get_resolution)
 export(ddbh3_h3_to_lat)
 export(ddbh3_h3_to_lon)
 export(ddbh3_h3_to_spatial)
