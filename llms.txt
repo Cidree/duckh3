@@ -130,3 +130,12 @@ Work with H3 resolutions and parent/child cells
 - [`ddbh3_get_parent()`](https://cidree.github.io/duckh3/reference/ddbh3_get_parent.md)
   : Get the parent H3 cell of H3 indexes
 
+## H3 properties
+
+Check properties of H3 cell indexes
+
+- [`ddbh3_is_pentagon()`](https://cidree.github.io/duckh3/reference/ddbh3_is.md)
+  [`ddbh3_is_valid()`](https://cidree.github.io/duckh3/reference/ddbh3_is.md)
+  [`ddbh3_is_res_class_iii()`](https://cidree.github.io/duckh3/reference/ddbh3_is.md)
+  : Check properties of H3 cell indexes
+
