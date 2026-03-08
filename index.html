@@ -181,77 +181,154 @@
 
 <!-- badges: end -->
 <blockquote>
-<p>⚠️ 🦆 {duckh3} is a work in progress! We’re actively building and refining the package. Function names, arguments, and behaviour may change as the API matures. Feedback and bug reports are very welcome via GitHub Issues. Thanks for being an early user! 🙏</p>
+<p>🦆 <strong>{duckh3} is a work in progress!</strong> We’re actively building and refining the package — function names, arguments, and behaviour may change as the API matures. Feedback and bug reports are very welcome via <a href="https://github.com/Cidree/duckh3/issues" class="external-link">GitHub Issues</a>. Thanks for being an early user! 🙏</p>
 </blockquote>
-<p><strong>{duckh3}</strong> provides fast, memory-efficient functions for analysing and manipulating large spatial/non-spatial datasets using the <a href="https://h3geo.org/" class="external-link">H3 hierarchical indexing system</a> in R. It bridges <a href="https://duckdb.org/community_extensions/extensions/h3" class="external-link">DuckDB’s H3 extension</a> with R’s data and spatial ecosystems — in particular <strong>{duckspatial}</strong>, <strong>{dplyr}</strong> and <strong>{sf}</strong> — so you can leverage DuckDB’s analytical power without leaving your familiar R workflow.</p>
+<p><strong>{duckh3}</strong> provides fast, memory-efficient functions for analysing and manipulating large spatial and non-spatial datasets using the <a href="https://h3geo.org/" class="external-link">H3 hierarchical indexing system</a> in R. It bridges <a href="https://duckdb.org/community_extensions/extensions/h3" class="external-link">DuckDB’s H3 extension</a> with R’s data and spatial ecosystems — in particular <strong>{duckspatial}</strong>, <strong>{dplyr}</strong>, and <strong>{sf}</strong> — so you can leverage DuckDB’s analytical power without leaving your familiar R workflow.</p>
 <div class="section level3">
 <h3 id="how-it-works">How it works<a class="anchor" aria-label="anchor" href="#how-it-works"></a>
 </h3>
-<p>{duckh3} operates on regular R data frames, <code>tibble</code>s, <code>dbplyr</code> lazy tables, and <code>duckspatial_df</code> objects. Unlike purely spatial workflows, H3 operations do not require your data to be spatial — any table with longitude/latitude columns, or an existing H3 index column, is a valid starting point.</p>
+<p>{duckh3} operates on regular R data frames, <code>tibble</code>s, <code>dbplyr</code> lazy tables, and <code>duckspatial_df</code> objects. Unlike purely spatial workflows, H3 operations do not require your data to be spatial. Any table with longitude/latitude columns, or an existing H3 index column, is a valid starting point.</p>
 <p>When a DuckDB connection is used, all H3 operations run inside that connection with the H3 extension enabled, letting DuckDB apply its own query optimisations before any data reaches R. Results are returned lazily and only materialised when you explicitly collect them.</p>
+<p>In addition, {duckh3} registers a set of <strong>DuckDB macros</strong> on the default connection at load time, making H3 functions available directly inside <code><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">dplyr::mutate()</a></code> on lazy tables — no wrapper function needed. Note that they <strong>only work with lazy tables</strong>, not with regular data frames.</p>
 </div>
 <div class="section level3">
 <h3 id="naming-conventions">Naming conventions<a class="anchor" aria-label="anchor" href="#naming-conventions"></a>
 </h3>
-<p>All functions follow the <code>ddbh3_*()</code> prefix (<em>DuckDB H3</em>). Function names are structured around the conversion they perform, making it easy to discover the right function:</p>
+<p>All functions follow the <code>ddbh3_*()</code> prefix (<em>DuckDB H3</em>), structured around what they do:</p>
 <ul>
 <li>
 <code>ddbh3_lonlat_to_*()</code> — from longitude/latitude coordinates to H3 representations</li>
 <li>
-<code>ddbh3_bigint_to_*()</code> — from H3 <code>UBIGINT</code> indexes to other representations</li>
+<code>ddbh3_points_to_*()</code> — from spatial point geometries to H3 representations</li>
 <li>
-<code>ddbh3_strings_to_*()</code> — from H3 string indexes to other representations</li>
+<code>ddbh3_get_*()</code> — retrieve H3 cell properties (resolution, parent, children, vertices…)</li>
+<li>
+<code>ddbh3_is_*()</code> — check properties of H3 indexes (valid, pentagon, Class III…)</li>
+<li>
+<code>ddbh3_h3_to_*()</code> — convert H3 cells to other representations</li>
 </ul>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>Install the stable release from CRAN (not available yet):</p>
+<p>Install the latest GitHub version:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("pak")</span></span>
-<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"duckh3"</span><span class="op">)</span></span></code></pre></div>
-<p>Install the latest GitHub version (more features, fewer accumulated bugs):</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"Cidree/duckh3"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"Cidree/duckh3"</span><span class="op">)</span></span></code></pre></div>
 <p>Install the development version (may be unstable):</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"Cidree/duckh3@dev"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="core-idea-flexible-h3-workflows">Core idea: flexible H3 workflows<a class="anchor" aria-label="anchor" href="#core-idea-flexible-h3-workflows"></a>
 </h2>
 <p>A central design principle of {duckh3} is that the same H3 operation can be used in different ways depending on how your data is stored and what output format you need.</p>
-<p>Most functions support three complementary output formats:</p>
+<div class="section level3">
+<h3 id="format-conversions">Format conversions<a class="anchor" aria-label="anchor" href="#format-conversions"></a>
+</h3>
 <table class="table">
 <thead><tr class="header">
-<th>Function suffix</th>
+<th>Function family</th>
 <th>Output</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td><code>*_to_strings</code></td>
-<td>H3 index as string</td>
-</tr>
-<tr class="even">
-<td><code>*_to_bigint</code></td>
-<td>H3 index as <code>UBIGINT</code>
+<td><code>*_to_h3()</code></td>
+<td>H3 index as string or <code>UBIGINT</code>
 </td>
 </tr>
-<tr class="odd">
-<td><code>*_to_spatial</code></td>
+<tr class="even">
+<td><code>*_to_spatial()</code></td>
 <td>H3 cell as spatial hexagon polygon</td>
 </tr>
-<tr class="even">
-<td><code>*_to_lon</code></td>
+<tr class="odd">
+<td><code>*_to_lon()</code></td>
 <td>Longitude of H3 cell centroid</td>
 </tr>
-<tr class="odd">
-<td><code>*_to_lat</code></td>
+<tr class="even">
+<td><code>*_to_lat()</code></td>
 <td>Latitude of H3 cell centroid</td>
 </tr>
 </tbody>
 </table>
-<p>Inputs can be plain R data frames, lazy <code>dbplyr</code> tables, <code>sf</code> objects, or <code>duckspatial_df</code> objects, making {duckh3} easy to integrate into both non-spatial and spatial pipelines. See the <a href="https://Cidree.github.io/duckh3/articles/duckh3.html" class="external-link">Get Started vignette</a> for worked examples of each workflow.</p>
+</div>
+<div class="section level3">
+<h3 id="h3-hierarchy">H3 hierarchy<a class="anchor" aria-label="anchor" href="#h3-hierarchy"></a>
+</h3>
+<table class="table">
+<colgroup>
+<col width="40%">
+<col width="60%">
+</colgroup>
+<thead><tr class="header">
+<th>Function</th>
+<th>Returns</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code><a href="reference/ddbh3_get_resolution.html">ddbh3_get_resolution()</a></code></td>
+<td>Resolution of each H3 cell</td>
+</tr>
+<tr class="even">
+<td><code><a href="reference/ddbh3_get_hierarchy.html">ddbh3_get_parent()</a></code></td>
+<td>Parent cell at a coarser resolution</td>
+</tr>
+<tr class="odd">
+<td><code><a href="reference/ddbh3_get_hierarchy.html">ddbh3_get_center_child()</a></code></td>
+<td>Center child cell at a finer resolution</td>
+</tr>
+<tr class="even">
+<td><code><a href="reference/ddbh3_get_hierarchy.html">ddbh3_get_children()</a></code></td>
+<td>All children cells at a finer resolution</td>
+</tr>
+<tr class="odd">
+<td><code><a href="reference/ddbh3_get_hierarchy.html">ddbh3_get_n_children()</a></code></td>
+<td>Number of children at a finer resolution</td>
+</tr>
+<tr class="even">
+<td><code><a href="reference/ddbh3_get_child_pos.html">ddbh3_get_child_pos()</a></code></td>
+<td>Position of a cell within its parent</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level3">
+<h3 id="h3-properties">H3 properties<a class="anchor" aria-label="anchor" href="#h3-properties"></a>
+</h3>
+<table class="table">
+<colgroup>
+<col width="37%">
+<col width="62%">
+</colgroup>
+<thead><tr class="header">
+<th>Function</th>
+<th>Returns</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code><a href="reference/ddbh3_is.html">ddbh3_is_h3()</a></code></td>
+<td>
+<code>TRUE</code> if the index is a valid H3 cell</td>
+</tr>
+<tr class="even">
+<td><code><a href="reference/ddbh3_is.html">ddbh3_is_pentagon()</a></code></td>
+<td>
+<code>TRUE</code> if the cell is one of the 12 pentagons</td>
+</tr>
+<tr class="odd">
+<td><code><a href="reference/ddbh3_is.html">ddbh3_is_res_class_iii()</a></code></td>
+<td>
+<code>TRUE</code> if the cell is at an odd resolution</td>
+</tr>
+<tr class="even">
+<td><code><a href="reference/ddbh3_is.html">ddbh3_is_vertex()</a></code></td>
+<td>
+<code>TRUE</code> if the index is a valid H3 vertex</td>
+</tr>
+</tbody>
+</table>
+<p>Inputs can be plain R data frames, lazy <code>dbplyr</code> tables, <code>sf</code> objects, or <code>duckspatial_df</code> objects, making {duckh3} easy to integrate into both non-spatial and spatial pipelines.</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="contributing">Contributing<a class="anchor" aria-label="anchor" href="#contributing"></a>
