@@ -1,47 +1,21 @@
-# Check properties of H3 cell indexes
+# Get the icosahedron faces of H3 cell indexes
 
-Check properties of H3 cell indexes stored as strings or unsigned 64-bit
-integers
+Get the icosahedron faces intersected by H3 cell indexes stored as
+strings or unsigned 64-bit integers (`UBIGINT`). Each H3 cell maps onto
+one or more of the 20 faces of the underlying icosahedron used to
+construct the H3 grid.
 
 ## Usage
 
 ``` r
-ddbh3_is_pentagon(
+ddbh3_get_icosahedron_faces(
   x,
+  resolution,
   h3 = "h3string",
   conn = NULL,
   name = NULL,
-  new_column = "ispentagon",
-  overwrite = FALSE,
-  quiet = FALSE
-)
-
-ddbh3_is_h3(
-  x,
-  h3 = "h3string",
-  conn = NULL,
-  name = NULL,
-  new_column = "ish3",
-  overwrite = FALSE,
-  quiet = FALSE
-)
-
-ddbh3_is_res_class_iii(
-  x,
-  h3 = "h3string",
-  conn = NULL,
-  name = NULL,
-  new_column = "isclassiii",
-  overwrite = FALSE,
-  quiet = FALSE
-)
-
-ddbh3_is_vertex(
-  x,
-  h3vertex = "h3vertex",
-  conn = NULL,
-  name = NULL,
-  new_column = "isvertex",
+  new_column = "h3faces",
+  nested = FALSE,
   overwrite = FALSE,
   quiet = FALSE
 )
@@ -62,6 +36,11 @@ ddbh3_is_vertex(
   - A character string naming a table/view in `conn`
 
   Data is returned from this object.
+
+- resolution:
+
+  A number specifying the resolution level of the H3 string (between 0
+  and 15)
 
 - h3:
 
@@ -85,6 +64,12 @@ ddbh3_is_vertex(
   Name of the new column to create on the input data. If NULL, the
   function will return a vector with the result
 
+- nested:
+
+  Logical. If `TRUE`, children are returned as a nested list column (one
+  row per parent cell). If `FALSE` (default), the result is unnested so
+  each child cell occupies its own row.
+
 - overwrite:
 
   Boolean. whether to overwrite the existing table if it exists.
@@ -95,33 +80,12 @@ ddbh3_is_vertex(
   A logical value. If `TRUE`, suppresses any informational messages.
   Defaults to `FALSE`.
 
-- h3vertex:
-
-  Name of the column containing H3 vertex strings. Defaults to
-  `"h3vertex"`
-
 ## Value
 
 A `tbl_lazy` if `x` is not spatial, or a `duckspatial_df` if `x` is
 spatial (e.g. `sf` or `duckspatial_df`). Alternatively, it creates a
 table in the connection if `name` is provided, and returns `TRUE`
 invisibly.
-
-## Details
-
-The functions check different properties of H3 cell indexes, all
-returning a logical column:
-
-- `ddbh3_is_pentagon()`: returns `TRUE` if the H3 cell is one of the 12
-  pentagonal cells that exist at each H3 resolution
-
-- `ddbh3_is_h3()`: returns `TRUE` if the H3 cell index is a valid H3
-  cell
-
-- `ddbh3_is_res_class_iii()`: returns `TRUE` if the H3 cell belongs to a
-  Class III resolution (odd resolutions: 1, 3, 5, 7, 9, 11, 13, 15)
-
-- `ddbh3_is_vertex()`: returns `TRUE` if the index is a valid H3 vertex
 
 ## Examples
 

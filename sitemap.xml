@@ -5,14 +5,15 @@
 <url><loc>https://cidree.github.io/duckh3/index.html</loc></url>
 <url><loc>https://cidree.github.io/duckh3/news/index.html</loc></url>
 <url><loc>https://cidree.github.io/duckh3/reference/ddbh3_create_conn.html</loc></url>
-<url><loc>https://cidree.github.io/duckh3/reference/ddbh3_get_children.html</loc></url>
-<url><loc>https://cidree.github.io/duckh3/reference/ddbh3_get_n_children.html</loc></url>
-<url><loc>https://cidree.github.io/duckh3/reference/ddbh3_get_parent.html</loc></url>
+<url><loc>https://cidree.github.io/duckh3/reference/ddbh3_get_child_pos.html</loc></url>
+<url><loc>https://cidree.github.io/duckh3/reference/ddbh3_get_hierarchy.html</loc></url>
+<url><loc>https://cidree.github.io/duckh3/reference/ddbh3_get_icosahedron_faces.html</loc></url>
 <url><loc>https://cidree.github.io/duckh3/reference/ddbh3_get_resolution.html</loc></url>
 <url><loc>https://cidree.github.io/duckh3/reference/ddbh3_h3_to.html</loc></url>
 <url><loc>https://cidree.github.io/duckh3/reference/ddbh3_is.html</loc></url>
 <url><loc>https://cidree.github.io/duckh3/reference/ddbh3_lonlat_to.html</loc></url>
 <url><loc>https://cidree.github.io/duckh3/reference/ddbh3_points_to.html</loc></url>
+<url><loc>https://cidree.github.io/duckh3/reference/ddbh3_vertex.html</loc></url>
 <url><loc>https://cidree.github.io/duckh3/reference/index.html</loc></url>
 </urlset>
 

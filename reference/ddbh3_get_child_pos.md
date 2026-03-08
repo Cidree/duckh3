@@ -1,47 +1,20 @@
-# Check properties of H3 cell indexes
+# Get the position of an H3 cell within its parent
 
-Check properties of H3 cell indexes stored as strings or unsigned 64-bit
-integers
+Get the position of H3 cell indexes stored as strings or unsigned 64-bit
+integers (`UBIGINT`) within their parent cell at a specified resolution.
+The position is a zero-based index among all children of the parent
+cell.
 
 ## Usage
 
 ``` r
-ddbh3_is_pentagon(
+ddbh3_get_child_pos(
   x,
+  resolution,
   h3 = "h3string",
   conn = NULL,
   name = NULL,
-  new_column = "ispentagon",
-  overwrite = FALSE,
-  quiet = FALSE
-)
-
-ddbh3_is_h3(
-  x,
-  h3 = "h3string",
-  conn = NULL,
-  name = NULL,
-  new_column = "ish3",
-  overwrite = FALSE,
-  quiet = FALSE
-)
-
-ddbh3_is_res_class_iii(
-  x,
-  h3 = "h3string",
-  conn = NULL,
-  name = NULL,
-  new_column = "isclassiii",
-  overwrite = FALSE,
-  quiet = FALSE
-)
-
-ddbh3_is_vertex(
-  x,
-  h3vertex = "h3vertex",
-  conn = NULL,
-  name = NULL,
-  new_column = "isvertex",
+  new_column = "h3child_pos",
   overwrite = FALSE,
   quiet = FALSE
 )
@@ -62,6 +35,11 @@ ddbh3_is_vertex(
   - A character string naming a table/view in `conn`
 
   Data is returned from this object.
+
+- resolution:
+
+  A number specifying the resolution level of the H3 string (between 0
+  and 15)
 
 - h3:
 
@@ -95,33 +73,12 @@ ddbh3_is_vertex(
   A logical value. If `TRUE`, suppresses any informational messages.
   Defaults to `FALSE`.
 
-- h3vertex:
-
-  Name of the column containing H3 vertex strings. Defaults to
-  `"h3vertex"`
-
 ## Value
 
 A `tbl_lazy` if `x` is not spatial, or a `duckspatial_df` if `x` is
 spatial (e.g. `sf` or `duckspatial_df`). Alternatively, it creates a
 table in the connection if `name` is provided, and returns `TRUE`
 invisibly.
-
-## Details
-
-The functions check different properties of H3 cell indexes, all
-returning a logical column:
-
-- `ddbh3_is_pentagon()`: returns `TRUE` if the H3 cell is one of the 12
-  pentagonal cells that exist at each H3 resolution
-
-- `ddbh3_is_h3()`: returns `TRUE` if the H3 cell index is a valid H3
-  cell
-
-- `ddbh3_is_res_class_iii()`: returns `TRUE` if the H3 cell belongs to a
-  Class III resolution (odd resolutions: 1, 3, 5, 7, 9, 11, 13, 15)
-
-- `ddbh3_is_vertex()`: returns `TRUE` if the index is a valid H3 vertex
 
 ## Examples
 

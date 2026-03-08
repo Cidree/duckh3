@@ -1,47 +1,58 @@
-# Check properties of H3 cell indexes
+# Convert H3 cell indexes to vertex representations
 
-Check properties of H3 cell indexes stored as strings or unsigned 64-bit
-integers
+Convert H3 cell indexes stored as strings or unsigned 64-bit integers
+(`UBIGINT`) to their vertex representations
 
 ## Usage
 
 ``` r
-ddbh3_is_pentagon(
+ddbh3_h3_to_vertex(
   x,
   h3 = "h3string",
+  n = 0,
   conn = NULL,
   name = NULL,
-  new_column = "ispentagon",
+  new_column = "h3vertex",
   overwrite = FALSE,
   quiet = FALSE
 )
 
-ddbh3_is_h3(
-  x,
-  h3 = "h3string",
-  conn = NULL,
-  name = NULL,
-  new_column = "ish3",
-  overwrite = FALSE,
-  quiet = FALSE
-)
-
-ddbh3_is_res_class_iii(
-  x,
-  h3 = "h3string",
-  conn = NULL,
-  name = NULL,
-  new_column = "isclassiii",
-  overwrite = FALSE,
-  quiet = FALSE
-)
-
-ddbh3_is_vertex(
+ddbh3_vertex_to_lon(
   x,
   h3vertex = "h3vertex",
   conn = NULL,
   name = NULL,
-  new_column = "isvertex",
+  new_column = "lon_vertex",
+  overwrite = FALSE,
+  quiet = FALSE
+)
+
+ddbh3_vertex_to_lat(
+  x,
+  h3vertex = "h3vertex",
+  conn = NULL,
+  name = NULL,
+  new_column = "lon_vertex",
+  overwrite = FALSE,
+  quiet = FALSE
+)
+
+ddbh3_h3_to_vertexes(
+  x,
+  h3 = "h3string",
+  conn = NULL,
+  name = NULL,
+  new_column = "h3vertex",
+  nested = FALSE,
+  overwrite = FALSE,
+  quiet = FALSE
+)
+
+ddbh3_vertex_to_spatial(
+  x,
+  h3vertex = "h3vertex",
+  conn = NULL,
+  name = NULL,
   overwrite = FALSE,
   quiet = FALSE
 )
@@ -67,6 +78,11 @@ ddbh3_is_vertex(
 
   The name of a column in `x` containing the H3 strings or H3 unsigned
   64-bit integers (`UBIGINT`)
+
+- n:
+
+  Integer. Vertex number to retrieve. Must be in the range 0–5 for
+  hexagons and 0–4 for pentagons. Only used in `ddbh3_h3_to_vertex()`.
 
 - conn:
 
@@ -100,6 +116,12 @@ ddbh3_is_vertex(
   Name of the column containing H3 vertex strings. Defaults to
   `"h3vertex"`
 
+- nested:
+
+  Logical. If `TRUE`, children are returned as a nested list column (one
+  row per parent cell). If `FALSE` (default), the result is unnested so
+  each child cell occupies its own row.
+
 ## Value
 
 A `tbl_lazy` if `x` is not spatial, or a `duckspatial_df` if `x` is
@@ -109,19 +131,24 @@ invisibly.
 
 ## Details
 
-The functions check different properties of H3 cell indexes, all
-returning a logical column:
+The functions cover the full vertex workflow:
 
-- `ddbh3_is_pentagon()`: returns `TRUE` if the H3 cell is one of the 12
-  pentagonal cells that exist at each H3 resolution
+- `ddbh3_h3_to_vertex()` returns a single vertex of an H3 cell,
+  identified by its vertex number `n` (0–5 for hexagons, 0–4 for
+  pentagons), as an H3 vertex string
 
-- `ddbh3_is_h3()`: returns `TRUE` if the H3 cell index is a valid H3
+- `ddbh3_h3_to_vertexes()` returns all vertices of an H3 cell as H3
+  vertex strings — either nested (one row per cell) or unnested (one row
+  per vertex) depending on `nested`
+
+- `ddbh3_vertex_to_lat()` returns the latitude of an H3 vertex string
+
+- `ddbh3_vertex_to_lon()` returns the longitude of an H3 vertex string
+
+- `ddbh3_vertex_to_spatial()` converts H3 vertex strings to spatial
+  point geometries. If the input column is nested, vertices are
+  automatically unnested and aggregated into a `MULTIPOINT` geometry per
   cell
-
-- `ddbh3_is_res_class_iii()`: returns `TRUE` if the H3 cell belongs to a
-  Class III resolution (odd resolutions: 1, 3, 5, 7, 9, 11, 13, 15)
-
-- `ddbh3_is_vertex()`: returns `TRUE` if the index is a valid H3 vertex
 
 ## Examples
 
