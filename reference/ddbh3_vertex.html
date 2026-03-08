@@ -181,7 +181,7 @@
 <span>  h3vertex <span class="op">=</span> <span class="st">"h3vertex"</span>,</span>
 <span>  conn <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  name <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  new_column <span class="op">=</span> <span class="st">"lon_vertex"</span>,</span>
+<span>  new_column <span class="op">=</span> <span class="st">"lat_vertex"</span>,</span>
 <span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  quiet <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
@@ -291,7 +291,61 @@ unnested and aggregated into a <code>MULTIPOINT</code> geometry per cell</p></li
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="co">## TODO</span></span></span>
+<span class="r-in"><span><span class="co">## Load needed packages</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cidree.github.io/duckh3/">duckh3</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cidree.github.io/duckspatial/" class="external-link">duckspatial</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Load example data</span></span></span>
+<span class="r-in"><span><span class="va">points_tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/example_pts.csv"</span>, package <span class="op">=</span> <span class="st">"duckh3"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Add h3 strings</span></span></span>
+<span class="r-in"><span><span class="va">points_tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="ddbh3_lonlat_to.html">ddbh3_lonlat_to_h3</a></span><span class="op">(</span><span class="va">points_tbl</span>, resolution <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## TO VERTEX ---------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Add second vertex</span></span></span>
+<span class="r-in"><span><span class="va">vertex_2_tbl</span> <span class="op">&lt;-</span> <span class="fu">ddbh3_h3_to_vertex</span><span class="op">(</span><span class="va">points_tbl</span>, n <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Add add vertexes (unnested)</span></span></span>
+<span class="r-in"><span><span class="va">vertexes_tbl</span> <span class="op">&lt;-</span> <span class="fu">ddbh3_h3_to_vertexes</span><span class="op">(</span><span class="va">points_tbl</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Add add vertexes (nested)</span></span></span>
+<span class="r-in"><span><span class="va">vertexes_nested_tbl</span> <span class="op">&lt;-</span> <span class="fu">ddbh3_h3_to_vertexes</span><span class="op">(</span><span class="va">points_tbl</span>, nested <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Add some vertexes with with mutate</span></span></span>
+<span class="r-in"><span><span class="va">points_tbl</span> <span class="op">|&gt;</span> </span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    v1 <span class="op">=</span> <span class="fu">ddbh3_h3_to_vertex</span><span class="op">(</span><span class="va">h3string</span>, <span class="fl">1</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    v3 <span class="op">=</span> <span class="fu">ddbh3_h3_to_vertex</span><span class="op">(</span><span class="va">h3string</span>, <span class="fl">3</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## VERTEX TO LON/LAT ------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Add coords</span></span></span>
+<span class="r-in"><span><span class="va">coords_vertex_tbl</span> <span class="op">&lt;-</span> <span class="va">vertex_2_tbl</span> <span class="op">|&gt;</span> </span></span>
+<span class="r-in"><span>  <span class="fu">ddbh3_vertex_to_lon</span><span class="op">(</span>new_column <span class="op">=</span> <span class="st">"lon_v2"</span><span class="op">)</span> <span class="op">|&gt;</span> </span></span>
+<span class="r-in"><span>  <span class="fu">ddbh3_vertex_to_lat</span><span class="op">(</span>new_column <span class="op">=</span> <span class="st">"lat_v2"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Add coords in mutate</span></span></span>
+<span class="r-in"><span><span class="va">vertex_2_tbl</span> <span class="op">|&gt;</span> </span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    lon_v2 <span class="op">=</span> <span class="fu">ddbh3_vertex_to_lon</span><span class="op">(</span><span class="va">h3vertex</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    lat_v2 <span class="op">=</span> <span class="fu">ddbh3_vertex_to_lat</span><span class="op">(</span><span class="va">h3vertex</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## VERTEX TO SPATIAL ------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Convert unnested vertexes (returns POINTS)</span></span></span>
+<span class="r-in"><span><span class="fu">ddbh3_h3_to_vertexes</span><span class="op">(</span><span class="va">points_tbl</span><span class="op">)</span> <span class="op">|&gt;</span> </span></span>
+<span class="r-in"><span>  <span class="fu">ddbh3_vertex_to_spatial</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Convert nested vertexes (returns MULTIPOINTS)</span></span></span>
+<span class="r-in"><span><span class="fu">ddbh3_h3_to_vertexes</span><span class="op">(</span><span class="va">points_tbl</span>, nested <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span> </span></span>
+<span class="r-in"><span>  <span class="fu">ddbh3_vertex_to_spatial</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

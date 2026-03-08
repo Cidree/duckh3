@@ -160,8 +160,8 @@ The position is a zero-based index among all children of the parent cell.</p>
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ddbh3_get_child_pos</span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
-<span>  <span class="va">resolution</span>,</span>
 <span>  h3 <span class="op">=</span> <span class="st">"h3string"</span>,</span>
+<span>  resolution <span class="op">=</span> <span class="fl">8</span>,</span>
 <span>  conn <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  name <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  new_column <span class="op">=</span> <span class="st">"h3child_pos"</span>,</span>
@@ -182,14 +182,14 @@ The position is a zero-based index among all children of the parent cell.</p>
 </ul><p>Data is returned from this object.</p></dd>
 
 
-<dt id="arg-resolution">resolution<a class="anchor" aria-label="anchor" href="#arg-resolution"></a></dt>
-<dd><p>A number specifying the resolution level of the H3
-string (between 0 and 15)</p></dd>
-
-
 <dt id="arg-h-">h3<a class="anchor" aria-label="anchor" href="#arg-h-"></a></dt>
 <dd><p>The name of a column in <code>x</code> containing the H3 strings or
 H3 unsigned 64-bit integers (<code>UBIGINT</code>)</p></dd>
+
+
+<dt id="arg-resolution">resolution<a class="anchor" aria-label="anchor" href="#arg-resolution"></a></dt>
+<dd><p>A number specifying the resolution level of the H3
+string (between 0 and 15)</p></dd>
 
 
 <dt id="arg-conn">conn<a class="anchor" aria-label="anchor" href="#arg-conn"></a></dt>
@@ -229,7 +229,24 @@ if <code>name</code> is provided, and returns <code>TRUE</code> invisibly.</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="co">## TODO</span></span></span>
+<span class="r-in"><span><span class="co">## Load needed packages</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cidree.github.io/duckh3/">duckh3</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Load example data</span></span></span>
+<span class="r-in"><span><span class="va">points_tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/example_pts.csv"</span>, package <span class="op">=</span> <span class="st">"duckh3"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Add H3 string column</span></span></span>
+<span class="r-in"><span><span class="va">points_tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="ddbh3_lonlat_to.html">ddbh3_lonlat_to_h3</a></span><span class="op">(</span><span class="va">points_tbl</span>, resolution <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Get position relative to resolution 4</span></span></span>
+<span class="r-in"><span><span class="fu">ddbh3_get_child_pos</span><span class="op">(</span><span class="va">points_tbl</span>, resolution <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Add using mutate</span></span></span>
+<span class="r-in"><span><span class="va">points_tbl</span> <span class="op">|&gt;</span> </span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>child_pos <span class="op">=</span> <span class="fu">ddbh3_get_child_pos</span><span class="op">(</span><span class="va">h3string</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

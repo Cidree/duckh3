@@ -265,7 +265,59 @@ Class III resolution (odd resolutions: 1, 3, 5, 7, 9, 11, 13, 15)</p></li>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="co">## TODO</span></span></span>
+<span class="r-in"><span><span class="co">## Load needed packages</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cidree.github.io/duckh3/">duckh3</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Load example data</span></span></span>
+<span class="r-in"><span><span class="va">points_tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/example_pts.csv"</span>, package <span class="op">=</span> <span class="st">"duckh3"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Add h3 strings</span></span></span>
+<span class="r-in"><span><span class="va">points_tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="ddbh3_lonlat_to.html">ddbh3_lonlat_to_h3</a></span><span class="op">(</span><span class="va">points_tbl</span>, resolution <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## IS VALID H3 -------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Check if h3 indexes are valid</span></span></span>
+<span class="r-in"><span><span class="fu">ddbh3_is_h3</span><span class="op">(</span><span class="va">points_tbl</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Check in mutate</span></span></span>
+<span class="r-in"><span><span class="va">points_tbl</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>valid <span class="op">=</span> <span class="fu">ddbh3_is_h3</span><span class="op">(</span><span class="va">h3string</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## IS PENTAGON -------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Check if h3 indexes are pentagons</span></span></span>
+<span class="r-in"><span><span class="fu">ddbh3_is_pentagon</span><span class="op">(</span><span class="va">points_tbl</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Check in mutate</span></span></span>
+<span class="r-in"><span><span class="va">points_tbl</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>is_pent <span class="op">=</span> <span class="fu">ddbh3_is_pentagon</span><span class="op">(</span><span class="va">h3string</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## IS CLASS III ------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Check if h3 indexes belong to a Class III resolution</span></span></span>
+<span class="r-in"><span><span class="fu">ddbh3_is_res_class_iii</span><span class="op">(</span><span class="va">points_tbl</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Check across multiple resolutions</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="ddbh3_lonlat_to.html">ddbh3_lonlat_to_h3</a></span><span class="op">(</span><span class="va">points_tbl</span>, resolution <span class="op">=</span> <span class="fl">7</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">ddbh3_is_res_class_iii</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## IS VERTEX ---------------</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Get vertexes first</span></span></span>
+<span class="r-in"><span><span class="va">vertex_tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="ddbh3_vertex.html">ddbh3_h3_to_vertex</a></span><span class="op">(</span><span class="va">points_tbl</span>, n <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Check if indexes are valid vertexes</span></span></span>
+<span class="r-in"><span><span class="fu">ddbh3_is_vertex</span><span class="op">(</span><span class="va">vertex_tbl</span>, h3 <span class="op">=</span> <span class="st">"h3vertex"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Check in mutate (mix of h3 cells and vertexes)</span></span></span>
+<span class="r-in"><span><span class="va">vertex_tbl</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    cell_valid  <span class="op">=</span> <span class="fu">ddbh3_is_h3</span><span class="op">(</span><span class="va">h3string</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    vertex_valid <span class="op">=</span> <span class="fu">ddbh3_is_vertex</span><span class="op">(</span><span class="va">h3vertex</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>

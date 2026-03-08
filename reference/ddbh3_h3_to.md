@@ -158,6 +158,13 @@ points_coords_2_tbl <- points_tbl |>
   ddbh3_h3_to_lat(new_column = "latitude") |> 
   ddbh3_h3_to_lon(new_column = "longitude")
 
+## Add using mutate
+points_tbl |> 
+  mutate(
+    lon = ddbh3_h3_to_lon(h3string),
+    lat = ddbh3_h3_to_lat(h3string)
+  )
+
 ## TO SPATIAL -----------------
 
 ## Convert h3 strings to spatial polygons
@@ -175,6 +182,10 @@ points_bigint_tbl <- ddbh3_strings_to_bigint(
 ) |> 
   select(-h3string)
 
+## Add using mutate
+points_tbl |> 
+  mutate(h3int = ddbh3_strings_to_bigint(h3string))
+
 ## FROM UBIGINT TO STRING -----
 
 ## Add column with strings
@@ -182,5 +193,10 @@ points_strings_tbl <- ddbh3_bigint_to_strings(
   points_bigint_tbl, 
   h3 = "h3_integers"
 ) 
+
+## Add using mutate
+points_bigint_tbl |> 
+  mutate(h3string = ddbh3_bigint_to_strings(h3_integers))
+
 } # }
 ```

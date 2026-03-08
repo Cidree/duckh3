@@ -26,7 +26,7 @@ Converts from/to different H3 representations
 
 ## H3 hierarchy
 
-Work with H3 resolutions and parent/child cells
+Work with H3 resolutions and hierarchy levels
 
 - [`ddbh3_get_resolution()`](https://cidree.github.io/duckh3/reference/ddbh3_get_resolution.md)
   : Get the resolution of H3 cell indexes
