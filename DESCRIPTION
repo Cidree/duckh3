@@ -34,6 +34,8 @@ License: GPL (>= 3)
 Imports:
     cli,
     DBI,
+    dbplyr,
+    dplyr,
     duckspatial (>= 0.9.0.9000),
     glue
 VignetteBuilder: quarto
