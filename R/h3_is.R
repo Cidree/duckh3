@@ -29,7 +29,59 @@
 #'
 #' @examples
 #' \dontrun{
-#' ## TODO
+#' ## Load needed packages
+#' library(duckh3)
+#' library(dplyr)
+#' 
+#' ## Load example data
+#' points_tbl <- read.csv(
+#'   system.file("extdata/example_pts.csv", package = "duckh3")
+#' )
+#' 
+#' ## Add h3 strings
+#' points_tbl <- ddbh3_lonlat_to_h3(points_tbl, resolution = 8)
+#' 
+#' ## IS VALID H3 -------------
+#' 
+#' ## Check if h3 indexes are valid
+#' ddbh3_is_h3(points_tbl)
+#' 
+#' ## Check in mutate
+#' points_tbl |>
+#'   mutate(valid = ddbh3_is_h3(h3string))
+#' 
+#' ## IS PENTAGON -------------
+#' 
+#' ## Check if h3 indexes are pentagons
+#' ddbh3_is_pentagon(points_tbl)
+#' 
+#' ## Check in mutate
+#' points_tbl |>
+#'   mutate(is_pent = ddbh3_is_pentagon(h3string))
+#' 
+#' ## IS CLASS III ------------
+#' 
+#' ## Check if h3 indexes belong to a Class III resolution
+#' ddbh3_is_res_class_iii(points_tbl)
+#' 
+#' ## Check across multiple resolutions
+#' ddbh3_lonlat_to_h3(points_tbl, resolution = 7) |>
+#'   ddbh3_is_res_class_iii()
+#' 
+#' ## IS VERTEX ---------------
+#' 
+#' ## Get vertexes first
+#' vertex_tbl <- ddbh3_h3_to_vertex(points_tbl, n = 1)
+#' 
+#' ## Check if indexes are valid vertexes
+#' ddbh3_is_vertex(vertex_tbl, h3 = "h3vertex")
+#' 
+#' ## Check in mutate (mix of h3 cells and vertexes)
+#' vertex_tbl |>
+#'   mutate(
+#'     cell_valid  = ddbh3_is_h3(h3string),
+#'     vertex_valid = ddbh3_is_vertex(h3vertex)
+#'   )
 #' }
 NULL
 
@@ -51,12 +103,9 @@ ddbh3_is_pentagon <- function(
   
   # 0. Handle function-specific errors
   duckspatial:::assert_character_scalar(h3, "h3")
-  duckspatial:::assert_character_scalar(new_column, "new_column")
-
 
   # 1. Build parameters string
   built_fun <- glue::glue("h3_is_pentagon({h3})")
-
 
   # 2. Pass to template
   template_h3_base(
@@ -86,15 +135,11 @@ ddbh3_is_h3 <- function(
     quiet = FALSE
 ) {
   
-  
   # 0. Handle function-specific errors
   duckspatial:::assert_character_scalar(h3, "h3")
-  duckspatial:::assert_character_scalar(new_column, "new_column")
-
 
   # 1. Build parameters string
   built_fun <- glue::glue("h3_is_valid_cell({h3})")
-
 
   # 2. Pass to template
   template_h3_base(
@@ -123,17 +168,13 @@ ddbh3_is_res_class_iii <- function(
     new_column = "isclassiii",
     overwrite = FALSE,
     quiet = FALSE
-) {
-  
+) {  
   
   # 0. Handle function-specific errors
   duckspatial:::assert_character_scalar(h3, "h3")
-  duckspatial:::assert_character_scalar(new_column, "new_column")
-
 
   # 1. Build parameters string
   built_fun <- glue::glue("h3_is_res_class_iii({h3})")
-
 
   # 2. Pass to template
   template_h3_base(
@@ -163,15 +204,11 @@ ddbh3_is_vertex <- function(
     quiet = FALSE
 ) {
   
-  
   # 0. Handle function-specific errors
   duckspatial:::assert_character_scalar(h3vertex, "h3vertex")
-  duckspatial:::assert_character_scalar(new_column, "new_column")
-
 
   # 1. Build parameters string
   built_fun <- glue::glue("h3_is_valid_vertex({h3vertex})")
-
 
   # 2. Pass to template
   template_h3_base(

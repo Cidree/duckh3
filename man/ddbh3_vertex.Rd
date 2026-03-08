@@ -35,7 +35,7 @@ ddbh3_vertex_to_lat(
   h3vertex = "h3vertex",
   conn = NULL,
   name = NULL,
-  new_column = "lon_vertex",
+  new_column = "lat_vertex",
   overwrite = FALSE,
   quiet = FALSE
 )
@@ -127,6 +127,60 @@ unnested and aggregated into a \code{MULTIPOINT} geometry per cell
 }
 \examples{
 \dontrun{
-## TODO
+## Load needed packages
+library(duckh3)
+library(duckspatial)
+library(dplyr)
+
+## Load example data
+points_tbl <- read.csv(
+  system.file("extdata/example_pts.csv", package = "duckh3")
+)
+
+## Add h3 strings
+points_tbl <- ddbh3_lonlat_to_h3(points_tbl, resolution = 8)
+
+## TO VERTEX ---------------
+
+## Add second vertex
+vertex_2_tbl <- ddbh3_h3_to_vertex(points_tbl, n = 2)
+
+## Add add vertexes (unnested)
+vertexes_tbl <- ddbh3_h3_to_vertexes(points_tbl)
+
+## Add add vertexes (nested)
+vertexes_nested_tbl <- ddbh3_h3_to_vertexes(points_tbl, nested = TRUE)
+
+## Add some vertexes with with mutate
+points_tbl |> 
+  mutate(
+    v1 = ddbh3_h3_to_vertex(h3string, 1),
+    v3 = ddbh3_h3_to_vertex(h3string, 3)
+  )
+
+## VERTEX TO LON/LAT ------
+
+## Add coords
+coords_vertex_tbl <- vertex_2_tbl |> 
+  ddbh3_vertex_to_lon(new_column = "lon_v2") |> 
+  ddbh3_vertex_to_lat(new_column = "lat_v2")
+
+## Add coords in mutate
+vertex_2_tbl |> 
+  mutate(
+    lon_v2 = ddbh3_vertex_to_lon(h3vertex),
+    lat_v2 = ddbh3_vertex_to_lat(h3vertex)
+  )
+
+## VERTEX TO SPATIAL ------
+
+## Convert unnested vertexes (returns POINTS)
+ddbh3_h3_to_vertexes(points_tbl) |> 
+  ddbh3_vertex_to_spatial()
+
+
+## Convert nested vertexes (returns MULTIPOINTS)
+ddbh3_h3_to_vertexes(points_tbl, nested = TRUE) |> 
+  ddbh3_vertex_to_spatial()
 }
 }

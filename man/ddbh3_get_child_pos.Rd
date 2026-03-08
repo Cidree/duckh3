@@ -6,8 +6,8 @@
 \usage{
 ddbh3_get_child_pos(
   x,
-  resolution,
   h3 = "h3string",
+  resolution = 8,
   conn = NULL,
   name = NULL,
   new_column = "h3child_pos",
@@ -25,11 +25,11 @@ ddbh3_get_child_pos(
 }
 Data is returned from this object.}
 
-\item{resolution}{A number specifying the resolution level of the H3
-string (between 0 and 15)}
-
 \item{h3}{The name of a column in \code{x} containing the H3 strings or
 H3 unsigned 64-bit integers (\code{UBIGINT})}
+
+\item{resolution}{A number specifying the resolution level of the H3
+string (between 0 and 15)}
 
 \item{conn}{A connection object to a DuckDB database. If \code{NULL}, the function
 runs on a temporary DuckDB database.}
@@ -60,6 +60,23 @@ The position is a zero-based index among all children of the parent cell.
 }
 \examples{
 \dontrun{
-## TODO
+## Load needed packages
+library(duckh3)
+library(dplyr)
+
+## Load example data
+points_tbl <- read.csv(
+  system.file("extdata/example_pts.csv", package = "duckh3")
+)
+
+## Add H3 string column
+points_tbl <- ddbh3_lonlat_to_h3(points_tbl, resolution = 6)
+
+## Get position relative to resolution 4
+ddbh3_get_child_pos(points_tbl, resolution = 4)
+
+## Add using mutate
+points_tbl |> 
+  mutate(child_pos = ddbh3_get_child_pos(h3string, 4))
 }
 }

@@ -6,7 +6,6 @@
 \usage{
 ddbh3_get_icosahedron_faces(
   x,
-  resolution,
   h3 = "h3string",
   conn = NULL,
   name = NULL,
@@ -25,9 +24,6 @@ ddbh3_get_icosahedron_faces(
 \item A character string naming a table/view in \code{conn}
 }
 Data is returned from this object.}
-
-\item{resolution}{A number specifying the resolution level of the H3
-string (between 0 and 15)}
 
 \item{h3}{The name of a column in \code{x} containing the H3 strings or
 H3 unsigned 64-bit integers (\code{UBIGINT})}
@@ -65,6 +61,31 @@ of the 20 faces of the underlying icosahedron used to construct the H3 grid.
 }
 \examples{
 \dontrun{
-## TODO
+## Load needed packages
+library(duckh3)
+library(dplyr)
+
+## Load example data
+points_tbl <- read.csv(
+  system.file("extdata/example_pts.csv", package = "duckh3")
+)
+
+## Add H3 string column
+points_tbl <- ddbh3_lonlat_to_h3(points_tbl, resolution = 6)
+
+## Get faces (unnested)
+faces_tbl <- ddbh3_get_icosahedron_faces(points_tbl)
+
+## Get faces (nested)
+faces_nested_tbl <- ddbh3_get_icosahedron_faces(points_tbl, nested = TRUE)
+
+## Add using mutate (nested)
+points_tbl |> 
+  mutate(faces = ddbh3_get_icosahedron_faces(h3string))
+
+## Add using mutate (unnested)
+points_tbl |> 
+  mutate(faces = ddbh3_get_icosahedron_faces(h3string)) |> 
+  mutate(faces_unnested = unnest(faces))
 }
 }

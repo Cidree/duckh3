@@ -10,8 +10,8 @@
 \usage{
 ddbh3_get_parent(
   x,
-  resolution,
   h3 = "h3string",
+  resolution = 8,
   conn = NULL,
   name = NULL,
   new_column = "h3parent",
@@ -21,8 +21,8 @@ ddbh3_get_parent(
 
 ddbh3_get_children(
   x,
-  resolution,
   h3 = "h3string",
+  resolution = 8,
   conn = NULL,
   name = NULL,
   new_column = "h3children",
@@ -33,8 +33,8 @@ ddbh3_get_children(
 
 ddbh3_get_n_children(
   x,
-  resolution,
   h3 = "h3string",
+  resolution = 8,
   conn = NULL,
   name = NULL,
   new_column = "h3n_children",
@@ -44,8 +44,8 @@ ddbh3_get_n_children(
 
 ddbh3_get_center_child(
   x,
-  resolution,
   h3 = "h3string",
+  resolution = 8,
   conn = NULL,
   name = NULL,
   new_column = "h3center_child",
@@ -63,11 +63,11 @@ ddbh3_get_center_child(
 }
 Data is returned from this object.}
 
-\item{resolution}{A number specifying the resolution level of the H3
-string (between 0 and 15)}
-
 \item{h3}{The name of a column in \code{x} containing the H3 strings or
 H3 unsigned 64-bit integers (\code{UBIGINT})}
+
+\item{resolution}{A number specifying the resolution level of the H3
+string (between 0 and 15)}
 
 \item{conn}{A connection object to a DuckDB database. If \code{NULL}, the function
 runs on a temporary DuckDB database.}
@@ -115,6 +115,7 @@ resolution, without computing them
 \dontrun{
 ## Load needed packages
 library(duckh3)
+library(dplyr)
 
 ## Load example data
 points_tbl <- read.csv(
@@ -127,7 +128,7 @@ points_tbl <- ddbh3_lonlat_to_h3(points_tbl, resolution = 8)
 ## GET PARENTS ----------
 
 ## Get resolution-7 parent
-points_parent_tbl <- ddbh3_get_parent(points_tbl, 7)
+points_parent_tbl <- ddbh3_get_parent(points_tbl, resolution = 7)
 
 ## Check the resolution
 ddbh3_get_resolution(
@@ -135,23 +136,44 @@ ddbh3_get_resolution(
   h3 = "h3parent"
 )
 
+## Add with mutate
+points_tbl |> 
+  mutate(parent4 = ddbh3_get_parent(h3string, 4))
+
 ## GET CHILDREN ----------
 
 ## Get level 9 children
-children_9_tbl <- ddbh3_get_children(points_tbl, 9)
+children_9_tbl <- ddbh3_get_children(points_tbl, resolution = 9)
 
 ## Get level 9 children in a nested list
-children_9_nested_tbl <- ddbh3_get_children(points_tbl, 9, nested = TRUE)
+children_9_nested_tbl <- ddbh3_get_children(points_tbl, resolution = 9, nested = TRUE)
+
+## Add with mutate (nested)
+points_tbl |> 
+  mutate(children9 = ddbh3_get_children(h3string, 9))
+
+## Add with mutate (unnested)
+points_tbl |> 
+  mutate(children9 = ddbh3_get_children(h3string, 9)) |> 
+  mutate(children9 = unnest(children9))
 
 ## GET CENTER CHILD ------
 
 ## Get the center child of res 10 (1 child per row)
-center_child_10_tbl <- ddbh3_get_center_child(points_tbl, 10)
+center_child_10_tbl <- ddbh3_get_center_child(points_tbl, resolution = 10)
+
+## Add with mutate
+points_tbl |> 
+  mutate(center = ddbh3_get_center_child(h3string, 9))
 
 ## NUMBER OF CHILDREN -----
 
 ## How many children of level 10 does each level 8 have?
-n_children_tbl <- ddbh3_get_n_children(points_tbl, 10)
+n_children_tbl <- ddbh3_get_n_children(points_tbl, resolution = 10)
+
+## Add with mutate
+points_tbl |> 
+  mutate(n_children = ddbh3_get_n_children(h3string, 15))
 
 }
 }

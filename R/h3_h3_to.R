@@ -55,6 +55,13 @@
 #'   ddbh3_h3_to_lat(new_column = "latitude") |> 
 #'   ddbh3_h3_to_lon(new_column = "longitude")
 #' 
+#' ## Add using mutate
+#' points_tbl |> 
+#'   mutate(
+#'     lon = ddbh3_h3_to_lon(h3string),
+#'     lat = ddbh3_h3_to_lat(h3string)
+#'   )
+#' 
 #' ## TO SPATIAL -----------------
 #' 
 #' ## Convert h3 strings to spatial polygons
@@ -72,6 +79,10 @@
 #' ) |> 
 #'   select(-h3string)
 #' 
+#' ## Add using mutate
+#' points_tbl |> 
+#'   mutate(h3int = ddbh3_strings_to_bigint(h3string))
+#' 
 #' ## FROM UBIGINT TO STRING -----
 #' 
 #' ## Add column with strings
@@ -79,6 +90,11 @@
 #'   points_bigint_tbl, 
 #'   h3 = "h3_integers"
 #' ) 
+#' 
+#' ## Add using mutate
+#' points_bigint_tbl |> 
+#'   mutate(h3string = ddbh3_bigint_to_strings(h3_integers))
+#' 
 #' }
 NULL
 
@@ -101,12 +117,9 @@ ddbh3_h3_to_lon <- function(
   
   # 0. Handle function-specific errors
   duckspatial:::assert_character_scalar(h3, "h3")
-  duckspatial:::assert_character_scalar(new_column, "new_column")
-
 
   # 1. Build parameters string
   built_fun <- glue::glue("h3_cell_to_lng({h3})")
-
 
   # 2. Pass to template
   template_h3_base(
@@ -140,13 +153,10 @@ ddbh3_h3_to_lat <- function(
   
   # 0. Handle function-specific errors
   duckspatial:::assert_character_scalar(h3, "h3")
-  duckspatial:::assert_character_scalar(new_column, "new_column")
-
 
   # 1. Build parameters string
   built_fun <- glue::glue("h3_cell_to_lat({h3})")
 
-  
   # 2. Pass to template
   template_h3_base(
     x = x,
@@ -216,7 +226,6 @@ ddbh3_strings_to_bigint <- function(
 
   # 0. Handle function-specific errors
   duckspatial:::assert_character_scalar(h3, "h3")
-  duckspatial:::assert_character_scalar(new_column, "new_column")
 
   # 1. Build parameters string
   built_fun <- glue::glue("h3_string_to_h3({h3})")
@@ -251,7 +260,6 @@ ddbh3_bigint_to_strings <- function(
 
   # 0. Handle function-specific errors
   duckspatial:::assert_character_scalar(h3, "h3")
-  duckspatial:::assert_character_scalar(new_column, "new_column")
 
   # 1. Build parameters string
   built_fun <- glue::glue("h3_h3_to_string({h3})")

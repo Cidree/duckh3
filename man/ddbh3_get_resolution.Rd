@@ -58,6 +58,7 @@ integers (\code{UBIGINT}) from an existing column.
 ## Load needed packages
 library(duckh3)
 library(duckspatial)
+library(dplyr)
 
 ## Load example data
 points_tbl <- read.csv(
@@ -73,5 +74,9 @@ points_ddbs <- ddbs_as_spatial(points_tbl)
 ## Get resolution of the h3 strings
 ddbh3_get_resolution(points_tbl)
 ddbh3_get_resolution(points_ddbs, new_column = "res")
+
+## Add using mutate
+points_tbl |> 
+  mutate(res = ddbh3_get_resolution(h3string))
 }
 }

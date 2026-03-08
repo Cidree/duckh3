@@ -183,7 +183,7 @@ reference:
   - ddbh3_points_to
 
 - title: H3 hierarchy
-  desc: Work with H3 resolutions and parent/child cells
+  desc: Work with H3 resolutions and hierarchy levels
   contents:
   - ddbh3_get_resolution
   - ddbh3_get_child_pos
