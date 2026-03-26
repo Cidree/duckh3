@@ -43,6 +43,7 @@ Config/testthat/edition: 3
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 Suggests: 
-    quarto
+    quarto,
+    testthat (>= 3.0.0)
 Remotes: 
     Cidree/duckspatial
