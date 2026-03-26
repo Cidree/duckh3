@@ -38,30 +38,32 @@ template_h3_base <- function(
 
 
   # 1. Prepare inputs
+
+  ## 1.1. Pre-extract CRS  
+  sf_col_x <- attr(x, "sf_column")
   
-  ## 1.1. Normalize inputs (coerce tbl_duckdb_connection to duckspatial_df, 
+  ## 1.2. Normalize inputs (coerce tbl_duckdb_connection to duckspatial_df, 
   ## validate character table names)
   x <- suppressWarnings(duckspatial:::normalize_spatial_input(x, conn))
 
-  ## 1.2. Pre-extract attributes
+  ## 1.3. Extract CRS
   crs_x    <- tryCatch(
     suppressWarnings(duckspatial::ddbs_crs(x, conn)), 
     error = function(e) NULL
   )
-  sf_col_x  <- attr(x, "sf_column")
 
-  ## 1.3. Resolve spatial connections and handle imports
+  ## 1.4. Resolve spatial connections and handle imports
   resolve_conn <- duckspatial:::resolve_spatial_connections(x, y = NULL, conn = conn)
   target_conn  <- resolve_conn$conn
   x            <- resolve_conn$x
   ## register cleanup of the connection
   on.exit(resolve_conn$cleanup(), add = TRUE)
 
-  ## 1.4. Get list with query names for the input data
+  ## 1.5. Get list with query names for the input data
   x_list <- duckspatial:::get_query_list(x, target_conn)
   on.exit(x_list$cleanup(), add = TRUE)
 
-  ## 1.5. Install and load h3 on target connection
+  ## 1.6. Install and load h3 on target connection
   ## TODO - add argument in duckspatial:::resolve_spatial_connections() to manage it
   duckspatial::ddbs_install(target_conn, upgrade = FALSE, quiet = TRUE, extension = "h3")
   duckspatial::ddbs_load(target_conn, quiet = TRUE, extension = "h3")
@@ -135,28 +137,31 @@ template_h3_to_spatial <- function(
   duckspatial:::assert_logic(overwrite, "overwrite")
   duckspatial:::assert_logic(quiet, "quiet")
 
-  # 1. Prepare inputs
+  ## 1.1. Pre-extract CRS  
+  sf_col_x <- attr(x, "sf_column")
   
-  ## 1.1. Normalize inputs (coerce tbl_duckdb_connection to duckspatial_df, 
+  ## 1.2. Normalize inputs (coerce tbl_duckdb_connection to duckspatial_df, 
   ## validate character table names)
   x <- suppressWarnings(duckspatial:::normalize_spatial_input(x, conn))
 
-  ## 1.2. Pre-extract attributes
-  crs_x     <- ddbs_crs(x, conn)
-  sf_col_x  <- attr(x, "sf_column")
+  ## 1.3. Extract CRS
+  crs_x    <- tryCatch(
+    suppressWarnings(duckspatial::ddbs_crs(x, conn)), 
+    error = function(e) NULL
+  )
 
-  ## 1.3. Resolve spatial connections and handle imports
+  ## 1.4. Resolve spatial connections and handle imports
   resolve_conn <- duckspatial:::resolve_spatial_connections(x, y = NULL, conn = conn)
   target_conn  <- resolve_conn$conn
   x            <- resolve_conn$x
   ## register cleanup of the connection
   on.exit(resolve_conn$cleanup(), add = TRUE)
 
-  ## 1.4. Get list with query names for the input data
+  ## 1.5. Get list with query names for the input data
   x_list <- duckspatial:::get_query_list(x, target_conn)
   on.exit(x_list$cleanup(), add = TRUE)
 
-  ## 1.5. Install and load h3 on target connection
+  ## 1.6. Install and load h3 on target connection
   duckspatial::ddbs_install(target_conn, upgrade = FALSE, quiet = TRUE, extension = "h3")
   duckspatial::ddbs_load(target_conn, quiet = TRUE, extension = "h3")
 
