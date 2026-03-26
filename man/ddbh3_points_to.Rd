@@ -18,10 +18,10 @@ ddbh3_points_to_spatial(
 ddbh3_points_to_h3(
   x,
   resolution,
-  conn = NULL,
-  name = NULL,
   new_column = "h3string",
   h3_format = "string",
+  conn = NULL,
+  name = NULL,
   overwrite = FALSE,
   quiet = FALSE
 )

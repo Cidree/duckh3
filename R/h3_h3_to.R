@@ -5,9 +5,9 @@
 #'
 #' @template x
 #' @template h3
+#' @template new_column
 #' @template conn_null
 #' @template name
-#' @template new_column
 #' @template overwrite
 #' @template quiet
 #'
@@ -107,9 +107,9 @@ NULL
 ddbh3_h3_to_lon <- function(
     x,
     h3 = "h3string",
+    new_column = "lon",
     conn = NULL,
     name = NULL,
-    new_column = "lon",
     overwrite = FALSE,
     quiet = FALSE
 ) {
@@ -129,7 +129,8 @@ ddbh3_h3_to_lon <- function(
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,
-    fun = built_fun
+    fun = built_fun,
+    base_fun = "h3_cell_to_lng(x)"
   ) 
 
 }
@@ -143,9 +144,9 @@ ddbh3_h3_to_lon <- function(
 ddbh3_h3_to_lat <- function(
     x,
     h3 = "h3string",
+    new_column = "lat",
     conn = NULL,
     name = NULL,
-    new_column = "lat",
     overwrite = FALSE,
     quiet = FALSE
 ) {
@@ -165,7 +166,8 @@ ddbh3_h3_to_lat <- function(
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,
-    fun = built_fun
+    fun = built_fun,
+    base_fun = "h3_cell_to_lat(x)"
   ) 
 
 }
@@ -202,7 +204,8 @@ ddbh3_h3_to_spatial <- function(
     name = name,
     overwrite = overwrite,
     quiet = quiet,
-    fun = built_fun
+    fun = built_fun,
+    base_fun = "ST_GeomFromWKB(h3_cell_to_boundary_wkb(x))"
   ) 
 
 }
@@ -216,9 +219,9 @@ ddbh3_h3_to_spatial <- function(
 ddbh3_strings_to_bigint <- function(
     x,
     h3 = "h3string",
+    new_column = "h3bigint",
     conn = NULL,
     name = NULL,
-    new_column = "h3bigint",
     overwrite = FALSE,
     quiet = FALSE
 ) {
@@ -238,7 +241,8 @@ ddbh3_strings_to_bigint <- function(
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,
-    fun = built_fun
+    fun = built_fun,
+    base_fun = "h3_string_to_h3(x)"
   ) 
 
 }
@@ -250,9 +254,9 @@ ddbh3_strings_to_bigint <- function(
 ddbh3_bigint_to_strings <- function(
     x,
     h3 = "h3bigint",
+    new_column = "h3string",
     conn = NULL,
     name = NULL,
-    new_column = "h3string",
     overwrite = FALSE,
     quiet = FALSE
 ) {
@@ -272,7 +276,8 @@ ddbh3_bigint_to_strings <- function(
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,
-    fun = built_fun
+    fun = built_fun,
+    base_fun = "h3_h3_to_string(x)"
   ) 
 
 }

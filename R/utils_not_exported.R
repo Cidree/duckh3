@@ -92,3 +92,21 @@ check_nested_column <- function(x, column) {
 
   grepl("\\[\\]", col_type)
 }
+
+
+
+get_vectorized_result <- function(x, fun) {
+
+  ## Create a random name
+  view_name <- duckspatial:::ddbs_temp_view_name()
+
+  ## Register the data as a view
+  duckdb::duckdb_register(conn, view_name, data.frame(x = x))
+
+  ## Apply function, and return the pulled vector
+  dplyr::tbl(conn, view_name) |> 
+    dplyr::mutate(res = dbplyr::sql(glue::glue("{fun}"))) |> 
+    dplyr::pull(res)
+
+}
+

@@ -36,7 +36,7 @@ Imports:
     DBI,
     dbplyr,
     dplyr,
-    duckspatial (>= 0.9.0.9000),
+    duckspatial (>= 1.0.0),
     glue
 VignetteBuilder: quarto
 Config/testthat/edition: 3

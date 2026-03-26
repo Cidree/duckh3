@@ -7,11 +7,11 @@
 #' @template lon
 #' @template lat
 #' @template resolution
-#' @template conn_null
-#' @template name
 #' @template new_column
 #' @param h3_format Character. The format of the H3 cell index: `string` or
 #' `bigint`
+#' @template conn_null
+#' @template name
 #' @template overwrite
 #' @template quiet
 #' 
@@ -164,10 +164,10 @@ ddbh3_lonlat_to_h3 <- function(
     lon = "lon",
     lat = "lat",
     resolution = 8,
-    conn = NULL,
-    name = NULL,
     new_column = "h3string",
     h3_format = "string",
+    conn = NULL,
+    name = NULL,
     overwrite = FALSE,
     quiet = FALSE
 ) {

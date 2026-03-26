@@ -9,9 +9,9 @@
 #' @template x
 #' @template h3
 #' @template resolution
+#' @template new_column
 #' @template conn_null
 #' @template name
-#' @template new_column
 #' @template nested
 #' @template overwrite
 #' @template quiet
@@ -105,9 +105,9 @@ ddbh3_get_parent <- function(
     x,
     h3 = "h3string",
     resolution = 8,
+    new_column = "h3parent",
     conn = NULL,
     name = NULL,
-    new_column = "h3parent",
     overwrite = FALSE,
     quiet = FALSE
 ) {
@@ -144,9 +144,9 @@ ddbh3_get_children <- function(
     x,
     h3 = "h3string",
     resolution = 8,
+    new_column = "h3children",
     conn = NULL,
     name = NULL,
-    new_column = "h3children",
     nested = FALSE,
     overwrite = FALSE,
     quiet = FALSE
@@ -188,9 +188,9 @@ ddbh3_get_n_children <- function(
     x,
     h3 = "h3string",
     resolution = 8,
+    new_column = "h3n_children",
     conn = NULL,
     name = NULL,
-    new_column = "h3n_children",
     overwrite = FALSE,
     quiet = FALSE
 ) {
@@ -226,9 +226,9 @@ ddbh3_get_center_child <- function(
     x,
     h3 = "h3string",
     resolution = 8,
+    new_column = "h3center_child",
     conn = NULL,
     name = NULL,
-    new_column = "h3center_child",
     overwrite = FALSE,
     quiet = FALSE
 ) {
@@ -267,9 +267,9 @@ ddbh3_get_center_child <- function(
 #'
 #' @template x
 #' @template h3
+#' @template new_column
 #' @template conn_null
 #' @template name
-#' @template new_column
 #' @template nested
 #' @template overwrite
 #' @template quiet
@@ -309,9 +309,9 @@ ddbh3_get_center_child <- function(
 ddbh3_get_icosahedron_faces <- function(
     x,
     h3 = "h3string",
+    new_column = "h3faces",
     conn = NULL,
     name = NULL,
-    new_column = "h3faces",
     nested = FALSE,
     overwrite = FALSE,
     quiet = FALSE
@@ -354,9 +354,9 @@ ddbh3_get_icosahedron_faces <- function(
 #' @template x
 #' @template h3
 #' @template resolution
+#' @template new_column
 #' @template conn_null
 #' @template name
-#' @template new_column
 #' @template overwrite
 #' @template quiet
 #'
@@ -388,9 +388,9 @@ ddbh3_get_child_pos <- function(
     x,
     h3 = "h3string",
     resolution = 8,
+    new_column = "h3child_pos",
     conn = NULL,
     name = NULL,
-    new_column = "h3child_pos",
     overwrite = FALSE,
     quiet = FALSE
 ) {

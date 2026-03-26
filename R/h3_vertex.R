@@ -9,9 +9,9 @@
 #'   hexagons and 0–4 for pentagons. Only used in `ddbh3_h3_to_vertex()`.
 #' @template h3
 #' @template h3vertex
+#' @template new_column
 #' @template conn_null
 #' @template name
-#' @template new_column
 #' @template nested
 #' @template overwrite
 #' @template quiet
@@ -103,10 +103,10 @@ NULL
 ddbh3_h3_to_vertex <- function(
     x,
     h3 = "h3string",
+    new_column = "h3vertex",
     n = 0,
     conn = NULL,
     name = NULL,
-    new_column = "h3vertex",
     overwrite = FALSE,
     quiet = FALSE
 ) {
@@ -142,9 +142,9 @@ ddbh3_h3_to_vertex <- function(
 ddbh3_vertex_to_lon <- function(
     x,
     h3vertex = "h3vertex",
+    new_column = "lon_vertex",
     conn = NULL,
     name = NULL,
-    new_column = "lon_vertex",
     overwrite = FALSE,
     quiet = FALSE
 ) {
@@ -177,9 +177,9 @@ ddbh3_vertex_to_lon <- function(
 ddbh3_vertex_to_lat <- function(
     x,
     h3vertex = "h3vertex",
+    new_column = "lat_vertex",
     conn = NULL,
     name = NULL,
-    new_column = "lat_vertex",
     overwrite = FALSE,
     quiet = FALSE
 ) {
@@ -212,9 +212,9 @@ ddbh3_vertex_to_lat <- function(
 ddbh3_h3_to_vertexes <- function(
     x,
     h3 = "h3string",
+    new_column = "h3vertex",
     conn = NULL,
     name = NULL,
-    new_column = "h3vertex",
     nested = FALSE,
     overwrite = FALSE,
     quiet = FALSE

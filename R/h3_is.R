@@ -6,9 +6,9 @@
 #' @template x
 #' @template h3
 #' @template h3vertex
+#' @template new_column
 #' @template conn_null
 #' @template name
-#' @template new_column
 #' @template overwrite
 #' @template quiet
 #' 
@@ -93,9 +93,9 @@ NULL
 ddbh3_is_pentagon <- function(
     x,
     h3 = "h3string",
+    new_column = "ispentagon",
     conn = NULL,
     name = NULL,
-    new_column = "ispentagon",
     overwrite = FALSE,
     quiet = FALSE
 ) {
@@ -128,9 +128,9 @@ ddbh3_is_pentagon <- function(
 ddbh3_is_h3 <- function(
     x,
     h3 = "h3string",
+    new_column = "ish3",
     conn = NULL,
     name = NULL,
-    new_column = "ish3",
     overwrite = FALSE,
     quiet = FALSE
 ) {
@@ -163,9 +163,9 @@ ddbh3_is_h3 <- function(
 ddbh3_is_res_class_iii <- function(
     x,
     h3 = "h3string",
+    new_column = "isclassiii",
     conn = NULL,
     name = NULL,
-    new_column = "isclassiii",
     overwrite = FALSE,
     quiet = FALSE
 ) {  
@@ -197,9 +197,9 @@ ddbh3_is_res_class_iii <- function(
 ddbh3_is_vertex <- function(
     x,
     h3vertex = "h3vertex",
+    new_column = "isvertex",
     conn = NULL,
     name = NULL,
-    new_column = "isvertex",
     overwrite = FALSE,
     quiet = FALSE
 ) {

@@ -6,11 +6,11 @@
 #'
 #' @template x
 #' @template resolution
-#' @template conn_null
-#' @template name
 #' @template new_column
 #' @param h3_format Character. Output format for the H3 cell index. Either
 #' `"string"` (default) or `"bigint"`. Only used in `ddbh3_points_to_h3()`.
+#' @template conn_null
+#' @template name
 #' @template overwrite
 #' @template quiet
 #' 
@@ -116,7 +116,7 @@ ddbh3_points_to_spatial <- function(
   on.exit(x_list$cleanup(), add = TRUE)
 
   ## 2.3. Install and load h3 on target connection
-  duckspatial::ddbs_install(target_conn, upgrade = TRUE, quiet = TRUE, extension = "h3", community = TRUE)
+  duckspatial::ddbs_install(target_conn, upgrade = FALSE, quiet = TRUE, extension = "h3")
   duckspatial::ddbs_load(target_conn, quiet = TRUE, extension = "h3")
 
 
@@ -198,10 +198,10 @@ ddbh3_points_to_spatial <- function(
 ddbh3_points_to_h3 <- function(
     x,
     resolution,
-    conn = NULL,
-    name = NULL,
     new_column = "h3string",
     h3_format = "string",
+    conn = NULL,
+    name = NULL,
     overwrite = FALSE,
     quiet = FALSE
 ) {
@@ -246,7 +246,7 @@ ddbh3_points_to_h3 <- function(
   on.exit(x_list$cleanup(), add = TRUE)
 
   ## 2.3. Install and load h3 on target connection
-  duckspatial::ddbs_install(target_conn, upgrade = TRUE, quiet = TRUE, extension = "h3", community = TRUE)
+  duckspatial::ddbs_install(target_conn, upgrade = FALSE, quiet = TRUE, extension = "h3")
   duckspatial::ddbs_load(target_conn, quiet = TRUE, extension = "h3")
 
 

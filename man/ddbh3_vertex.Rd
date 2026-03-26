@@ -12,10 +12,10 @@
 ddbh3_h3_to_vertex(
   x,
   h3 = "h3string",
+  new_column = "h3vertex",
   n = 0,
   conn = NULL,
   name = NULL,
-  new_column = "h3vertex",
   overwrite = FALSE,
   quiet = FALSE
 )
@@ -23,9 +23,9 @@ ddbh3_h3_to_vertex(
 ddbh3_vertex_to_lon(
   x,
   h3vertex = "h3vertex",
+  new_column = "lon_vertex",
   conn = NULL,
   name = NULL,
-  new_column = "lon_vertex",
   overwrite = FALSE,
   quiet = FALSE
 )
@@ -33,9 +33,9 @@ ddbh3_vertex_to_lon(
 ddbh3_vertex_to_lat(
   x,
   h3vertex = "h3vertex",
+  new_column = "lat_vertex",
   conn = NULL,
   name = NULL,
-  new_column = "lat_vertex",
   overwrite = FALSE,
   quiet = FALSE
 )
@@ -43,9 +43,9 @@ ddbh3_vertex_to_lat(
 ddbh3_h3_to_vertexes(
   x,
   h3 = "h3string",
+  new_column = "h3vertex",
   conn = NULL,
   name = NULL,
-  new_column = "h3vertex",
   nested = FALSE,
   overwrite = FALSE,
   quiet = FALSE
@@ -73,6 +73,9 @@ Data is returned from this object.}
 \item{h3}{The name of a column in \code{x} containing the H3 strings or
 H3 unsigned 64-bit integers (\code{UBIGINT})}
 
+\item{new_column}{Name of the new column to create on the input data. If NULL,
+the function will return a vector with the result}
+
 \item{n}{Integer. Vertex number to retrieve. Must be in the range 0–5 for
 hexagons and 0–4 for pentagons. Only used in \code{ddbh3_h3_to_vertex()}.}
 
@@ -83,9 +86,6 @@ runs on a temporary DuckDB database.}
 or a character string of length two specifying the schema and table
 names. If \code{NULL} (the default), the function returns the result as an
 \code{sf} object}
-
-\item{new_column}{Name of the new column to create on the input data. If NULL,
-the function will return a vector with the result}
 
 \item{overwrite}{Boolean. whether to overwrite the existing table if it exists. Defaults
 to \code{FALSE}. This argument is ignored when \code{name} is \code{NULL}.}

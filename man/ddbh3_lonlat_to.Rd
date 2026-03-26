@@ -22,10 +22,10 @@ ddbh3_lonlat_to_h3(
   lon = "lon",
   lat = "lat",
   resolution = 8,
-  conn = NULL,
-  name = NULL,
   new_column = "h3string",
   h3_format = "string",
+  conn = NULL,
+  name = NULL,
   overwrite = FALSE,
   quiet = FALSE
 )

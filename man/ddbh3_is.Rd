@@ -12,9 +12,9 @@
 ddbh3_is_pentagon(
   x,
   h3 = "h3string",
+  new_column = "ispentagon",
   conn = NULL,
   name = NULL,
-  new_column = "ispentagon",
   overwrite = FALSE,
   quiet = FALSE
 )
@@ -22,9 +22,9 @@ ddbh3_is_pentagon(
 ddbh3_is_h3(
   x,
   h3 = "h3string",
+  new_column = "ish3",
   conn = NULL,
   name = NULL,
-  new_column = "ish3",
   overwrite = FALSE,
   quiet = FALSE
 )
@@ -32,9 +32,9 @@ ddbh3_is_h3(
 ddbh3_is_res_class_iii(
   x,
   h3 = "h3string",
+  new_column = "isclassiii",
   conn = NULL,
   name = NULL,
-  new_column = "isclassiii",
   overwrite = FALSE,
   quiet = FALSE
 )
@@ -42,9 +42,9 @@ ddbh3_is_res_class_iii(
 ddbh3_is_vertex(
   x,
   h3vertex = "h3vertex",
+  new_column = "isvertex",
   conn = NULL,
   name = NULL,
-  new_column = "isvertex",
   overwrite = FALSE,
   quiet = FALSE
 )
@@ -62,6 +62,9 @@ Data is returned from this object.}
 \item{h3}{The name of a column in \code{x} containing the H3 strings or
 H3 unsigned 64-bit integers (\code{UBIGINT})}
 
+\item{new_column}{Name of the new column to create on the input data. If NULL,
+the function will return a vector with the result}
+
 \item{conn}{A connection object to a DuckDB database. If \code{NULL}, the function
 runs on a temporary DuckDB database.}
 
@@ -69,9 +72,6 @@ runs on a temporary DuckDB database.}
 or a character string of length two specifying the schema and table
 names. If \code{NULL} (the default), the function returns the result as an
 \code{sf} object}
-
-\item{new_column}{Name of the new column to create on the input data. If NULL,
-the function will return a vector with the result}
 
 \item{overwrite}{Boolean. whether to overwrite the existing table if it exists. Defaults
 to \code{FALSE}. This argument is ignored when \code{name} is \code{NULL}.}
