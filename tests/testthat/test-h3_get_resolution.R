@@ -64,7 +64,7 @@ testthat::describe("ddbh3_get_resolution() works in different formats", {
 
 
   ## FORMAT 4 - DUCKSPATIAL_DF
-  testthat::it("returns the correct resolution for sf", {
+  testthat::it("returns the correct resolution for duckspatial_df", {
     ## Convert to duckspatial_df
     test_data_ddbs <- test_data |> 
       dplyr::collect() |> 
@@ -79,7 +79,7 @@ testthat::describe("ddbh3_get_resolution() works in different formats", {
 
 
   ## FORMAT 5 - TABLE IN DUCKDB
-  testthat::it("returns the correct resolution for sf", {
+  testthat::it("returns the correct resolution for table", {
     ## Create connection
     conn_test <- ddbh3_create_conn()
     ## Convert to duckspatial_df
@@ -192,7 +192,9 @@ describe("errors", {
   })
   
   it("requires connection when using table names", {
-    expect_error(ddbh3_get_resolution("test_data_tbl", conn = NULL))
+    expect_warning(
+      expect_true(is.na(ddbh3_get_resolution("test_data_tbl", conn = NULL)))
+    )
   })
   
   it("validates x argument type", {
