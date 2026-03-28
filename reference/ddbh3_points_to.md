@@ -19,10 +19,10 @@ ddbh3_points_to_spatial(
 ddbh3_points_to_h3(
   x,
   resolution,
-  conn = NULL,
-  name = NULL,
   new_column = "h3string",
   h3_format = "string",
+  conn = NULL,
+  name = NULL,
   overwrite = FALSE,
   quiet = FALSE
 )
@@ -32,17 +32,32 @@ ddbh3_points_to_h3(
 
 - x:
 
-  Input spatial data. Can be:
+  Input data. One of:
 
-  - A `duckspatial_df` object (lazy spatial data frame via dbplyr)
+  `duckspatial_df`
 
-  - An `sf` object
+  :   A lazy spatial data frame via dbplyr.
 
-  - A `tbl_lazy` from dbplyr
+  `sf`
 
-  - A character string naming a table/view in `conn`
+  :   A spatial data frame.
 
-  Data is returned from this object.
+  `tbl_lazy`
+
+  :   A lazy data frame from dbplyr.
+
+  `data.frame`
+
+  :   A standard R data frame.
+
+  character string
+
+  :   A table or view name in `conn`.
+
+  character vector
+
+  :   A vector of values to operate on in vectorized mode (requires
+      `conn = NULL`).
 
 - resolution:
 
@@ -83,10 +98,25 @@ ddbh3_points_to_h3(
 
 ## Value
 
-A `tbl_lazy` if `x` is not spatial, or a `duckspatial_df` if `x` is
-spatial (e.g. `sf` or `duckspatial_df`). Alternatively, it creates a
-table in the connection if `name` is provided, and returns `TRUE`
-invisibly.
+One of the following, depending on the inputs:
+
+- `tbl_lazy`:
+
+  If `x` is not spatial.
+
+- `duckspatial_df`:
+
+  If `x` is spatial (e.g. an `sf` or `duckspatial_df` object).
+
+- `TRUE` (invisibly):
+
+  If `name` is provided, a table is created in the connection and `TRUE`
+  is returned invisibly.
+
+- vector:
+
+  If `x` is a character vector and `conn = NULL`, the function operates
+  in vectorized mode, returning a vector of the same length as `x`.
 
 ## Details
 

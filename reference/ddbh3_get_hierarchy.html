@@ -163,22 +163,22 @@ and <code>ddbh3_get_n_children()</code>.</p>
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ddbh3_get_parent</span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
-<span>  h3 <span class="op">=</span> <span class="st">"h3string"</span>,</span>
 <span>  resolution <span class="op">=</span> <span class="fl">8</span>,</span>
+<span>  h3 <span class="op">=</span> <span class="st">"h3string"</span>,</span>
+<span>  new_column <span class="op">=</span> <span class="st">"h3parent"</span>,</span>
 <span>  conn <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  name <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  new_column <span class="op">=</span> <span class="st">"h3parent"</span>,</span>
 <span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  quiet <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">ddbh3_get_children</span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
-<span>  h3 <span class="op">=</span> <span class="st">"h3string"</span>,</span>
 <span>  resolution <span class="op">=</span> <span class="fl">8</span>,</span>
+<span>  h3 <span class="op">=</span> <span class="st">"h3string"</span>,</span>
+<span>  new_column <span class="op">=</span> <span class="st">"h3children"</span>,</span>
 <span>  conn <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  name <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  new_column <span class="op">=</span> <span class="st">"h3children"</span>,</span>
 <span>  nested <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  quiet <span class="op">=</span> <span class="cn">FALSE</span></span>
@@ -186,22 +186,22 @@ and <code>ddbh3_get_n_children()</code>.</p>
 <span></span>
 <span><span class="fu">ddbh3_get_n_children</span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
-<span>  h3 <span class="op">=</span> <span class="st">"h3string"</span>,</span>
 <span>  resolution <span class="op">=</span> <span class="fl">8</span>,</span>
+<span>  h3 <span class="op">=</span> <span class="st">"h3string"</span>,</span>
+<span>  new_column <span class="op">=</span> <span class="st">"h3n_children"</span>,</span>
 <span>  conn <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  name <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  new_column <span class="op">=</span> <span class="st">"h3n_children"</span>,</span>
 <span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  quiet <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">ddbh3_get_center_child</span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
-<span>  h3 <span class="op">=</span> <span class="st">"h3string"</span>,</span>
 <span>  resolution <span class="op">=</span> <span class="fl">8</span>,</span>
+<span>  h3 <span class="op">=</span> <span class="st">"h3string"</span>,</span>
+<span>  new_column <span class="op">=</span> <span class="st">"h3center_child"</span>,</span>
 <span>  conn <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  name <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  new_column <span class="op">=</span> <span class="st">"h3center_child"</span>,</span>
 <span>  overwrite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  quiet <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -212,11 +212,31 @@ and <code>ddbh3_get_n_children()</code>.</p>
 
 
 <dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
-<dd><p>Input spatial data. Can be:</p><ul><li><p>A <code>duckspatial_df</code> object (lazy spatial data frame via dbplyr)</p></li>
-<li><p>An <code>sf</code> object</p></li>
-<li><p>A <code>tbl_lazy</code> from dbplyr</p></li>
-<li><p>A character string naming a table/view in <code>conn</code></p></li>
-</ul><p>Data is returned from this object.</p></dd>
+<dd><p>Input data. One of:</p><dl><dt><code>duckspatial_df</code></dt>
+<dd><p>A lazy spatial data frame via dbplyr.</p></dd>
+
+<dt><code>sf</code></dt>
+<dd><p>A spatial data frame.</p></dd>
+
+<dt><code>tbl_lazy</code></dt>
+<dd><p>A lazy data frame from dbplyr.</p></dd>
+
+<dt><code>data.frame</code></dt>
+<dd><p>A standard R data frame.</p></dd>
+
+<dt>character string</dt>
+<dd><p>A table or view name in <code>conn</code>.</p></dd>
+
+<dt>character vector</dt>
+<dd><p>A vector of values to operate on in vectorized mode (requires <code>conn = NULL</code>).</p></dd>
+
+
+</dl></dd>
+
+
+<dt id="arg-resolution">resolution<a class="anchor" aria-label="anchor" href="#arg-resolution"></a></dt>
+<dd><p>A number specifying the resolution level of the H3
+string (between 0 and 15)</p></dd>
 
 
 <dt id="arg-h-">h3<a class="anchor" aria-label="anchor" href="#arg-h-"></a></dt>
@@ -224,9 +244,9 @@ and <code>ddbh3_get_n_children()</code>.</p>
 H3 unsigned 64-bit integers (<code>UBIGINT</code>)</p></dd>
 
 
-<dt id="arg-resolution">resolution<a class="anchor" aria-label="anchor" href="#arg-resolution"></a></dt>
-<dd><p>A number specifying the resolution level of the H3
-string (between 0 and 15)</p></dd>
+<dt id="arg-new-column">new_column<a class="anchor" aria-label="anchor" href="#arg-new-column"></a></dt>
+<dd><p>Name of the new column to create on the input data. If NULL,
+the function will return a vector with the result</p></dd>
 
 
 <dt id="arg-conn">conn<a class="anchor" aria-label="anchor" href="#arg-conn"></a></dt>
@@ -239,11 +259,6 @@ runs on a temporary DuckDB database.</p></dd>
 or a character string of length two specifying the schema and table
 names. If <code>NULL</code> (the default), the function returns the result as an
 <code>sf</code> object</p></dd>
-
-
-<dt id="arg-new-column">new_column<a class="anchor" aria-label="anchor" href="#arg-new-column"></a></dt>
-<dd><p>Name of the new column to create on the input data. If NULL,
-the function will return a vector with the result</p></dd>
 
 
 <dt id="arg-overwrite">overwrite<a class="anchor" aria-label="anchor" href="#arg-overwrite"></a></dt>
@@ -264,10 +279,22 @@ unnested so each child cell occupies its own row.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A <code>tbl_lazy</code> if <code>x</code> is not spatial, or a <code>duckspatial_df</code> if <code>x</code>
-is spatial (e.g. <code>sf</code> or <code>duckspatial_df</code>). Alternatively, it creates a table in the connection
-if <code>name</code> is provided, and returns <code>TRUE</code> invisibly.</p>
-    </div>
+    <p>One of the following, depending on the inputs:</p><dl><dt><code>tbl_lazy</code></dt>
+<dd><p>If <code>x</code> is not spatial.</p></dd>
+
+<dt><code>duckspatial_df</code></dt>
+<dd><p>If <code>x</code> is spatial (e.g. an <code>sf</code> or <code>duckspatial_df</code> object).</p></dd>
+
+<dt><code>TRUE</code> (invisibly)</dt>
+<dd><p>If <code>name</code> is provided, a table is created in the connection
+and <code>TRUE</code> is returned invisibly.</p></dd>
+
+<dt>vector</dt>
+<dd><p>If <code>x</code> is a character vector and <code>conn = NULL</code>, the function operates
+in vectorized mode, returning a vector of the same length as <code>x</code>.</p></dd>
+
+
+</dl></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The four functions differ in the type of related cell they retrieve:</p><ul><li><p><code>ddbh3_get_parent()</code> returns the parent cell at a coarser resolution</p></li>

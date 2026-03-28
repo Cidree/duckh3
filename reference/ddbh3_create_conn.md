@@ -6,7 +6,13 @@ spatial and h3 extensions
 ## Usage
 
 ``` r
-ddbh3_create_conn(dbdir = "memory", threads = NULL, memory_limit_gb = NULL)
+ddbh3_create_conn(
+  dbdir = "memory",
+  threads = NULL,
+  memory_limit_gb = NULL,
+  bigint = "integer64",
+  ...
+)
 ```
 
 ## Arguments
@@ -29,6 +35,15 @@ ddbh3_create_conn(dbdir = "memory", threads = NULL, memory_limit_gb = NULL)
   changed, and DuckDB engine will use 80% of available operating system
   memory it detects (warning, on some shared HPC nodes the detected
   memory might be the full node memory, not the per-job allocation).
+
+- bigint:
+
+  String. How to handle 64-bit integers. One of "integer64" or "numeric"
+
+- ...:
+
+  Other parameters passed to
+  [`DBI::dbConnect()`](https://dbi.r-dbi.org/reference/dbConnect.html)
 
 ## Value
 

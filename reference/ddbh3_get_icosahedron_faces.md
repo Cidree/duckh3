@@ -11,9 +11,9 @@ construct the H3 grid.
 ddbh3_get_icosahedron_faces(
   x,
   h3 = "h3string",
+  new_column = "h3faces",
   conn = NULL,
   name = NULL,
-  new_column = "h3faces",
   nested = FALSE,
   overwrite = FALSE,
   quiet = FALSE
@@ -24,22 +24,42 @@ ddbh3_get_icosahedron_faces(
 
 - x:
 
-  Input spatial data. Can be:
+  Input data. One of:
 
-  - A `duckspatial_df` object (lazy spatial data frame via dbplyr)
+  `duckspatial_df`
 
-  - An `sf` object
+  :   A lazy spatial data frame via dbplyr.
 
-  - A `tbl_lazy` from dbplyr
+  `sf`
 
-  - A character string naming a table/view in `conn`
+  :   A spatial data frame.
 
-  Data is returned from this object.
+  `tbl_lazy`
+
+  :   A lazy data frame from dbplyr.
+
+  `data.frame`
+
+  :   A standard R data frame.
+
+  character string
+
+  :   A table or view name in `conn`.
+
+  character vector
+
+  :   A vector of values to operate on in vectorized mode (requires
+      `conn = NULL`).
 
 - h3:
 
   The name of a column in `x` containing the H3 strings or H3 unsigned
   64-bit integers (`UBIGINT`)
+
+- new_column:
+
+  Name of the new column to create on the input data. If NULL, the
+  function will return a vector with the result
 
 - conn:
 
@@ -52,11 +72,6 @@ ddbh3_get_icosahedron_faces(
   a character string of length two specifying the schema and table
   names. If `NULL` (the default), the function returns the result as an
   `sf` object
-
-- new_column:
-
-  Name of the new column to create on the input data. If NULL, the
-  function will return a vector with the result
 
 - nested:
 
@@ -76,10 +91,25 @@ ddbh3_get_icosahedron_faces(
 
 ## Value
 
-A `tbl_lazy` if `x` is not spatial, or a `duckspatial_df` if `x` is
-spatial (e.g. `sf` or `duckspatial_df`). Alternatively, it creates a
-table in the connection if `name` is provided, and returns `TRUE`
-invisibly.
+One of the following, depending on the inputs:
+
+- `tbl_lazy`:
+
+  If `x` is not spatial.
+
+- `duckspatial_df`:
+
+  If `x` is spatial (e.g. an `sf` or `duckspatial_df` object).
+
+- `TRUE` (invisibly):
+
+  If `name` is provided, a table is created in the connection and `TRUE`
+  is returned invisibly.
+
+- vector:
+
+  If `x` is a character vector and `conn = NULL`, the function operates
+  in vectorized mode, returning a vector of the same length as `x`.
 
 ## Examples
 
