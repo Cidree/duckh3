@@ -80,15 +80,70 @@ create_ddbh3_default_macros <- function() {
 
 
 check_nested_column <- function(x, column) {
-  conn <- dbplyr::remote_con(x)
-  tbl_name <- dbplyr::remote_name(x)
-  
-  col_type <- DBI::dbGetQuery(
-    conn,
-    glue::glue("SELECT data_type FROM information_schema.columns 
-                WHERE table_name = '{tbl_name}' 
-                AND column_name = '{column}'")
-  )$data_type
 
-  grepl("\\[\\]", col_type)
+  ## For lazy tables we query the column type. However, the way of
+  ## finding the source conn and table is different depending of the
+  ## object type
+  if (inherits(x, "duckspatial_df") | inherits(x, "tbl_duckdb_connection")) {
+    if (inherits(x, "duckspatial_df")) {
+      conn     <- attr(x, "source_conn")
+      tbl_name <- attr(x, "source_table")
+    } else {
+      conn <- dbplyr::remote_con(x)
+      tbl_name <- dbplyr::remote_name(x)
+
+      ## If the name is null, we need to compute the previous lazy
+      ## table to obtain a table name to query
+      if (is.null(tbl_name)) {
+        tbl_comp <- dplyr::compute(x)
+        tbl_name <- dbplyr::remote_name(tbl_comp)
+      }
+    }
+
+    col_type <- DBI::dbGetQuery(
+      conn,
+      glue::glue("SELECT data_type FROM information_schema.columns 
+                  WHERE table_name = '{tbl_name}' 
+                  AND column_name = '{column}'")
+    )$data_type
+
+    return(grepl("\\[\\]", col_type))
+
+    ## For data.frame and sf we look for a list of characters
+  } else if (inherits(x, "data.frame") | inherits(x, "sf")) {
+    
+    if (inherits(x[[column]], "list")) return(TRUE) else return(FALSE)
+
+    ## For every other case, we consider unnested and let downstream
+    ## processes to manage it
+  } else {
+    return(FALSE)
+  }
+  
 }
+
+
+## e.g. ddbh3_h3_to_lat("8ad02dcc1947fff") 
+get_vectorized_result <- function(x, fun) {
+
+  ## Create a random view name
+  conn      <- duckspatial:::ddbs_default_conn()
+  view_name <- duckspatial:::ddbs_temp_view_name()
+
+  ## Register the data as a view
+  duckdb::duckdb_register(conn, view_name, data.frame(x = x))
+  on.exit(duckdb::duckdb_unregister(conn, view_name))
+
+  ## Apply function, and return the pulled vector
+  res <- dplyr::tbl(conn, view_name) |> 
+    dplyr::mutate(res = dbplyr::sql(glue::glue("{fun}"))) |> 
+    dplyr::pull("res")
+
+  if (any(is.na(res))) {
+    cli::cli_warn("Some elements of {.arg x} are invalid. Returning NA.")
+  }
+
+  return(res)
+
+}
+

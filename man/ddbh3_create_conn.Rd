@@ -4,7 +4,13 @@
 \alias{ddbh3_create_conn}
 \title{Create a DuckDB connection with spatial and h3 extensions}
 \usage{
-ddbh3_create_conn(dbdir = "memory", threads = NULL, memory_limit_gb = NULL)
+ddbh3_create_conn(
+  dbdir = "memory",
+  threads = NULL,
+  memory_limit_gb = NULL,
+  bigint = "integer64",
+  ...
+)
 }
 \arguments{
 \item{dbdir}{String. Either "tempdir", "memory", or file path with .duckdb
@@ -13,6 +19,10 @@ or .db extension. Defaults to "memory".}
 \item{threads}{Integer. Number of threads to use. If \code{NULL} (default), the setting is not changed, and DuckDB engine will use all available cores it detects (warning, on some shared HPC nodes the detected number of cores might be total number of cores on the node, not the per-job allocation).}
 
 \item{memory_limit_gb}{Numeric. Memory limit in GB. If \code{NULL} (default), the setting is not changed, and DuckDB engine will use 80\% of available operating system memory it detects (warning, on some shared HPC nodes the detected memory might be the full node memory, not the per-job allocation).}
+
+\item{bigint}{String. How to handle 64-bit integers. One of "integer64" or "numeric"}
+
+\item{...}{Other parameters passed to \code{DBI::dbConnect()}}
 }
 \value{
 A \code{duckdb_connection}

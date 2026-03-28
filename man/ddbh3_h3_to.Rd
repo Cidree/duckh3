@@ -12,9 +12,9 @@
 ddbh3_h3_to_lon(
   x,
   h3 = "h3string",
+  new_column = "lon",
   conn = NULL,
   name = NULL,
-  new_column = "lon",
   overwrite = FALSE,
   quiet = FALSE
 )
@@ -22,9 +22,9 @@ ddbh3_h3_to_lon(
 ddbh3_h3_to_lat(
   x,
   h3 = "h3string",
+  new_column = "lat",
   conn = NULL,
   name = NULL,
-  new_column = "lat",
   overwrite = FALSE,
   quiet = FALSE
 )
@@ -41,9 +41,9 @@ ddbh3_h3_to_spatial(
 ddbh3_strings_to_bigint(
   x,
   h3 = "h3string",
+  new_column = "h3bigint",
   conn = NULL,
   name = NULL,
-  new_column = "h3bigint",
   overwrite = FALSE,
   quiet = FALSE
 )
@@ -51,25 +51,29 @@ ddbh3_strings_to_bigint(
 ddbh3_bigint_to_strings(
   x,
   h3 = "h3bigint",
+  new_column = "h3string",
   conn = NULL,
   name = NULL,
-  new_column = "h3string",
   overwrite = FALSE,
   quiet = FALSE
 )
 }
 \arguments{
-\item{x}{Input spatial data. Can be:
-\itemize{
-\item A \code{duckspatial_df} object (lazy spatial data frame via dbplyr)
-\item An \code{sf} object
-\item A \code{tbl_lazy} from dbplyr
-\item A character string naming a table/view in \code{conn}
-}
-Data is returned from this object.}
+\item{x}{Input data. One of:
+\describe{
+\item{\code{duckspatial_df}}{A lazy spatial data frame via dbplyr.}
+\item{\code{sf}}{A spatial data frame.}
+\item{\code{tbl_lazy}}{A lazy data frame from dbplyr.}
+\item{\code{data.frame}}{A standard R data frame.}
+\item{character string}{A table or view name in \code{conn}.}
+\item{character vector}{A vector of values to operate on in vectorized mode (requires \code{conn = NULL}).}
+}}
 
 \item{h3}{The name of a column in \code{x} containing the H3 strings or
 H3 unsigned 64-bit integers (\code{UBIGINT})}
+
+\item{new_column}{Name of the new column to create on the input data. If NULL,
+the function will return a vector with the result}
 
 \item{conn}{A connection object to a DuckDB database. If \code{NULL}, the function
 runs on a temporary DuckDB database.}
@@ -79,9 +83,6 @@ or a character string of length two specifying the schema and table
 names. If \code{NULL} (the default), the function returns the result as an
 \code{sf} object}
 
-\item{new_column}{Name of the new column to create on the input data. If NULL,
-the function will return a vector with the result}
-
 \item{overwrite}{Boolean. whether to overwrite the existing table if it exists. Defaults
 to \code{FALSE}. This argument is ignored when \code{name} is \code{NULL}.}
 
@@ -89,9 +90,15 @@ to \code{FALSE}. This argument is ignored when \code{name} is \code{NULL}.}
 Defaults to \code{FALSE}.}
 }
 \value{
-A \code{tbl_lazy} if \code{x} is not spatial, or a \code{duckspatial_df} if \code{x}
-is spatial (e.g. \code{sf} or \code{duckspatial_df}). Alternatively, it creates a table in the connection
-if \code{name} is provided, and returns \code{TRUE} invisibly.
+One of the following, depending on the inputs:
+\describe{
+\item{\code{tbl_lazy}}{If \code{x} is not spatial.}
+\item{\code{duckspatial_df}}{If \code{x} is spatial (e.g. an \code{sf} or \code{duckspatial_df} object).}
+\item{\code{TRUE} (invisibly)}{If \code{name} is provided, a table is created in the connection
+and \code{TRUE} is returned invisibly.}
+\item{vector}{If \code{x} is a character vector and \code{conn = NULL}, the function operates
+in vectorized mode, returning a vector of the same length as \code{x}.}
+}
 }
 \description{
 Convert H3 cell indexes stored as strings or UBIGINT into other

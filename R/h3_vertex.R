@@ -9,9 +9,9 @@
 #'   hexagons and 0–4 for pentagons. Only used in `ddbh3_h3_to_vertex()`.
 #' @template h3
 #' @template h3vertex
+#' @template new_column
 #' @template conn_null
 #' @template name
-#' @template new_column
 #' @template nested
 #' @template overwrite
 #' @template quiet
@@ -102,11 +102,11 @@ NULL
 #' @export
 ddbh3_h3_to_vertex <- function(
     x,
-    h3 = "h3string",
     n = 0,
+    h3 = "h3string",
+    new_column = "h3vertex",
     conn = NULL,
     name = NULL,
-    new_column = "h3vertex",
     overwrite = FALSE,
     quiet = FALSE
 ) {
@@ -130,7 +130,8 @@ ddbh3_h3_to_vertex <- function(
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,
-    fun = built_fun
+    fun = built_fun,
+    base_fun = glue::glue("h3_cell_to_vertex(x, {n})")
   ) 
 
 }
@@ -142,9 +143,9 @@ ddbh3_h3_to_vertex <- function(
 ddbh3_vertex_to_lon <- function(
     x,
     h3vertex = "h3vertex",
+    new_column = "lon_vertex",
     conn = NULL,
     name = NULL,
-    new_column = "lon_vertex",
     overwrite = FALSE,
     quiet = FALSE
 ) {
@@ -163,7 +164,8 @@ ddbh3_vertex_to_lon <- function(
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,
-    fun = built_fun
+    fun = built_fun,
+    base_fun = "h3_vertex_to_lng(x)"
   )
 
 }
@@ -177,9 +179,9 @@ ddbh3_vertex_to_lon <- function(
 ddbh3_vertex_to_lat <- function(
     x,
     h3vertex = "h3vertex",
+    new_column = "lat_vertex",
     conn = NULL,
     name = NULL,
-    new_column = "lat_vertex",
     overwrite = FALSE,
     quiet = FALSE
 ) {
@@ -198,7 +200,8 @@ ddbh3_vertex_to_lat <- function(
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,
-    fun = built_fun
+    fun = built_fun,
+    base_fun = "h3_vertex_to_lat(x)"
   ) 
 
 }
@@ -212,9 +215,9 @@ ddbh3_vertex_to_lat <- function(
 ddbh3_h3_to_vertexes <- function(
     x,
     h3 = "h3string",
+    new_column = "h3vertex",
     conn = NULL,
     name = NULL,
-    new_column = "h3vertex",
     nested = FALSE,
     overwrite = FALSE,
     quiet = FALSE
@@ -239,7 +242,8 @@ ddbh3_h3_to_vertexes <- function(
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,
-    fun = built_fun
+    fun = built_fun,
+    base_fun = "h3_cell_to_vertexes(x)"
   ) 
 
 }
