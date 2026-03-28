@@ -6,8 +6,8 @@
 \usage{
 ddbh3_get_child_pos(
   x,
-  h3 = "h3string",
   resolution = 8,
+  h3 = "h3string",
   new_column = "h3child_pos",
   conn = NULL,
   name = NULL,
@@ -26,11 +26,11 @@ ddbh3_get_child_pos(
 \item{character vector}{A vector of values to operate on in vectorized mode (requires \code{conn = NULL}).}
 }}
 
-\item{h3}{The name of a column in \code{x} containing the H3 strings or
-H3 unsigned 64-bit integers (\code{UBIGINT})}
-
 \item{resolution}{A number specifying the resolution level of the H3
 string (between 0 and 15)}
+
+\item{h3}{The name of a column in \code{x} containing the H3 strings or
+H3 unsigned 64-bit integers (\code{UBIGINT})}
 
 \item{new_column}{Name of the new column to create on the input data. If NULL,
 the function will return a vector with the result}

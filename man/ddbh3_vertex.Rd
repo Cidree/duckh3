@@ -11,8 +11,8 @@
 \usage{
 ddbh3_h3_to_vertex(
   x,
-  h3 = "h3string",
   n = 0,
+  h3 = "h3string",
   new_column = "h3vertex",
   conn = NULL,
   name = NULL,
@@ -71,11 +71,11 @@ ddbh3_vertex_to_spatial(
 \item{character vector}{A vector of values to operate on in vectorized mode (requires \code{conn = NULL}).}
 }}
 
-\item{h3}{The name of a column in \code{x} containing the H3 strings or
-H3 unsigned 64-bit integers (\code{UBIGINT})}
-
 \item{n}{Integer. Vertex number to retrieve. Must be in the range 0–5 for
 hexagons and 0–4 for pentagons. Only used in \code{ddbh3_h3_to_vertex()}.}
+
+\item{h3}{The name of a column in \code{x} containing the H3 strings or
+H3 unsigned 64-bit integers (\code{UBIGINT})}
 
 \item{new_column}{Name of the new column to create on the input data. If NULL,
 the function will return a vector with the result}

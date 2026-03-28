@@ -115,7 +115,8 @@ ddbh3_is_pentagon <- function(
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,
-    fun = built_fun
+    fun = built_fun,
+    base_fun = "h3_is_pentagon(x)"
   ) 
 
 }
@@ -149,7 +150,8 @@ ddbh3_is_h3 <- function(
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,
-    fun = built_fun
+    fun = built_fun,
+    base_fun = "h3_is_valid_cell(x)"
   ) 
 
 }
@@ -184,7 +186,8 @@ ddbh3_is_res_class_iii <- function(
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,
-    fun = built_fun
+    fun = built_fun,
+    base_fun = "h3_is_res_class_iii(x)"
   ) 
 
 }
@@ -218,7 +221,8 @@ ddbh3_is_vertex <- function(
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,
-    fun = built_fun
+    fun = built_fun,
+    base_fun = "h3_is_valid_vertex(x)"
   ) 
 
 }

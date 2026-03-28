@@ -78,7 +78,7 @@ ddbh3_points_to_spatial <- function(
     quiet = FALSE
 ) {
 
-  # 0. Handle function-specific errors
+  # 0. Validate inputs
   duckspatial:::assert_conn_character(conn, x)
   duckspatial:::assert_name(name)
   duckspatial:::assert_logic(overwrite, "overwrite")
@@ -105,7 +105,7 @@ ddbh3_points_to_spatial <- function(
   # 2. Manage connection to DB
 
   ## 2.1. Resolve connections and handle imports
-  resolve_conn <- duckspatial:::resolve_spatial_connections(x, y = NULL, conn = conn)
+  resolve_conn <- duckspatial:::resolve_spatial_connections(x, y = NULL, conn = conn, quiet = quiet)
   target_conn  <- resolve_conn$conn
   x            <- resolve_conn$x
   ## register cleanup of the connection
@@ -153,39 +153,25 @@ ddbh3_points_to_spatial <- function(
   ")
 
 
-  # 4. if name is not NULL
+  # 3. Table creation if name is provided, or 
+  # create duckspatial_df or sf object if name is NULL
   if (!is.null(name)) {
-
-    ## convenient names of table and/or schema.table
-    name_list <- duckspatial:::get_query_name(name)
-
-    ## handle overwrite
-    duckspatial:::overwrite_table(name_list$query_name, target_conn, quiet, overwrite)
-
-    ## create query (no st_as_text)
-    tmp.query <- glue::glue("
-      CREATE TABLE {name_list$query_name} AS
-      {base.query};
-    ")
-    ## execute query
-    DBI::dbExecute(target_conn, tmp.query)
-    duckspatial:::feedback_query(quiet)
-    return(invisible(TRUE))
-
+    duckspatial:::create_duckdb_table(
+      conn      = target_conn,
+      name      = name,
+      query     = base.query,
+      overwrite = overwrite,
+      quiet     = quiet
+    )
+  } else {
+   duckspatial::: ddbs_handle_query(
+      query  = base.query,
+      conn   = target_conn,
+      mode   = "duckspatial",
+      crs    = "EPSG:4326",
+      x_geom = x_geom
+    )
   }
-
-  
-  # 5. Apply geospatial operation
-  result <- duckspatial:::ddbs_handle_query(
-      query      = base.query,
-      conn       = target_conn,
-      mode       = "duckspatial",
-      crs        = "EPSG:4326",
-      crs_column = "crs_duckspatial",
-      x_geom     = x_geom
-  )
-  
-  return(result)
 
 }
 
@@ -206,7 +192,8 @@ ddbh3_points_to_h3 <- function(
     quiet = FALSE
 ) {
 
-  # 0. Handle function-specific errors
+
+  # 0. Validate inputs
   duckspatial:::assert_character_scalar(new_column, "new_column")
   duckspatial:::assert_character_scalar(h3_format, "h3_format")
   duckspatial:::assert_conn_character(conn, x)
@@ -217,7 +204,8 @@ ddbh3_points_to_h3 <- function(
   duckspatial:::assert_numeric_interval(resolution, 0, 15, "resolution")
   duckspatial:::assert_geom_type(x = x, conn = conn, geom = "POINT", multi = TRUE)
 
-  # 1. Manage connection to DB
+
+  # 1. Prepare inputs
 
   ## 1.1. Pre-extract geometry column name to overwrite, if present
   crs_x    <- duckspatial::ddbs_crs(x, conn)
@@ -227,36 +215,33 @@ ddbh3_points_to_h3 <- function(
     cli::cli_abort("The CRS of the input must be {.val EPSG:4326}, not {.val crs_x$input}.")
   }
 
-
   ## 1.2. Normalize inputs: coerce tbl_duckdb_connection to duckspatial_df,
   ## validate character table names
   x <- suppressWarnings(duckspatial:::normalize_spatial_input(x, conn))
 
-  # 2. Manage connection to DB
-
-  ## 2.1. Resolve connections and handle imports
+  ## 1.3. Resolve connections and handle imports
   resolve_conn <- duckspatial:::resolve_spatial_connections(x, y = NULL, conn = conn)
   target_conn  <- resolve_conn$conn
   x            <- resolve_conn$x
   ## register cleanup of the connection
   on.exit(resolve_conn$cleanup(), add = TRUE)
 
-  ## 2.2. Get query list of table names
+  ## 1.4. Get query list of table names
   x_list <- duckspatial:::get_query_list(x, target_conn)
   on.exit(x_list$cleanup(), add = TRUE)
 
-  ## 2.3. Install and load h3 on target connection
+  ## 1.5. Install and load h3 on target connection
   duckspatial::ddbs_install(target_conn, upgrade = FALSE, quiet = TRUE, extension = "h3")
   duckspatial::ddbs_load(target_conn, quiet = TRUE, extension = "h3")
 
 
-  # 3. Prepare parameters for the query
+  # 2. Prepare the query
 
-  ## 3.1. Get names of geometry columns (use saved sf_col_x from before transformation)
+  ## 2.1. Get names of geometry columns (use saved sf_col_x from before transformation)
   x_geom <- sf_col_x %||% duckspatial:::get_geom_name(target_conn, x_list$query_name)
-  if (length(x_geom != 0)) duckspatial:::assert_geometry_column(x_geom, x_list)
+  duckspatial:::assert_geometry_column(x_geom, x_list)
 
-  ## 3.2. Get names of the rest of the columns
+  ## 2.2. Get names of the rest of the columns
   x_rest <- duckspatial:::get_geom_name(
     target_conn,
     x_list$query_name,
@@ -264,7 +249,7 @@ ddbh3_points_to_h3 <- function(
     collapse = TRUE
   )
 
-  ## 3.3. Build the base query
+  ## 2.3. Build the base query
   st_function <- switch(
     h3_format,
     "string" = glue::glue("h3_latlng_to_cell_string"),
@@ -273,50 +258,36 @@ ddbh3_points_to_h3 <- function(
   )
   base.query <- glue::glue("
     SELECT
-      {x_rest}
+      * EXCLUDE {x_geom},
       {st_function}(
         ST_Y({x_geom}),
         ST_X({x_geom}),
         {resolution}
       ) as {new_column},
-      {x_geom}
+      {duckspatial:::build_geom_query(x_geom, name, crs_x, 'duckspatial')} AS {x_geom}
     FROM
       {x_list$query_name};
   ")
 
 
-  # 4. if name is not NULL
+  # 3. Table creation if name is provided, or 
+  # create duckspatial_df or sf object if name is NULL
   if (!is.null(name)) {
-
-    ## convenient names of table and/or schema.table
-    name_list <- duckspatial:::get_query_name(name)
-
-    ## handle overwrite
-    duckspatial:::overwrite_table(name_list$query_name, target_conn, quiet, overwrite)
-
-    ## create query (no st_as_text)
-    tmp.query <- glue::glue("
-      CREATE TABLE {name_list$query_name} AS
-      {base.query};
-    ")
-    ## execute query
-    DBI::dbExecute(target_conn, tmp.query)
-    duckspatial:::feedback_query(quiet)
-    return(invisible(TRUE))
-
+    duckspatial:::create_duckdb_table(
+      conn      = target_conn,
+      name      = name,
+      query     = base.query,
+      overwrite = overwrite,
+      quiet     = quiet
+    )
+  } else {
+   duckspatial::: ddbs_handle_query(
+      query  = base.query,
+      conn   = target_conn,
+      mode   = "duckspatial",
+      crs    = "EPSG:4326",
+      x_geom = x_geom
+    )
   }
-
-  
-  # 5. Apply geospatial operation
-  result <- duckspatial:::ddbs_handle_query(
-      query      = base.query,
-      conn       = target_conn,
-      mode       = "duckspatial",
-      crs        = "EPSG:4326",
-      crs_column = "crs_duckspatial",
-      x_geom     = x_geom
-  )
-  
-  return(result)
 
 }

@@ -10,8 +10,8 @@
 \usage{
 ddbh3_get_parent(
   x,
-  h3 = "h3string",
   resolution = 8,
+  h3 = "h3string",
   new_column = "h3parent",
   conn = NULL,
   name = NULL,
@@ -21,8 +21,8 @@ ddbh3_get_parent(
 
 ddbh3_get_children(
   x,
-  h3 = "h3string",
   resolution = 8,
+  h3 = "h3string",
   new_column = "h3children",
   conn = NULL,
   name = NULL,
@@ -33,8 +33,8 @@ ddbh3_get_children(
 
 ddbh3_get_n_children(
   x,
-  h3 = "h3string",
   resolution = 8,
+  h3 = "h3string",
   new_column = "h3n_children",
   conn = NULL,
   name = NULL,
@@ -44,8 +44,8 @@ ddbh3_get_n_children(
 
 ddbh3_get_center_child(
   x,
-  h3 = "h3string",
   resolution = 8,
+  h3 = "h3string",
   new_column = "h3center_child",
   conn = NULL,
   name = NULL,
@@ -64,11 +64,11 @@ ddbh3_get_center_child(
 \item{character vector}{A vector of values to operate on in vectorized mode (requires \code{conn = NULL}).}
 }}
 
-\item{h3}{The name of a column in \code{x} containing the H3 strings or
-H3 unsigned 64-bit integers (\code{UBIGINT})}
-
 \item{resolution}{A number specifying the resolution level of the H3
 string (between 0 and 15)}
+
+\item{h3}{The name of a column in \code{x} containing the H3 strings or
+H3 unsigned 64-bit integers (\code{UBIGINT})}
 
 \item{new_column}{Name of the new column to create on the input data. If NULL,
 the function will return a vector with the result}

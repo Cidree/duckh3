@@ -102,9 +102,9 @@ NULL
 #' @export
 ddbh3_h3_to_vertex <- function(
     x,
+    n = 0,
     h3 = "h3string",
     new_column = "h3vertex",
-    n = 0,
     conn = NULL,
     name = NULL,
     overwrite = FALSE,
@@ -130,7 +130,8 @@ ddbh3_h3_to_vertex <- function(
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,
-    fun = built_fun
+    fun = built_fun,
+    base_fun = glue::glue("h3_cell_to_vertex(x, {n})")
   ) 
 
 }
@@ -163,7 +164,8 @@ ddbh3_vertex_to_lon <- function(
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,
-    fun = built_fun
+    fun = built_fun,
+    base_fun = "h3_vertex_to_lng(x)"
   )
 
 }
@@ -198,7 +200,8 @@ ddbh3_vertex_to_lat <- function(
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,
-    fun = built_fun
+    fun = built_fun,
+    base_fun = "h3_vertex_to_lat(x)"
   ) 
 
 }
@@ -239,7 +242,8 @@ ddbh3_h3_to_vertexes <- function(
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,
-    fun = built_fun
+    fun = built_fun,
+    base_fun = "h3_cell_to_vertexes(x)"
   ) 
 
 }

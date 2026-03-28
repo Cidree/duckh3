@@ -68,7 +68,8 @@ ddbh3_get_resolution <- function(
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,
-    fun = built_fun
+    fun = built_fun,
+    base_fun = "h3_get_resolution(x)"
   ) 
 
 }

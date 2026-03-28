@@ -7,8 +7,8 @@
 #'
 #'
 #' @template x
-#' @template h3
 #' @template resolution
+#' @template h3
 #' @template new_column
 #' @template conn_null
 #' @template name
@@ -103,8 +103,8 @@ NULL
 #' @export
 ddbh3_get_parent <- function(
     x,
-    h3 = "h3string",
     resolution = 8,
+    h3 = "h3string",
     new_column = "h3parent",
     conn = NULL,
     name = NULL,
@@ -129,7 +129,8 @@ ddbh3_get_parent <- function(
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,
-    fun = built_fun
+    fun = built_fun,
+    base_fun = glue::glue("h3_cell_to_parent(x, {resolution})")
   ) 
 
 }
@@ -142,8 +143,8 @@ ddbh3_get_parent <- function(
 #' @export
 ddbh3_get_children <- function(
     x,
-    h3 = "h3string",
     resolution = 8,
+    h3 = "h3string",
     new_column = "h3children",
     conn = NULL,
     name = NULL,
@@ -173,7 +174,8 @@ ddbh3_get_children <- function(
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,
-    fun = built_fun
+    fun = built_fun,
+    base_fun = glue::glue("h3_cell_to_children(x, {resolution})")
   ) 
 
 }
@@ -186,8 +188,8 @@ ddbh3_get_children <- function(
 #' @export
 ddbh3_get_n_children <- function(
     x,
-    h3 = "h3string",
     resolution = 8,
+    h3 = "h3string",
     new_column = "h3n_children",
     conn = NULL,
     name = NULL,
@@ -211,7 +213,8 @@ ddbh3_get_n_children <- function(
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,
-    fun = built_fun
+    fun = built_fun,
+    base_fun = glue::glue("h3_cell_to_children_size(x, {resolution})")
   ) 
 
 }
@@ -224,8 +227,8 @@ ddbh3_get_n_children <- function(
 #' @export
 ddbh3_get_center_child <- function(
     x,
-    h3 = "h3string",
     resolution = 8,
+    h3 = "h3string",
     new_column = "h3center_child",
     conn = NULL,
     name = NULL,
@@ -249,7 +252,8 @@ ddbh3_get_center_child <- function(
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,
-    fun = built_fun
+    fun = built_fun,
+    base_fun = glue::glue("h3_cell_to_center_child(x, {resolution})")
   ) 
 
 }
@@ -320,6 +324,7 @@ ddbh3_get_icosahedron_faces <- function(
   
   # 0. Handle function-specific errors
   duckspatial:::assert_character_scalar(h3, "h3")
+  duckspatial:::assert_logic(nested, "nested")
 
   # 1. Build parameters string  
   if (isTRUE(nested)) {
@@ -336,7 +341,8 @@ ddbh3_get_icosahedron_faces <- function(
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,
-    fun = built_fun
+    fun = built_fun,
+    base_fun = glue::glue("h3_get_icosahedron_faces(x)")
   ) 
 
 }
@@ -386,8 +392,8 @@ ddbh3_get_icosahedron_faces <- function(
 #' }
 ddbh3_get_child_pos <- function(
     x,
-    h3 = "h3string",
     resolution = 8,
+    h3 = "h3string",
     new_column = "h3child_pos",
     conn = NULL,
     name = NULL,
@@ -415,7 +421,8 @@ ddbh3_get_child_pos <- function(
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,
-    fun = built_fun
+    fun = built_fun,
+    base_fun = glue::glue("h3_cell_to_child_pos(x, {resolution})")
   ) 
 
 }

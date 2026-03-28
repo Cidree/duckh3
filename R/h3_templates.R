@@ -24,7 +24,7 @@ template_h3_base <- function(
 ) {
 
   ## First, try vectorized option
-  if (is.null(conn) && is.character(x) && !is.null(base_fun)) {
+  if (is.null(conn) && (is.character(x) | is.numeric(x)) && !is.null(base_fun)) {
     res <- get_vectorized_result(x, base_fun)
     return(res)
   }
@@ -53,7 +53,7 @@ template_h3_base <- function(
   )
 
   ## 1.4. Resolve spatial connections and handle imports
-  resolve_conn <- duckspatial:::resolve_spatial_connections(x, y = NULL, conn = conn)
+  resolve_conn <- duckspatial:::resolve_spatial_connections(x, y = NULL, conn = conn, quiet = quiet)
   target_conn  <- resolve_conn$conn
   x            <- resolve_conn$x
   ## register cleanup of the connection
@@ -79,14 +79,17 @@ template_h3_base <- function(
 
   ## 2.2. Build the base query
   geom_clause <- if (length(x_geom) > 0) {
-    glue::glue("* REPLACE ({duckspatial:::build_geom_query(x_geom, name, crs_x, 'duckspatial')} AS {x_geom})")
+    glue::glue("
+      * EXCLUDE {x_geom},
+      {fun} as {new_column},
+      {duckspatial:::build_geom_query(x_geom, name, crs_x, 'duckspatial')} AS {x_geom}"
+    )
   } else {
-    "*"
+    glue::glue("*, {fun} as {new_column}")
   }
   base.query <- glue::glue("
     SELECT
-      {geom_clause},
-      {fun} as {new_column}
+      {geom_clause}
     FROM
       {x_list$query_name};
   ")
@@ -125,7 +128,8 @@ template_h3_to_spatial <- function(
     base_fun = NULL
 ) {
 
-  ## First, try vectorized option
+  # TODO
+  # First, try vectorized option
   if (is.null(conn) && is.character(x) && !is.null(base_fun)) {
     res <- get_vectorized_result(x, base_fun)
     return(res)
@@ -151,7 +155,7 @@ template_h3_to_spatial <- function(
   )
 
   ## 1.4. Resolve spatial connections and handle imports
-  resolve_conn <- duckspatial:::resolve_spatial_connections(x, y = NULL, conn = conn)
+  resolve_conn <- duckspatial:::resolve_spatial_connections(x, y = NULL, conn = conn, quiet = quiet)
   target_conn  <- resolve_conn$conn
   x            <- resolve_conn$x
   ## register cleanup of the connection
