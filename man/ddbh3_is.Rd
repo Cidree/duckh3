@@ -50,14 +50,15 @@ ddbh3_is_vertex(
 )
 }
 \arguments{
-\item{x}{Input spatial data. Can be:
-\itemize{
-\item A \code{duckspatial_df} object (lazy spatial data frame via dbplyr)
-\item An \code{sf} object
-\item A \code{tbl_lazy} from dbplyr
-\item A character string naming a table/view in \code{conn}
-}
-Data is returned from this object.}
+\item{x}{Input data. One of:
+\describe{
+\item{\code{duckspatial_df}}{A lazy spatial data frame via dbplyr.}
+\item{\code{sf}}{A spatial data frame.}
+\item{\code{tbl_lazy}}{A lazy data frame from dbplyr.}
+\item{\code{data.frame}}{A standard R data frame.}
+\item{character string}{A table or view name in \code{conn}.}
+\item{character vector}{A vector of values to operate on in vectorized mode (requires \code{conn = NULL}).}
+}}
 
 \item{h3}{The name of a column in \code{x} containing the H3 strings or
 H3 unsigned 64-bit integers (\code{UBIGINT})}
@@ -83,9 +84,15 @@ Defaults to \code{FALSE}.}
 to \code{"h3vertex"}}
 }
 \value{
-A \code{tbl_lazy} if \code{x} is not spatial, or a \code{duckspatial_df} if \code{x}
-is spatial (e.g. \code{sf} or \code{duckspatial_df}). Alternatively, it creates a table in the connection
-if \code{name} is provided, and returns \code{TRUE} invisibly.
+One of the following, depending on the inputs:
+\describe{
+\item{\code{tbl_lazy}}{If \code{x} is not spatial.}
+\item{\code{duckspatial_df}}{If \code{x} is spatial (e.g. an \code{sf} or \code{duckspatial_df} object).}
+\item{\code{TRUE} (invisibly)}{If \code{name} is provided, a table is created in the connection
+and \code{TRUE} is returned invisibly.}
+\item{vector}{If \code{x} is a character vector and \code{conn = NULL}, the function operates
+in vectorized mode, returning a vector of the same length as \code{x}.}
+}
 }
 \description{
 Check properties of H3 cell indexes stored as strings or unsigned 64-bit
