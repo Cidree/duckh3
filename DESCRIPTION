@@ -36,6 +36,7 @@ Imports:
     DBI,
     dbplyr,
     dplyr,
+    duckdb,
     duckspatial (>= 1.0.0),
     glue
 VignetteBuilder: quarto
@@ -44,6 +45,7 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 Suggests: 
     quarto,
+    sf,
     testthat (>= 3.0.0)
 Remotes: 
     Cidree/duckspatial
