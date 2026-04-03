@@ -47,5 +47,3 @@ Suggests:
     quarto,
     sf,
     testthat (>= 3.0.0)
-Remotes: 
-    Cidree/duckspatial
