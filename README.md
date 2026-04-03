@@ -20,12 +20,6 @@ developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.re
 
 <!-- badges: end -->
 
-> 🦆 **{duckh3} is a work in progress!** We’re actively building and
-> refining the package — function names, arguments, and behaviour may
-> change as the API matures. Feedback and bug reports are very welcome
-> via [GitHub Issues](https://github.com/Cidree/duckh3/issues). Thanks
-> for being an early user! 🙏
-
 **{duckh3}** provides fast, memory-efficient functions for analysing and
 manipulating large spatial and non-spatial datasets using the [H3
 hierarchical indexing system](https://h3geo.org/) in R. It bridges
@@ -37,9 +31,11 @@ power without leaving your familiar R workflow.
 
 ### How it works
 
-{duckh3} operates on regular R data frames, `tibble`s, `dbplyr` lazy
-tables, and `duckspatial_df` objects. Unlike purely spatial workflows,
-H3 operations do not require your data to be spatial. Any table with
+{duckh3} was built around the same API as the [duckspatial R
+package](https://github.com/Cidree/duckspatial), and it operates on
+regular R data frames, `tibble`s, `dbplyr` lazy tables, and
+`duckspatial_df` objects. Unlike purely spatial workflows, H3 operations
+do not require your data to be spatial. Any table with
 longitude/latitude columns, or an existing H3 index column, is a valid
 starting point.
 
@@ -57,21 +53,42 @@ frames.
 ### Naming conventions
 
 All functions follow the `ddbh3_*()` prefix (*DuckDB H3*), structured
-around what they do:
+around the expected input data, and what they will be converted to:
 
 - `ddbh3_lonlat_to_*()` — from longitude/latitude coordinates to H3
   representations
 - `ddbh3_points_to_*()` — from spatial point geometries to H3
   representations
+- `ddbh3_h3_to_*()` — convert H3 cells to other representations
+- `ddbh3_vertex_to_*()` — convert H3 vertexes to other representations
+
+With the following available transformations:
+
+| Function family  | Output                             |
+|------------------|------------------------------------|
+| `*_to_h3()`      | H3 index as string or `UBIGINT`    |
+| `*_to_spatial()` | H3 cell as spatial hexagon polygon |
+| `*_to_lon()`     | Longitude of H3 cell centroid      |
+| `*_to_lat()`     | Latitude of H3 cell centroid       |
+
+And there are also a set of function to retrieve or check properties of
+the data:
+
 - `ddbh3_get_*()` — retrieve H3 cell properties (resolution, parent,
   children, vertices…)
 - `ddbh3_is_*()` — check properties of H3 indexes (valid, pentagon,
   Class III…)
-- `ddbh3_h3_to_*()` — convert H3 cells to other representations
 
 ## Installation
 
-Install the latest GitHub version:
+Install the stable release from CRAN:
+
+``` r
+pak::pak("duckh3")
+```
+
+Install the latest GitHub version (more features, fewer accumulated
+bugs):
 
 ``` r
 # install.packages("pak")
@@ -83,45 +100,6 @@ Install the development version (may be unstable):
 ``` r
 pak::pak("Cidree/duckh3@dev")
 ```
-
-## Core idea: flexible H3 workflows
-
-A central design principle of {duckh3} is that the same H3 operation can
-be used in different ways depending on how your data is stored and what
-output format you need.
-
-### Format conversions
-
-| Function family  | Output                             |
-|------------------|------------------------------------|
-| `*_to_h3()`      | H3 index as string or `UBIGINT`    |
-| `*_to_spatial()` | H3 cell as spatial hexagon polygon |
-| `*_to_lon()`     | Longitude of H3 cell centroid      |
-| `*_to_lat()`     | Latitude of H3 cell centroid       |
-
-### H3 hierarchy
-
-| Function                   | Returns                                  |
-|----------------------------|------------------------------------------|
-| `ddbh3_get_resolution()`   | Resolution of each H3 cell               |
-| `ddbh3_get_parent()`       | Parent cell at a coarser resolution      |
-| `ddbh3_get_center_child()` | Center child cell at a finer resolution  |
-| `ddbh3_get_children()`     | All children cells at a finer resolution |
-| `ddbh3_get_n_children()`   | Number of children at a finer resolution |
-| `ddbh3_get_child_pos()`    | Position of a cell within its parent     |
-
-### H3 properties
-
-| Function                   | Returns                                       |
-|----------------------------|-----------------------------------------------|
-| `ddbh3_is_h3()`            | `TRUE` if the index is a valid H3 cell        |
-| `ddbh3_is_pentagon()`      | `TRUE` if the cell is one of the 12 pentagons |
-| `ddbh3_is_res_class_iii()` | `TRUE` if the cell is at an odd resolution    |
-| `ddbh3_is_vertex()`        | `TRUE` if the index is a valid H3 vertex      |
-
-Inputs can be plain R data frames, lazy `dbplyr` tables, `sf` objects,
-or `duckspatial_df` objects, making {duckh3} easy to integrate into both
-non-spatial and spatial pipelines.
 
 ## Contributing
 
