@@ -1,6 +1,6 @@
 Type: Package
 Package: duckh3
-Title: H3 extension of 'DuckDB'
+Title: H3 Extension of 'DuckDB'
 Version: 0.1.0
 Authors@R: c(
     person(
@@ -39,11 +39,9 @@ Imports:
     duckdb,
     duckspatial (>= 1.0.0),
     glue
-VignetteBuilder: quarto
 Config/testthat/edition: 3
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
 Suggests: 
-    quarto,
     sf,
     testthat (>= 3.0.0)
