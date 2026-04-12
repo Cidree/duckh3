@@ -15,7 +15,6 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
 #' ## Load needed packages
 #' library(duckh3)
 #' library(duckspatial)
@@ -30,7 +29,7 @@
 #' points_tbl <- ddbh3_lonlat_to_h3(points_tbl, resolution = 10)
 #' 
 #' ## Convert to duckspatial_df
-#' points_ddbs <- ddbs_as_spatial(points_tbl)
+#' points_ddbs <- ddbs_as_points(points_tbl)
 #' 
 #' ## Get resolution of the h3 strings
 #' ddbh3_get_resolution(points_tbl)
@@ -39,7 +38,6 @@
 #' ## Add using mutate
 #' points_tbl |> 
 #'   mutate(res = ddbh3_get_resolution(h3string))
-#' }
 ddbh3_get_resolution <- function(
     x,
     h3 = "h3string",

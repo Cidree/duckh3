@@ -66,7 +66,6 @@ integers (\code{UBIGINT}) within their parent cell at a specified resolution.
 The position is a zero-based index among all children of the parent cell.
 }
 \examples{
-\dontrun{
 ## Load needed packages
 library(duckh3)
 library(dplyr)
@@ -85,5 +84,4 @@ ddbh3_get_child_pos(points_tbl, resolution = 4)
 ## Add using mutate
 points_tbl |> 
   mutate(child_pos = ddbh3_get_child_pos(h3string, 4))
-}
 }

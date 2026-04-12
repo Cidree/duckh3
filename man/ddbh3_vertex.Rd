@@ -133,7 +133,6 @@ unnested and aggregated into a \code{MULTIPOINT} geometry per cell
 }
 }
 \examples{
-\dontrun{
 ## Load needed packages
 library(duckh3)
 library(duckspatial)
@@ -189,5 +188,4 @@ ddbh3_h3_to_vertexes(points_tbl) |>
 ## Convert nested vertexes (returns MULTIPOINTS)
 ddbh3_h3_to_vertexes(points_tbl, nested = TRUE) |> 
   ddbh3_vertex_to_spatial()
-}
 }

@@ -28,7 +28,6 @@
 #' @aliases ddbh3_h3_to_spatial ddbh3_h3_to_lon ddbh3_h3_to_lat ddbh3_strings_to_bigint ddbh3_bigint_to_strings
 #'
 #' @examples
-#' \dontrun{
 #' ## Load needed packages
 #' library(duckh3)
 #' library(duckspatial)
@@ -95,7 +94,6 @@
 #' points_bigint_tbl |> 
 #'   mutate(h3string = ddbh3_bigint_to_strings(h3_integers))
 #' 
-#' }
 NULL
 
 

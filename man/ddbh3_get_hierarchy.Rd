@@ -119,7 +119,6 @@ resolution, without computing them
 }
 }
 \examples{
-\dontrun{
 ## Load needed packages
 library(duckh3)
 library(dplyr)
@@ -181,6 +180,4 @@ n_children_tbl <- ddbh3_get_n_children(points_tbl, resolution = 10)
 ## Add with mutate
 points_tbl |> 
   mutate(n_children = ddbh3_get_n_children(h3string, 15))
-
-}
 }

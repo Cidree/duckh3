@@ -61,7 +61,6 @@ Get the resolution of H3 cell indexes stored as strings or unsigned 64-bit
 integers (\code{UBIGINT}) from an existing column.
 }
 \examples{
-\dontrun{
 ## Load needed packages
 library(duckh3)
 library(duckspatial)
@@ -76,7 +75,7 @@ points_tbl <- read.csv(
 points_tbl <- ddbh3_lonlat_to_h3(points_tbl, resolution = 10)
 
 ## Convert to duckspatial_df
-points_ddbs <- ddbs_as_spatial(points_tbl)
+points_ddbs <- ddbs_as_points(points_tbl)
 
 ## Get resolution of the h3 strings
 ddbh3_get_resolution(points_tbl)
@@ -85,5 +84,4 @@ ddbh3_get_resolution(points_ddbs, new_column = "res")
 ## Add using mutate
 points_tbl |> 
   mutate(res = ddbh3_get_resolution(h3string))
-}
 }

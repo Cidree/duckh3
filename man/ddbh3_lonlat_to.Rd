@@ -92,7 +92,6 @@ or as unsigned 64-bit integers (\code{UBIGINT})
 }
 }
 \examples{
-\dontrun{
 ## Load needed packages
 library(duckdb)
 library(duckh3)
@@ -167,6 +166,4 @@ as_duckspatial_df("points_strings_spatial", conn)
 
 ## Read it in memory as an sf object
 ddbs_read_table(conn, "points_strings_spatial")
-
-}
 }

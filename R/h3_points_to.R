@@ -27,7 +27,6 @@
 #' @aliases ddbh3_points_to_h3 ddbh3_points_to_spatial
 #'
 #' @examples
-#' \dontrun{
 #' ## Load needed packages
 #' library(duckh3)
 #' library(duckspatial)
@@ -38,7 +37,7 @@
 #' )
 #' 
 #' ## Convert to duckspatial_df
-#' points_ddbs <- ddbs_as_spatial(points_tbl)
+#' points_ddbs <- ddbs_as_points(points_tbl)
 #' 
 #' ## TO H3 strings/ubigint ------------
 #' 
@@ -60,7 +59,6 @@
 #' 
 #' ## Collect as sf
 #' polygons_8_sf <- ddbs_collect(polygons_8_ddbs)
-#' }
 NULL
 
 

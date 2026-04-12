@@ -30,7 +30,6 @@
 #' @aliases ddbh3_get_parent ddbh3_get_center_child ddbh3_get_children ddbh3_get_n_children
 #'
 #' @examples
-#' \dontrun{
 #' ## Load needed packages
 #' library(duckh3)
 #' library(dplyr)
@@ -92,8 +91,6 @@
 #' ## Add with mutate
 #' points_tbl |> 
 #'   mutate(n_children = ddbh3_get_n_children(h3string, 15))
-#' 
-#' }
 NULL
 
 
@@ -282,7 +279,6 @@ ddbh3_get_center_child <- function(
 #' @export
 #'
 #' @examples
-#' \dontrun{
 #' ## Load needed packages
 #' library(duckh3)
 #' library(dplyr)
@@ -309,7 +305,6 @@ ddbh3_get_center_child <- function(
 #' points_tbl |> 
 #'   mutate(faces = ddbh3_get_icosahedron_faces(h3string)) |> 
 #'   mutate(faces_unnested = unnest(faces))
-#' }
 ddbh3_get_icosahedron_faces <- function(
     x,
     h3 = "h3string",
@@ -370,7 +365,6 @@ ddbh3_get_icosahedron_faces <- function(
 #' @export
 #'
 #' @examples
-#' \dontrun{
 #' ## Load needed packages
 #' library(duckh3)
 #' library(dplyr)
@@ -389,7 +383,6 @@ ddbh3_get_icosahedron_faces <- function(
 #' ## Add using mutate
 #' points_tbl |> 
 #'   mutate(child_pos = ddbh3_get_child_pos(h3string, 4))
-#' }
 ddbh3_get_child_pos <- function(
     x,
     resolution = 8,

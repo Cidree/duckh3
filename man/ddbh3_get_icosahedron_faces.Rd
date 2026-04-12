@@ -67,7 +67,6 @@ or unsigned 64-bit integers (\code{UBIGINT}). Each H3 cell maps onto one or more
 of the 20 faces of the underlying icosahedron used to construct the H3 grid.
 }
 \examples{
-\dontrun{
 ## Load needed packages
 library(duckh3)
 library(dplyr)
@@ -94,5 +93,4 @@ points_tbl |>
 points_tbl |> 
   mutate(faces = ddbh3_get_icosahedron_faces(h3string)) |> 
   mutate(faces_unnested = unnest(faces))
-}
 }

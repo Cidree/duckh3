@@ -86,7 +86,6 @@ each point as a spatial geometry
 }
 }
 \examples{
-\dontrun{
 ## Load needed packages
 library(duckh3)
 library(duckspatial)
@@ -97,7 +96,7 @@ points_tbl <- read.csv(
 )
 
 ## Convert to duckspatial_df
-points_ddbs <- ddbs_as_spatial(points_tbl)
+points_ddbs <- ddbs_as_points(points_tbl)
 
 ## TO H3 strings/ubigint ------------
 
@@ -119,5 +118,4 @@ polygons_8_ddbs <- ddbh3_points_to_spatial(points_ddbs, 8)
 
 ## Collect as sf
 polygons_8_sf <- ddbs_collect(polygons_8_ddbs)
-}
 }

@@ -28,7 +28,6 @@
 #' @aliases ddbh3_is_pentagon ddbh3_is_valid ddbh3_is_res_class_iii
 #'
 #' @examples
-#' \dontrun{
 #' ## Load needed packages
 #' library(duckh3)
 #' library(dplyr)
@@ -82,7 +81,6 @@
 #'     cell_valid  = ddbh3_is_h3(h3string),
 #'     vertex_valid = ddbh3_is_vertex(h3vertex)
 #'   )
-#' }
 NULL
 
 

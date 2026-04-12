@@ -30,7 +30,6 @@
 #' @aliases ddbh3_lonlat_to_h3 ddbh3_lonlat_to_spatial
 #'
 #' @examples
-#' \dontrun{
 #' ## Load needed packages
 #' library(duckdb)
 #' library(duckh3)
@@ -105,8 +104,6 @@
 #' 
 #' ## Read it in memory as an sf object
 #' ddbs_read_table(conn, "points_strings_spatial")
-#' 
-#' }
 NULL
 
 

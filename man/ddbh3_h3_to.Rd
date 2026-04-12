@@ -115,7 +115,6 @@ The four functions differ only in the output format:
 }
 }
 \examples{
-\dontrun{
 ## Load needed packages
 library(duckh3)
 library(duckspatial)
@@ -182,5 +181,4 @@ points_strings_tbl <- ddbh3_bigint_to_strings(
 points_bigint_tbl |> 
   mutate(h3string = ddbh3_bigint_to_strings(h3_integers))
 
-}
 }

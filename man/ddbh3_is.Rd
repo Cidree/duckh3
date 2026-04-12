@@ -111,7 +111,6 @@ Class III resolution (odd resolutions: 1, 3, 5, 7, 9, 11, 13, 15)
 }
 }
 \examples{
-\dontrun{
 ## Load needed packages
 library(duckh3)
 library(dplyr)
@@ -165,5 +164,4 @@ vertex_tbl |>
     cell_valid  = ddbh3_is_h3(h3string),
     vertex_valid = ddbh3_is_vertex(h3vertex)
   )
-}
 }

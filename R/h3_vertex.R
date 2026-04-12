@@ -36,7 +36,6 @@
 #' @aliases ddbh3_h3_to_vertex ddbh3_h3_to_vertexes ddbh3_vertex_to_spatial
 #'
 #' @examples
-#' \dontrun{
 #' ## Load needed packages
 #' library(duckh3)
 #' library(duckspatial)
@@ -92,7 +91,6 @@
 #' ## Convert nested vertexes (returns MULTIPOINTS)
 #' ddbh3_h3_to_vertexes(points_tbl, nested = TRUE) |> 
 #'   ddbh3_vertex_to_spatial()
-#' }
 NULL
 
 
