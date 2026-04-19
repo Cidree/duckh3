@@ -90,6 +90,10 @@ each point as a spatial geometry
 library(duckh3)
 library(duckspatial)
 
+## Setup the default connection with h3 and spatial extensions
+## This is a mandatory step to use duckh3 functions
+ddbh3_default_conn(threads = 1)
+
 ## Load example data
 points_tbl <- read.csv(
   system.file("extdata/example_pts.csv", package = "duckh3")

@@ -21,7 +21,7 @@
 #' library(duckh3)
 #'
 #' # create a duckdb database in memory
-#' conn <- ddbh3_create_conn(dbdir = "memory")
+#' conn <- ddbh3_create_conn(dbdir = "memory", threads = 1)
 #' 
 #' # create an in-memory connection with 1 thread and 2GB memory limit
 #' conn <- ddbh3_create_conn(threads = 1, memory_limit_gb = 2)
