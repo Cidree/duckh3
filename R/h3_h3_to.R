@@ -18,6 +18,8 @@
 #' * `ddbh3_h3_to_lat()` extracts the latitude of the H3 cell centroid
 #' * `ddbh3_strings_to_bigint()` converts H3 indexes to unsigned 64-bit integers (`UBIGINT`)
 #' * `ddbh3_bigint_to_strings()` converts H3 indexes to strings (e.g. `"8928308280fffff"`)
+#' * `ddbh3_h3_to_points()` converts H3 indexes to spatial points located at the centroid 
+#' of the H3 cell
 #'
 #' @template desc_formats
 #'
@@ -32,6 +34,10 @@
 #' library(duckh3)
 #' library(duckspatial)
 #' library(dplyr)
+#' 
+#' ## Setup the default connection with h3 and spatial extensions
+#' ## This is a mandatory step to use duckh3 functions
+#' ddbh3_default_conn()
 #' 
 #' ## Load example data
 #' points_tbl <- read.csv(
@@ -276,6 +282,48 @@ ddbh3_bigint_to_strings <- function(
     quiet = quiet,
     fun = built_fun,
     base_fun = "h3_h3_to_string(x)"
+  ) 
+
+}
+
+
+
+
+#' @rdname ddbh3_h3_to
+#' @export
+ddbh3_h3_to_points <- function(
+    x,
+    h3 = "h3string",
+    conn = NULL,
+    name = NULL,
+    overwrite = FALSE,
+    quiet = FALSE
+) {
+  
+  
+  # 0. Handle function-specific errors
+  duckspatial:::assert_character_scalar(h3, "h3")
+
+  # 1. Build parameters string
+  built_fun <- glue::glue("
+    ST_Point(
+      h3_cell_to_lng({h3}),
+      h3_cell_to_lat({h3})
+    )
+  ")
+
+  # 2. Pass to template
+  template_h3_to_spatial(
+    x = x,
+    conn = conn,
+    name = name,
+    overwrite = overwrite,
+    quiet = quiet,
+    fun = built_fun,
+    base_fun = "ST_Point(
+      h3_cell_to_lng(x), 
+      h3_cell_to_lat(x)
+    )"
   ) 
 
 }
