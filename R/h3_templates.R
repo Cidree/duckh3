@@ -65,8 +65,8 @@ template_h3_base <- function(
 
   ## 1.6. Install and load h3 on target connection
   ## TODO - add argument in duckspatial:::resolve_spatial_connections() to manage it
-  duckspatial::ddbs_install(target_conn, upgrade = FALSE, quiet = TRUE, extension = "h3")
-  duckspatial::ddbs_load(target_conn, quiet = TRUE, extension = "h3")
+  # duckspatial::ddbs_install(target_conn, upgrade = FALSE, quiet = TRUE, extension = "h3")
+  # duckspatial::ddbs_load(target_conn, quiet = TRUE, extension = "h3")
 
 
   # 2. Prepare the query
@@ -166,8 +166,8 @@ template_h3_to_spatial <- function(
   on.exit(x_list$cleanup(), add = TRUE)
 
   ## 1.6. Install and load h3 on target connection
-  duckspatial::ddbs_install(target_conn, upgrade = FALSE, quiet = TRUE, extension = "h3")
-  duckspatial::ddbs_load(target_conn, quiet = TRUE, extension = "h3")
+  # duckspatial::ddbs_install(target_conn, upgrade = FALSE, quiet = TRUE, extension = "h3")
+  # duckspatial::ddbs_load(target_conn, quiet = TRUE, extension = "h3")
 
 
   # 2. Prepare the query
@@ -180,7 +180,7 @@ template_h3_to_spatial <- function(
   ## 3.3. Build the columns clause
   if (length(x_geom) == 0) {
     x_geom <- "geometry"
-    cols_clause <- glue::glue("*, {fun} AS geometry")
+    cols_clause <- glue::glue("*, {duckspatial:::build_geom_query(fun, name, 'EPSG:4326', 'duckspatial')} AS geometry")
   } else {
     cols_clause <- glue::glue("* REPLACE ({duckspatial:::build_geom_query(fun, name, crs_x, 'duckspatial')} AS {x_geom})")
   }

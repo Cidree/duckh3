@@ -114,8 +114,8 @@ ddbh3_points_to_spatial <- function(
   on.exit(x_list$cleanup(), add = TRUE)
 
   ## 2.3. Install and load h3 on target connection
-  duckspatial::ddbs_install(target_conn, upgrade = FALSE, quiet = TRUE, extension = "h3")
-  duckspatial::ddbs_load(target_conn, quiet = TRUE, extension = "h3")
+  # duckspatial::ddbs_install(target_conn, upgrade = FALSE, quiet = TRUE, extension = "h3")
+  # duckspatial::ddbs_load(target_conn, quiet = TRUE, extension = "h3")
 
 
   # 3. Prepare parameters for the query
@@ -229,8 +229,8 @@ ddbh3_points_to_h3 <- function(
   on.exit(x_list$cleanup(), add = TRUE)
 
   ## 1.5. Install and load h3 on target connection
-  duckspatial::ddbs_install(target_conn, upgrade = FALSE, quiet = TRUE, extension = "h3")
-  duckspatial::ddbs_load(target_conn, quiet = TRUE, extension = "h3")
+  # duckspatial::ddbs_install(target_conn, upgrade = FALSE, quiet = TRUE, extension = "h3")
+  # duckspatial::ddbs_load(target_conn, quiet = TRUE, extension = "h3")
 
 
   # 2. Prepare the query

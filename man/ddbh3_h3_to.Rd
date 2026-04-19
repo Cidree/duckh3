@@ -7,6 +7,7 @@
 \alias{ddbh3_h3_to_lat}
 \alias{ddbh3_strings_to_bigint}
 \alias{ddbh3_bigint_to_strings}
+\alias{ddbh3_h3_to_points}
 \title{Convert H3 string or UBIGINT indexes to other representations}
 \usage{
 ddbh3_h3_to_lon(
@@ -52,6 +53,15 @@ ddbh3_bigint_to_strings(
   x,
   h3 = "h3bigint",
   new_column = "h3string",
+  conn = NULL,
+  name = NULL,
+  overwrite = FALSE,
+  quiet = FALSE
+)
+
+ddbh3_h3_to_points(
+  x,
+  h3 = "h3string",
   conn = NULL,
   name = NULL,
   overwrite = FALSE,
@@ -112,6 +122,8 @@ The four functions differ only in the output format:
 \item \code{ddbh3_h3_to_lat()} extracts the latitude of the H3 cell centroid
 \item \code{ddbh3_strings_to_bigint()} converts H3 indexes to unsigned 64-bit integers (\code{UBIGINT})
 \item \code{ddbh3_bigint_to_strings()} converts H3 indexes to strings (e.g. \code{"8928308280fffff"})
+\item \code{ddbh3_h3_to_points()} converts H3 indexes to spatial points located at the centroid
+of the H3 cell
 }
 }
 \examples{
@@ -119,6 +131,10 @@ The four functions differ only in the output format:
 library(duckh3)
 library(duckspatial)
 library(dplyr)
+
+## Setup the default connection with h3 and spatial extensions
+## This is a mandatory step to use duckh3 functions
+ddbh3_default_conn()
 
 ## Load example data
 points_tbl <- read.csv(
