@@ -288,7 +288,7 @@ or as unsigned 64-bit integers (<code>UBIGINT</code>)</p></li>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Setup the default connection with h3 and spatial extensions</span></span></span>
 <span class="r-in"><span><span class="co">## This is a mandatory step to use duckh3 functions</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="ddbh3_default_conn.html">ddbh3_default_conn</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="ddbh3_default_conn.html">ddbh3_default_conn</a></span><span class="op">(</span>threads <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Load example data</span></span></span>
 <span class="r-in"><span><span class="va">points_tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span></span></span>
@@ -296,7 +296,7 @@ or as unsigned 64-bit integers (<code>UBIGINT</code>)</p></li>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Create a connection with spatial and h3 extensions</span></span></span>
-<span class="r-in"><span><span class="va">conn</span> <span class="op">&lt;-</span> <span class="fu"><a href="ddbh3_create_conn.html">ddbh3_create_conn</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">conn</span> <span class="op">&lt;-</span> <span class="fu"><a href="ddbh3_create_conn.html">ddbh3_create_conn</a></span><span class="op">(</span>threads <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## TO H3 ------------</span></span></span>
 <span class="r-in"><span></span></span>
@@ -322,7 +322,7 @@ or as unsigned 64-bit integers (<code>UBIGINT</code>)</p></li>
 <span class="r-in"><span>  lat <span class="op">=</span> <span class="st">"lati"</span>,</span></span>
 <span class="r-in"><span>  resolution <span class="op">=</span> <span class="fl">10</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Source:   table&lt;temp_view_ddefcf3d_9cba_425f_b8c8_ab52368d8470&gt; [?? x 6]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Source:   table&lt;temp_view_340a5b34_88a3_43e3_8f44_4e4616d8010e&gt; [?? x 6]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.5.3/:memory:]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        X    id   lati   long category h3string       </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          </span>

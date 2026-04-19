@@ -162,7 +162,7 @@ library(dplyr)
 
 ## Setup the default connection with h3 and spatial extensions
 ## This is a mandatory step to use duckh3 functions
-ddbh3_default_conn()
+ddbh3_default_conn(threads = 1)
 
 ## Load example data
 points_tbl <- read.csv(
@@ -176,7 +176,7 @@ points_tbl <- ddbh3_lonlat_to_h3(points_tbl, resolution = 8)
 
 ## Check if h3 indexes are valid
 ddbh3_is_h3(points_tbl)
-#> # Source:   table<temp_view_f1ff8ed7_28ed_4569_95db_ef55bc38b80a> [?? x 7]
+#> # Source:   table<temp_view_8bb585c4_31e9_41c3_b729_b9e14f60da3a> [?? x 7]
 #> # Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.5.3/:memory:]
 #>        X    id    lat    lon category h3string        ish3 
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <lgl>
@@ -215,7 +215,7 @@ points_tbl |>
 
 ## Check if h3 indexes are pentagons
 ddbh3_is_pentagon(points_tbl)
-#> # Source:   table<temp_view_81903f3f_26af_4a60_aaaa_bca9505e500b> [?? x 7]
+#> # Source:   table<temp_view_661fe023_9f23_4b58_a2f5_2822b325e942> [?? x 7]
 #> # Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.5.3/:memory:]
 #>        X    id    lat    lon category h3string        ispentagon
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <lgl>     
@@ -254,7 +254,7 @@ points_tbl |>
 
 ## Check if h3 indexes belong to a Class III resolution
 ddbh3_is_res_class_iii(points_tbl)
-#> # Source:   table<temp_view_1d568c4f_eae8_42ef_867d_4763fff236c5> [?? x 7]
+#> # Source:   table<temp_view_8e8e591b_73f7_4ac9_b47f_de123837ea3c> [?? x 7]
 #> # Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.5.3/:memory:]
 #>        X    id    lat    lon category h3string        isclassiii
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <lgl>     
@@ -273,7 +273,7 @@ ddbh3_is_res_class_iii(points_tbl)
 ## Check across multiple resolutions
 ddbh3_lonlat_to_h3(points_tbl, resolution = 7) |>
   ddbh3_is_res_class_iii()
-#> # Source:   table<temp_view_870c4cdb_9155_4af7_b5fd_d33382087c77> [?? x 8]
+#> # Source:   table<temp_view_f817c3cc_d071_4771_bf23_d00154182ef1> [?? x 8]
 #> # Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.5.3/:memory:]
 #>        X    id    lat    lon category h3string        h3string_1      isclassiii
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <chr>           <lgl>     
@@ -296,7 +296,7 @@ vertex_tbl <- ddbh3_h3_to_vertex(points_tbl, n = 1)
 
 ## Check if indexes are valid vertexes
 ddbh3_is_vertex(vertex_tbl, h3 = "h3vertex")
-#> # Source:   table<temp_view_4efe6baf_257a_4052_bd18_caf74e496263> [?? x 8]
+#> # Source:   table<temp_view_7415b6fd_63c7_4a37_befc_56a38b4df112> [?? x 8]
 #> # Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.5.3/:memory:]
 #>        X    id    lat    lon category h3string        h3vertex         isvertex
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <chr>            <lgl>   

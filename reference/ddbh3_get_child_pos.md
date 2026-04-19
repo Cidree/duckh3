@@ -127,7 +127,7 @@ library(dplyr)
 
 ## Setup the default connection with h3 and spatial extensions
 ## This is a mandatory step to use duckh3 functions
-ddbh3_default_conn()
+ddbh3_default_conn(threads = 1)
 
 ## Load example data
 points_tbl <- read.csv(
@@ -139,7 +139,7 @@ points_tbl <- ddbh3_lonlat_to_h3(points_tbl, resolution = 6)
 
 ## Get position relative to resolution 4
 ddbh3_get_child_pos(points_tbl, resolution = 4)
-#> # Source:   table<temp_view_9cc038af_ec72_4788_8e17_2bdecc80b9de> [?? x 7]
+#> # Source:   table<temp_view_4d8bb1a2_7b16_484a_9756_ec541cc2166e> [?? x 7]
 #> # Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.5.3/:memory:]
 #>        X    id    lat    lon category h3string        h3child_pos
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>               <int64>

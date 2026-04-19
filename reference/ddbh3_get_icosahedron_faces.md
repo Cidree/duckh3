@@ -120,7 +120,7 @@ library(dplyr)
 
 ## Setup the default connection with h3 and spatial extensions
 ## This is a mandatory step to use duckh3 functions
-ddbh3_default_conn()
+ddbh3_default_conn(threads = 1)
 
 ## Load example data
 points_tbl <- read.csv(

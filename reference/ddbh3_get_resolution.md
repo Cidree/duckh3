@@ -112,7 +112,7 @@ library(dplyr)
 
 ## Setup the default connection with h3 and spatial extensions
 ## This is a mandatory step to use duckh3 functions
-ddbh3_default_conn()
+ddbh3_default_conn(threads = 1)
 
 ## Load example data
 points_tbl <- read.csv(
@@ -130,7 +130,7 @@ points_ddbs <- ddbs_as_points(points_tbl)
 
 ## Get resolution of the h3 strings
 ddbh3_get_resolution(points_tbl)
-#> # Source:   table<temp_view_cee89c8e_2486_4791_addb_492f59389d19> [?? x 7]
+#> # Source:   table<temp_view_c2d7c9bd_db02_4e0d_8a8e_6af5746da554> [?? x 7]
 #> # Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.5.3/:memory:]
 #>        X    id    lat    lon category h3string        h3resolution
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>                  <int>
@@ -154,7 +154,7 @@ ddbh3_get_resolution(points_ddbs, new_column = "res")
 #> # Data backed by DuckDB (dbplyr lazy evaluation)
 #> # Use ddbs_collect() or st_as_sf() to materialize to sf
 #> #
-#> # Source:   table<temp_view_dd0f6e63_b102_4e3a_8b0a_93cc73b05b48> [?? x 8]
+#> # Source:   table<temp_view_54fd8ddb_4c45_447d_a499_5dc9699ef827> [?? x 8]
 #> # Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.5.3/:memory:]
 #>        X    id    lat    lon category h3string          res geometry            
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <int> <wk_wkb>            

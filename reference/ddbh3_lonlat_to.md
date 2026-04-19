@@ -151,7 +151,7 @@ library(dplyr)
 
 ## Setup the default connection with h3 and spatial extensions
 ## This is a mandatory step to use duckh3 functions
-ddbh3_default_conn()
+ddbh3_default_conn(threads = 1)
 
 ## Load example data
 points_tbl <- read.csv(
@@ -159,7 +159,7 @@ points_tbl <- read.csv(
 )
 
 ## Create a connection with spatial and h3 extensions
-conn <- ddbh3_create_conn()
+conn <- ddbh3_create_conn(threads = 1)
 
 ## TO H3 ------------
 
@@ -185,7 +185,7 @@ ddbh3_lonlat_to_h3(
   lat = "lati",
   resolution = 10
 )
-#> # Source:   table<temp_view_ddefcf3d_9cba_425f_b8c8_ab52368d8470> [?? x 6]
+#> # Source:   table<temp_view_340a5b34_88a3_43e3_8f44_4e4616d8010e> [?? x 6]
 #> # Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.5.3/:memory:]
 #>        X    id   lati   long category h3string       
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>          
