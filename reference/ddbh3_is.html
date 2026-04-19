@@ -291,10 +291,13 @@ Class III resolution (odd resolutions: 1, 3, 5, 7, 9, 11, 13, 15)</p></li>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="co">## Load needed packages</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">## Load needed packages</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cidree.github.io/duckh3/">duckh3</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Setup the default connection with h3 and spatial extensions</span></span></span>
+<span class="r-in"><span><span class="co">## This is a mandatory step to use duckh3 functions</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="ddbh3_default_conn.html">ddbh3_default_conn</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Load example data</span></span></span>
 <span class="r-in"><span><span class="va">points_tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span></span></span>
@@ -308,28 +311,118 @@ Class III resolution (odd resolutions: 1, 3, 5, 7, 9, 11, 13, 15)</p></li>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Check if h3 indexes are valid</span></span></span>
 <span class="r-in"><span><span class="fu">ddbh3_is_h3</span><span class="op">(</span><span class="va">points_tbl</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Source:   table&lt;temp_view_f1ff8ed7_28ed_4569_95db_ef55bc38b80a&gt; [?? x 7]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.5.3/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        X    id    lat    lon category h3string        ish3 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1     1 -<span style="color: #BB0000;">43.1</span>   16.2  B        88d02dcc19fffff TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     2     2  29.2   61.9  C        884221ac65fffff TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     3     3 -<span style="color: #BB0000;">20.7</span>   51.3  C        88a20e8f69fffff TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     4     4  50.9  -<span style="color: #BB0000;">14.0</span>  B        88181c6c95fffff TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>     5     5 -<span style="color: #BB0000;">57.6</span>    8.71 C        88e6cece5dfffff TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     6     6 -<span style="color: #BB0000;">56.2</span>   21.5  B        88e69d233dfffff TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>     7     7 -<span style="color: #BB0000;">33.7</span>  -<span style="color: #BB0000;">17.0</span>  C        88c1880751fffff TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     8     8 -<span style="color: #BB0000;">32.7</span>  -<span style="color: #BB0000;">31.9</span>  A        88c52b36c5fffff TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     9     9  -<span style="color: #BB0000;">7.39</span>  39.0  C        887b6b5701fffff TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>    10    10  10.0  -<span style="color: #BB0000;">89.9</span>  A        886d424ae1fffff TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ more rows</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Check in mutate</span></span></span>
 <span class="r-in"><span><span class="va">points_tbl</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>valid <span class="op">=</span> <span class="fu">ddbh3_is_h3</span><span class="op">(</span><span class="va">h3string</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Source:   SQL [?? x 7]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.5.3/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        X    id    lat    lon category h3string        valid</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1     1 -<span style="color: #BB0000;">43.1</span>   16.2  B        88d02dcc19fffff TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     2     2  29.2   61.9  C        884221ac65fffff TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     3     3 -<span style="color: #BB0000;">20.7</span>   51.3  C        88a20e8f69fffff TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     4     4  50.9  -<span style="color: #BB0000;">14.0</span>  B        88181c6c95fffff TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>     5     5 -<span style="color: #BB0000;">57.6</span>    8.71 C        88e6cece5dfffff TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     6     6 -<span style="color: #BB0000;">56.2</span>   21.5  B        88e69d233dfffff TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>     7     7 -<span style="color: #BB0000;">33.7</span>  -<span style="color: #BB0000;">17.0</span>  C        88c1880751fffff TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     8     8 -<span style="color: #BB0000;">32.7</span>  -<span style="color: #BB0000;">31.9</span>  A        88c52b36c5fffff TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     9     9  -<span style="color: #BB0000;">7.39</span>  39.0  C        887b6b5701fffff TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>    10    10  10.0  -<span style="color: #BB0000;">89.9</span>  A        886d424ae1fffff TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ more rows</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## IS PENTAGON -------------</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Check if h3 indexes are pentagons</span></span></span>
 <span class="r-in"><span><span class="fu">ddbh3_is_pentagon</span><span class="op">(</span><span class="va">points_tbl</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Source:   table&lt;temp_view_81903f3f_26af_4a60_aaaa_bca9505e500b&gt; [?? x 7]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.5.3/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        X    id    lat    lon category h3string        ispentagon</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1     1 -<span style="color: #BB0000;">43.1</span>   16.2  B        88d02dcc19fffff FALSE     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     2     2  29.2   61.9  C        884221ac65fffff FALSE     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     3     3 -<span style="color: #BB0000;">20.7</span>   51.3  C        88a20e8f69fffff FALSE     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     4     4  50.9  -<span style="color: #BB0000;">14.0</span>  B        88181c6c95fffff FALSE     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>     5     5 -<span style="color: #BB0000;">57.6</span>    8.71 C        88e6cece5dfffff FALSE     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     6     6 -<span style="color: #BB0000;">56.2</span>   21.5  B        88e69d233dfffff FALSE     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>     7     7 -<span style="color: #BB0000;">33.7</span>  -<span style="color: #BB0000;">17.0</span>  C        88c1880751fffff FALSE     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     8     8 -<span style="color: #BB0000;">32.7</span>  -<span style="color: #BB0000;">31.9</span>  A        88c52b36c5fffff FALSE     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     9     9  -<span style="color: #BB0000;">7.39</span>  39.0  C        887b6b5701fffff FALSE     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>    10    10  10.0  -<span style="color: #BB0000;">89.9</span>  A        886d424ae1fffff FALSE     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ more rows</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Check in mutate</span></span></span>
 <span class="r-in"><span><span class="va">points_tbl</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>is_pent <span class="op">=</span> <span class="fu">ddbh3_is_pentagon</span><span class="op">(</span><span class="va">h3string</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Source:   SQL [?? x 7]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.5.3/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        X    id    lat    lon category h3string        is_pent</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1     1 -<span style="color: #BB0000;">43.1</span>   16.2  B        88d02dcc19fffff FALSE  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     2     2  29.2   61.9  C        884221ac65fffff FALSE  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     3     3 -<span style="color: #BB0000;">20.7</span>   51.3  C        88a20e8f69fffff FALSE  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     4     4  50.9  -<span style="color: #BB0000;">14.0</span>  B        88181c6c95fffff FALSE  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>     5     5 -<span style="color: #BB0000;">57.6</span>    8.71 C        88e6cece5dfffff FALSE  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     6     6 -<span style="color: #BB0000;">56.2</span>   21.5  B        88e69d233dfffff FALSE  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>     7     7 -<span style="color: #BB0000;">33.7</span>  -<span style="color: #BB0000;">17.0</span>  C        88c1880751fffff FALSE  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     8     8 -<span style="color: #BB0000;">32.7</span>  -<span style="color: #BB0000;">31.9</span>  A        88c52b36c5fffff FALSE  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     9     9  -<span style="color: #BB0000;">7.39</span>  39.0  C        887b6b5701fffff FALSE  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>    10    10  10.0  -<span style="color: #BB0000;">89.9</span>  A        886d424ae1fffff FALSE  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ more rows</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## IS CLASS III ------------</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Check if h3 indexes belong to a Class III resolution</span></span></span>
 <span class="r-in"><span><span class="fu">ddbh3_is_res_class_iii</span><span class="op">(</span><span class="va">points_tbl</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Source:   table&lt;temp_view_1d568c4f_eae8_42ef_867d_4763fff236c5&gt; [?? x 7]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.5.3/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        X    id    lat    lon category h3string        isclassiii</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1     1 -<span style="color: #BB0000;">43.1</span>   16.2  B        88d02dcc19fffff FALSE     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     2     2  29.2   61.9  C        884221ac65fffff FALSE     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     3     3 -<span style="color: #BB0000;">20.7</span>   51.3  C        88a20e8f69fffff FALSE     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     4     4  50.9  -<span style="color: #BB0000;">14.0</span>  B        88181c6c95fffff FALSE     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>     5     5 -<span style="color: #BB0000;">57.6</span>    8.71 C        88e6cece5dfffff FALSE     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     6     6 -<span style="color: #BB0000;">56.2</span>   21.5  B        88e69d233dfffff FALSE     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>     7     7 -<span style="color: #BB0000;">33.7</span>  -<span style="color: #BB0000;">17.0</span>  C        88c1880751fffff FALSE     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     8     8 -<span style="color: #BB0000;">32.7</span>  -<span style="color: #BB0000;">31.9</span>  A        88c52b36c5fffff FALSE     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     9     9  -<span style="color: #BB0000;">7.39</span>  39.0  C        887b6b5701fffff FALSE     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>    10    10  10.0  -<span style="color: #BB0000;">89.9</span>  A        886d424ae1fffff FALSE     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ more rows</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Check across multiple resolutions</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="ddbh3_lonlat_to.html">ddbh3_lonlat_to_h3</a></span><span class="op">(</span><span class="va">points_tbl</span>, resolution <span class="op">=</span> <span class="fl">7</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">ddbh3_is_res_class_iii</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Source:   table&lt;temp_view_870c4cdb_9155_4af7_b5fd_d33382087c77&gt; [?? x 8]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.5.3/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        X    id    lat    lon category h3string        h3string_1      isclassiii</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1     1 -<span style="color: #BB0000;">43.1</span>   16.2  B        88d02dcc19fffff 87d02dcc1ffffff FALSE     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     2     2  29.2   61.9  C        884221ac65fffff 874221ac6ffffff FALSE     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     3     3 -<span style="color: #BB0000;">20.7</span>   51.3  C        88a20e8f69fffff 87a20e8f6ffffff FALSE     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     4     4  50.9  -<span style="color: #BB0000;">14.0</span>  B        88181c6c95fffff 87181c6c9ffffff FALSE     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>     5     5 -<span style="color: #BB0000;">57.6</span>    8.71 C        88e6cece5dfffff 87e6cece5ffffff FALSE     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     6     6 -<span style="color: #BB0000;">56.2</span>   21.5  B        88e69d233dfffff 87e69d233ffffff FALSE     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>     7     7 -<span style="color: #BB0000;">33.7</span>  -<span style="color: #BB0000;">17.0</span>  C        88c1880751fffff 87c188075ffffff FALSE     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     8     8 -<span style="color: #BB0000;">32.7</span>  -<span style="color: #BB0000;">31.9</span>  A        88c52b36c5fffff 87c52b36cffffff FALSE     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     9     9  -<span style="color: #BB0000;">7.39</span>  39.0  C        887b6b5701fffff 877b6b570ffffff FALSE     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>    10    10  10.0  -<span style="color: #BB0000;">89.9</span>  A        886d424ae1fffff 876d424aeffffff FALSE     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ more rows</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## IS VERTEX ---------------</span></span></span>
 <span class="r-in"><span></span></span>
@@ -338,6 +431,21 @@ Class III resolution (odd resolutions: 1, 3, 5, 7, 9, 11, 13, 15)</p></li>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Check if indexes are valid vertexes</span></span></span>
 <span class="r-in"><span><span class="fu">ddbh3_is_vertex</span><span class="op">(</span><span class="va">vertex_tbl</span>, h3 <span class="op">=</span> <span class="st">"h3vertex"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Source:   table&lt;temp_view_4efe6baf_257a_4052_bd18_caf74e496263&gt; [?? x 8]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.5.3/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        X    id    lat    lon category h3string        h3vertex         isvertex</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1     1 -<span style="color: #BB0000;">43.1</span>   16.2  B        88d02dcc19fffff 218d02dcc19fffff TRUE    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     2     2  29.2   61.9  C        884221ac65fffff 2184221ac65fffff TRUE    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     3     3 -<span style="color: #BB0000;">20.7</span>   51.3  C        88a20e8f69fffff 238a20e8a97fffff TRUE    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     4     4  50.9  -<span style="color: #BB0000;">14.0</span>  B        88181c6c95fffff 238181c6c83fffff TRUE    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>     5     5 -<span style="color: #BB0000;">57.6</span>    8.71 C        88e6cece5dfffff 258e6cece43fffff TRUE    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     6     6 -<span style="color: #BB0000;">56.2</span>   21.5  B        88e69d233dfffff 258e69d2323fffff TRUE    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>     7     7 -<span style="color: #BB0000;">33.7</span>  -<span style="color: #BB0000;">17.0</span>  C        88c1880751fffff 218c1880751fffff TRUE    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     8     8 -<span style="color: #BB0000;">32.7</span>  -<span style="color: #BB0000;">31.9</span>  A        88c52b36c5fffff 238c52b3613fffff TRUE    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     9     9  -<span style="color: #BB0000;">7.39</span>  39.0  C        887b6b5701fffff 2187b6b5701fffff TRUE    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>    10    10  10.0  -<span style="color: #BB0000;">89.9</span>  A        886d424ae1fffff 2186d424ae1fffff TRUE    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ more rows</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Check in mutate (mix of h3 cells and vertexes)</span></span></span>
 <span class="r-in"><span><span class="va">vertex_tbl</span> <span class="op">|&gt;</span></span></span>
@@ -345,7 +453,21 @@ Class III resolution (odd resolutions: 1, 3, 5, 7, 9, 11, 13, 15)</p></li>
 <span class="r-in"><span>    cell_valid  <span class="op">=</span> <span class="fu">ddbh3_is_h3</span><span class="op">(</span><span class="va">h3string</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>    vertex_valid <span class="op">=</span> <span class="fu">ddbh3_is_vertex</span><span class="op">(</span><span class="va">h3vertex</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Source:   SQL [?? x 9]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.5.3/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        X    id    lat    lon category h3string  h3vertex cell_valid vertex_valid</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1     1 -<span style="color: #BB0000;">43.1</span>   16.2  B        88d02dcc… 218d02d… TRUE       TRUE        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     2     2  29.2   61.9  C        884221ac… 2184221… TRUE       TRUE        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     3     3 -<span style="color: #BB0000;">20.7</span>   51.3  C        88a20e8f… 238a20e… TRUE       TRUE        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     4     4  50.9  -<span style="color: #BB0000;">14.0</span>  B        88181c6c… 238181c… TRUE       TRUE        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>     5     5 -<span style="color: #BB0000;">57.6</span>    8.71 C        88e6cece… 258e6ce… TRUE       TRUE        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     6     6 -<span style="color: #BB0000;">56.2</span>   21.5  B        88e69d23… 258e69d… TRUE       TRUE        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>     7     7 -<span style="color: #BB0000;">33.7</span>  -<span style="color: #BB0000;">17.0</span>  C        88c18807… 218c188… TRUE       TRUE        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     8     8 -<span style="color: #BB0000;">32.7</span>  -<span style="color: #BB0000;">31.9</span>  A        88c52b36… 238c52b… TRUE       TRUE        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     9     9  -<span style="color: #BB0000;">7.39</span>  39.0  C        887b6b57… 2187b6b… TRUE       TRUE        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>    10    10  10.0  -<span style="color: #BB0000;">89.9</span>  A        886d424a… 2186d42… TRUE       TRUE        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ more rows</span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

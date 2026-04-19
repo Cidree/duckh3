@@ -279,12 +279,16 @@ or as unsigned 64-bit integers (<code>UBIGINT</code>)</p></li>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="co">## Load needed packages</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">## Load needed packages</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r.duckdb.org/" class="external-link">duckdb</a></span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: DBI</span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cidree.github.io/duckh3/">duckh3</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cidree.github.io/duckspatial/" class="external-link">duckspatial</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Setup the default connection with h3 and spatial extensions</span></span></span>
+<span class="r-in"><span><span class="co">## This is a mandatory step to use duckh3 functions</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="ddbh3_default_conn.html">ddbh3_default_conn</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Load example data</span></span></span>
 <span class="r-in"><span><span class="va">points_tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span></span></span>
@@ -318,6 +322,21 @@ or as unsigned 64-bit integers (<code>UBIGINT</code>)</p></li>
 <span class="r-in"><span>  lat <span class="op">=</span> <span class="st">"lati"</span>,</span></span>
 <span class="r-in"><span>  resolution <span class="op">=</span> <span class="fl">10</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Source:   table&lt;temp_view_ddefcf3d_9cba_425f_b8c8_ab52368d8470&gt; [?? x 6]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.5.3/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        X    id   lati   long category h3string       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1     1 -<span style="color: #BB0000;">43.1</span>   16.2  B        8ad02dcc1947fff</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     2     2  29.2   61.9  C        8a4221ac6507fff</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     3     3 -<span style="color: #BB0000;">20.7</span>   51.3  C        8aa20e8f6997fff</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     4     4  50.9  -<span style="color: #BB0000;">14.0</span>  B        8a181c6c824ffff</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>     5     5 -<span style="color: #BB0000;">57.6</span>    8.71 C        8ae6cece5d37fff</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     6     6 -<span style="color: #BB0000;">56.2</span>   21.5  B        8ae69d233d17fff</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>     7     7 -<span style="color: #BB0000;">33.7</span>  -<span style="color: #BB0000;">17.0</span>  C        8ac188075167fff</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     8     8 -<span style="color: #BB0000;">32.7</span>  -<span style="color: #BB0000;">31.9</span>  A        8ac52b36c52ffff</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     9     9  -<span style="color: #BB0000;">7.39</span>  39.0  C        8a7b6b570027fff</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>    10    10  10.0  -<span style="color: #BB0000;">89.9</span>  A        8a6d424ae00ffff</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ more rows</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Create a new table in the connection</span></span></span>
@@ -326,6 +345,7 @@ or as unsigned 64-bit integers (<code>UBIGINT</code>)</p></li>
 <span class="r-in"><span>  conn <span class="op">=</span> <span class="va">conn</span>,</span></span>
 <span class="r-in"><span>  name <span class="op">=</span> <span class="st">"points_strings_8"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Query successful</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Open the created table lazily</span></span></span>
 <span class="r-in"><span><span class="va">points_lazy</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/tbl.html" class="external-link">tbl</a></span><span class="op">(</span><span class="va">conn</span>, <span class="st">"points_strings_8"</span><span class="op">)</span></span></span>
@@ -348,14 +368,54 @@ or as unsigned 64-bit integers (<code>UBIGINT</code>)</p></li>
 <span class="r-in"><span>  conn <span class="op">=</span> <span class="va">conn</span>,</span></span>
 <span class="r-in"><span>  name <span class="op">=</span> <span class="st">"points_strings_spatial"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> Query successful</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Open the created table lazily</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://cidree.github.io/duckspatial/reference/as_duckspatial_df.html" class="external-link">as_duckspatial_df</a></span><span class="op">(</span><span class="st">"points_strings_spatial"</span>, <span class="va">conn</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BBBBBB;"># A duckspatial lazy spatial table</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BBBBBB;">#</span> <span style="color: #0000BB;">● CRS:</span> <span style="color: #BBBBBB;">EPSG:4326</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BBBBBB;">#</span> <span style="color: #0000BB;">● Geometry column:</span> <span style="color: #BBBBBB;">geometry</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BBBBBB;">#</span> <span style="color: #0000BB;">● Geometry type:</span> <span style="color: #BBBBBB;">POLYGON</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BBBBBB;">#</span> <span style="color: #0000BB;">● Bounding box:</span> <span style="color: #BBBBBB;">xmin: -97.944 ymin: -59.99 xmax: 94.807 ymax: 59.812</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BBBBBB;"># Data backed by DuckDB (dbplyr lazy evaluation)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BBBBBB;"># Use</span> <span style="color: #00BB00; font-weight: bold;">ddbs_collect()</span> <span style="color: #BBBBBB;">or</span> <span style="color: #00BB00; font-weight: bold;">st_as_sf()</span> <span style="color: #BBBBBB;">to materialize to sf</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BBBBBB;">#</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Source:   table&lt;points_strings_spatial&gt; [?? x 6]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.5.3/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        X    id    lat    lon category geometry                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;wk_wkb&gt;</span>                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1     1 -<span style="color: #BB0000;">43.1</span>   16.2  B        &lt;POLYGON ((16.18579 -43.06821, 16.18338 -…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     2     2  29.2   61.9  C        &lt;POLYGON ((61.93085 29.18522, 61.93232 29…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     3     3 -<span style="color: #BB0000;">20.7</span>   51.3  C        &lt;POLYGON ((51.25962 -20.67759, 51.2582 -2…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     4     4  50.9  -<span style="color: #BB0000;">14.0</span>  B        &lt;POLYGON ((-14.04109 50.85767, -14.04793 …</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>     5     5 -<span style="color: #BB0000;">57.6</span>    8.71 C        &lt;POLYGON ((8.706577 -57.6205, 8.709258 -5…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     6     6 -<span style="color: #BB0000;">56.2</span>   21.5  B        &lt;POLYGON ((21.49239 -56.21158, 21.49306 -…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>     7     7 -<span style="color: #BB0000;">33.7</span>  -<span style="color: #BB0000;">17.0</span>  C        &lt;POLYGON ((-17.01467 -33.70043, -17.01892…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     8     8 -<span style="color: #BB0000;">32.7</span>  -<span style="color: #BB0000;">31.9</span>  A        &lt;POLYGON ((-31.88143 -32.71693, -31.88588…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     9     9  -<span style="color: #BB0000;">7.39</span>  39.0  C        &lt;POLYGON ((39.03433 -7.391451, 39.03606 -…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>    10    10  10.0  -<span style="color: #BB0000;">89.9</span>  A        &lt;POLYGON ((-89.91591 10.01776, -89.92006 …</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ more rows</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Read it in memory as an sf object</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://cidree.github.io/duckspatial/reference/ddbs_read_table.html" class="external-link">ddbs_read_table</a></span><span class="op">(</span><span class="va">conn</span>, <span class="st">"points_strings_spatial"</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BB00;">✔</span> table points_strings_spatial successfully imported.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Simple feature collection with 100 features and 5 fields</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Geometry type: POLYGON</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Dimension:     XY</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Bounding box:  xmin: -97.94382 ymin: -59.99012 xmax: 94.80651 ymax: 59.81162</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Geodetic CRS:  WGS 84</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> First 10 features:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     X id        lat        lon category                       geometry</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   1  1 -43.069252  16.192548        B POLYGON ((16.18579 -43.0682...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2   2  2  29.185117  61.932969        C POLYGON ((61.93085 29.18522...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3   3  3 -20.682592  51.259176        C POLYGON ((51.25962 -20.6775...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4   4  4  50.856814 -14.043806        B POLYGON ((-14.04109 50.8576...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5   5  5 -57.620368   8.706529        C POLYGON ((8.706577 -57.6205...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6   6  6 -56.210542  21.491229        B POLYGON ((21.49239 -56.2115...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7   7  7 -33.702164 -17.008820        C POLYGON ((-17.01467 -33.700...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8   8  8 -32.718974 -31.879051        A POLYGON ((-31.88143 -32.716...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9   9  9  -7.388245  39.031393        C POLYGON ((39.03433 -7.39145...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 10 10  10.011989 -89.915075        A POLYGON ((-89.91591 10.0177...</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

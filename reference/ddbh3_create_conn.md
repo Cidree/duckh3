@@ -52,19 +52,29 @@ A `duckdb_connection`
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
 # load packages
 library(duckspatial)
+#> duckspatial 1.0.0 attached
+#> * Compatible with DuckDB v1.5.1
+#> * This release introduces breaking changes
+#> * See full release notes for migration guidance
+#> 
+#> Default output has changed:
+#>   duckspatial now returns lazy `duckspatial_df` (dbplyr) objects
+#>   instead of `sf` objects.
+#> 
+#> To restore the previous behaviour:
+#>   ddbs_options(duckspatial.mode = 'sf')
 library(duckh3)
 
 # create a duckdb database in memory
 conn <- ddbh3_create_conn(dbdir = "memory")
 
-# create a duckdb database in disk
-conn <- ddbh3_create_conn(dbdir = "my_database.duckdb")
-
 # create an in-memory connection with 1 thread and 2GB memory limit
 conn <- ddbh3_create_conn(threads = 1, memory_limit_gb = 2)
+
+# Create a persistent database in disk
+# conn <- ddbh3_create_conn(dbdir = "my_database.duckdb")
+
 ddbs_stop_conn(conn)
-} # }
 ```

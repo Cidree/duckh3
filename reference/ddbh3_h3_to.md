@@ -54,6 +54,15 @@ ddbh3_bigint_to_strings(
   overwrite = FALSE,
   quiet = FALSE
 )
+
+ddbh3_h3_to_points(
+  x,
+  h3 = "h3string",
+  conn = NULL,
+  name = NULL,
+  overwrite = FALSE,
+  quiet = FALSE
+)
 ```
 
 ## Arguments
@@ -158,14 +167,20 @@ The four functions differ only in the output format:
 - `ddbh3_bigint_to_strings()` converts H3 indexes to strings (e.g.
   `"8928308280fffff"`)
 
+- `ddbh3_h3_to_points()` converts H3 indexes to spatial points located
+  at the centroid of the H3 cell
+
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
 ## Load needed packages
 library(duckh3)
 library(duckspatial)
 library(dplyr)
+
+## Setup the default connection with h3 and spatial extensions
+## This is a mandatory step to use duckh3 functions
+ddbh3_default_conn()
 
 ## Load example data
 points_tbl <- read.csv(
@@ -194,6 +209,21 @@ points_tbl |>
     lon = ddbh3_h3_to_lon(h3string),
     lat = ddbh3_h3_to_lat(h3string)
   )
+#> # Source:   SQL [?? x 6]
+#> # Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.5.3/:memory:]
+#>        X    id category h3string           lon    lat
+#>    <int> <int> <chr>    <chr>            <dbl>  <dbl>
+#>  1     1     1 B        86d02dcc7ffffff  16.2  -43.1 
+#>  2     2     2 C        864221ac7ffffff  62.0   29.2 
+#>  3     3     3 C        86a20e8f7ffffff  51.3  -20.7 
+#>  4     4     4 B        86181c6cfffffff -14.1   50.9 
+#>  5     5     5 C        86e6cece7ffffff   8.71 -57.6 
+#>  6     6     6 B        86e69d237ffffff  21.5  -56.2 
+#>  7     7     7 C        86c188077ffffff -17.0  -33.7 
+#>  8     8     8 A        86c52b36fffffff -31.9  -32.7 
+#>  9     9     9 C        867b6b577ffffff  39.0   -7.39
+#> 10    10    10 A        866d424afffffff -89.9   10.0 
+#> # ℹ more rows
 
 ## TO SPATIAL -----------------
 
@@ -215,6 +245,21 @@ points_bigint_tbl <- ddbh3_strings_to_bigint(
 ## Add using mutate
 points_tbl |> 
   mutate(h3int = ddbh3_strings_to_bigint(h3string))
+#> # Source:   SQL [?? x 5]
+#> # Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.5.3/:memory:]
+#>        X    id category h3string          h3int
+#>    <int> <int> <chr>    <chr>           <int64>
+#>  1     1     1 B        86d02dcc7ffffff    6e17
+#>  2     2     2 C        864221ac7ffffff    6e17
+#>  3     3     3 C        86a20e8f7ffffff    6e17
+#>  4     4     4 B        86181c6cfffffff    6e17
+#>  5     5     5 C        86e6cece7ffffff    6e17
+#>  6     6     6 B        86e69d237ffffff    6e17
+#>  7     7     7 C        86c188077ffffff    6e17
+#>  8     8     8 A        86c52b36fffffff    6e17
+#>  9     9     9 C        867b6b577ffffff    6e17
+#> 10    10    10 A        866d424afffffff    6e17
+#> # ℹ more rows
 
 ## FROM UBIGINT TO STRING -----
 
@@ -227,6 +272,19 @@ points_strings_tbl <- ddbh3_bigint_to_strings(
 ## Add using mutate
 points_bigint_tbl |> 
   mutate(h3string = ddbh3_bigint_to_strings(h3_integers))
-
-} # }
+#> # Source:   SQL [?? x 5]
+#> # Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.5.3/:memory:]
+#>        X    id category h3_integers h3string       
+#>    <int> <int> <chr>        <int64> <chr>          
+#>  1     1     1 B               6e17 86d02dcc7ffffff
+#>  2     2     2 C               6e17 864221ac7ffffff
+#>  3     3     3 C               6e17 86a20e8f7ffffff
+#>  4     4     4 B               6e17 86181c6cfffffff
+#>  5     5     5 C               6e17 86e6cece7ffffff
+#>  6     6     6 B               6e17 86e69d237ffffff
+#>  7     7     7 C               6e17 86c188077ffffff
+#>  8     8     8 A               6e17 86c52b36fffffff
+#>  9     9     9 C               6e17 867b6b577ffffff
+#> 10    10    10 A               6e17 866d424afffffff
+#> # ℹ more rows
 ```

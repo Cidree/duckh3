@@ -142,12 +142,16 @@ index:
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
 ## Load needed packages
 library(duckdb)
+#> Loading required package: DBI
 library(duckh3)
 library(duckspatial)
 library(dplyr)
+
+## Setup the default connection with h3 and spatial extensions
+## This is a mandatory step to use duckh3 functions
+ddbh3_default_conn()
 
 ## Load example data
 points_tbl <- read.csv(
@@ -181,6 +185,21 @@ ddbh3_lonlat_to_h3(
   lat = "lati",
   resolution = 10
 )
+#> # Source:   table<temp_view_ddefcf3d_9cba_425f_b8c8_ab52368d8470> [?? x 6]
+#> # Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.5.3/:memory:]
+#>        X    id   lati   long category h3string       
+#>    <int> <int>  <dbl>  <dbl> <chr>    <chr>          
+#>  1     1     1 -43.1   16.2  B        8ad02dcc1947fff
+#>  2     2     2  29.2   61.9  C        8a4221ac6507fff
+#>  3     3     3 -20.7   51.3  C        8aa20e8f6997fff
+#>  4     4     4  50.9  -14.0  B        8a181c6c824ffff
+#>  5     5     5 -57.6    8.71 C        8ae6cece5d37fff
+#>  6     6     6 -56.2   21.5  B        8ae69d233d17fff
+#>  7     7     7 -33.7  -17.0  C        8ac188075167fff
+#>  8     8     8 -32.7  -31.9  A        8ac52b36c52ffff
+#>  9     9     9  -7.39  39.0  C        8a7b6b570027fff
+#> 10    10    10  10.0  -89.9  A        8a6d424ae00ffff
+#> # ℹ more rows
 
 
 ## Create a new table in the connection
@@ -189,6 +208,7 @@ ddbh3_lonlat_to_h3(
   conn = conn,
   name = "points_strings_8"
 )
+#> ✔ Query successful
 
 ## Open the created table lazily
 points_lazy <- dplyr::tbl(conn, "points_strings_8")
@@ -211,12 +231,52 @@ ddbh3_lonlat_to_spatial(
   conn = conn,
   name = "points_strings_spatial"
 )
+#> ✔ Query successful
 
 ## Open the created table lazily
 as_duckspatial_df("points_strings_spatial", conn)
+#> # A duckspatial lazy spatial table
+#> # ● CRS: EPSG:4326 
+#> # ● Geometry column: geometry 
+#> # ● Geometry type: POLYGON 
+#> # ● Bounding box: xmin: -97.944 ymin: -59.99 xmax: 94.807 ymax: 59.812 
+#> # Data backed by DuckDB (dbplyr lazy evaluation)
+#> # Use ddbs_collect() or st_as_sf() to materialize to sf
+#> #
+#> # Source:   table<points_strings_spatial> [?? x 6]
+#> # Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.5.3/:memory:]
+#>        X    id    lat    lon category geometry                                  
+#>    <int> <int>  <dbl>  <dbl> <chr>    <wk_wkb>                                  
+#>  1     1     1 -43.1   16.2  B        <POLYGON ((16.18579 -43.06821, 16.18338 -…
+#>  2     2     2  29.2   61.9  C        <POLYGON ((61.93085 29.18522, 61.93232 29…
+#>  3     3     3 -20.7   51.3  C        <POLYGON ((51.25962 -20.67759, 51.2582 -2…
+#>  4     4     4  50.9  -14.0  B        <POLYGON ((-14.04109 50.85767, -14.04793 …
+#>  5     5     5 -57.6    8.71 C        <POLYGON ((8.706577 -57.6205, 8.709258 -5…
+#>  6     6     6 -56.2   21.5  B        <POLYGON ((21.49239 -56.21158, 21.49306 -…
+#>  7     7     7 -33.7  -17.0  C        <POLYGON ((-17.01467 -33.70043, -17.01892…
+#>  8     8     8 -32.7  -31.9  A        <POLYGON ((-31.88143 -32.71693, -31.88588…
+#>  9     9     9  -7.39  39.0  C        <POLYGON ((39.03433 -7.391451, 39.03606 -…
+#> 10    10    10  10.0  -89.9  A        <POLYGON ((-89.91591 10.01776, -89.92006 …
+#> # ℹ more rows
 
 ## Read it in memory as an sf object
 ddbs_read_table(conn, "points_strings_spatial")
-
-} # }
+#> ✔ table points_strings_spatial successfully imported.
+#> Simple feature collection with 100 features and 5 fields
+#> Geometry type: POLYGON
+#> Dimension:     XY
+#> Bounding box:  xmin: -97.94382 ymin: -59.99012 xmax: 94.80651 ymax: 59.81162
+#> Geodetic CRS:  WGS 84
+#> First 10 features:
+#>     X id        lat        lon category                       geometry
+#> 1   1  1 -43.069252  16.192548        B POLYGON ((16.18579 -43.0682...
+#> 2   2  2  29.185117  61.932969        C POLYGON ((61.93085 29.18522...
+#> 3   3  3 -20.682592  51.259176        C POLYGON ((51.25962 -20.6775...
+#> 4   4  4  50.856814 -14.043806        B POLYGON ((-14.04109 50.8576...
+#> 5   5  5 -57.620368   8.706529        C POLYGON ((8.706577 -57.6205...
+#> 6   6  6 -56.210542  21.491229        B POLYGON ((21.49239 -56.2115...
+#> 7   7  7 -33.702164 -17.008820        C POLYGON ((-17.01467 -33.700...
+#> 8   8  8 -32.718974 -31.879051        A POLYGON ((-31.88143 -32.716...
+#> 9   9  9  -7.388245  39.031393        C POLYGON ((39.03433 -7.39145...
+#> 10 10 10  10.011989 -89.915075        A POLYGON ((-89.91591 10.0177...
 ```

@@ -246,11 +246,14 @@ in vectorized mode, returning a vector of the same length as <code>x</code>.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="co">## Load needed packages</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">## Load needed packages</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cidree.github.io/duckh3/">duckh3</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cidree.github.io/duckspatial/" class="external-link">duckspatial</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">## Setup the default connection with h3 and spatial extensions</span></span></span>
+<span class="r-in"><span><span class="co">## This is a mandatory step to use duckh3 functions</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="ddbh3_default_conn.html">ddbh3_default_conn</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Load example data</span></span></span>
 <span class="r-in"><span><span class="va">points_tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span></span></span>
@@ -261,16 +264,71 @@ in vectorized mode, returning a vector of the same length as <code>x</code>.</p>
 <span class="r-in"><span><span class="va">points_tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="ddbh3_lonlat_to.html">ddbh3_lonlat_to_h3</a></span><span class="op">(</span><span class="va">points_tbl</span>, resolution <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Convert to duckspatial_df</span></span></span>
-<span class="r-in"><span><span class="va">points_ddbs</span> <span class="op">&lt;-</span> <span class="fu">ddbs_as_spatial</span><span class="op">(</span><span class="va">points_tbl</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">points_ddbs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://cidree.github.io/duckspatial/reference/ddbs_as_points.html" class="external-link">ddbs_as_points</a></span><span class="op">(</span><span class="va">points_tbl</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Could not auto-detect CRS for <span style="color: #0000BB;">&lt;tbl_duckdb_connection&gt;</span> object.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> The object may not be a view created from a spatial file.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Use `as_duckspatial_df(x, crs = ...)` to set CRS explicitly.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Get resolution of the h3 strings</span></span></span>
 <span class="r-in"><span><span class="fu">ddbh3_get_resolution</span><span class="op">(</span><span class="va">points_tbl</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Source:   table&lt;temp_view_cee89c8e_2486_4791_addb_492f59389d19&gt; [?? x 7]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.5.3/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        X    id    lat    lon category h3string        h3resolution</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1     1 -<span style="color: #BB0000;">43.1</span>   16.2  B        8ad02dcc1947fff           10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     2     2  29.2   61.9  C        8a4221ac6507fff           10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     3     3 -<span style="color: #BB0000;">20.7</span>   51.3  C        8aa20e8f6997fff           10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     4     4  50.9  -<span style="color: #BB0000;">14.0</span>  B        8a181c6c824ffff           10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>     5     5 -<span style="color: #BB0000;">57.6</span>    8.71 C        8ae6cece5d37fff           10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     6     6 -<span style="color: #BB0000;">56.2</span>   21.5  B        8ae69d233d17fff           10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>     7     7 -<span style="color: #BB0000;">33.7</span>  -<span style="color: #BB0000;">17.0</span>  C        8ac188075167fff           10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     8     8 -<span style="color: #BB0000;">32.7</span>  -<span style="color: #BB0000;">31.9</span>  A        8ac52b36c52ffff           10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     9     9  -<span style="color: #BB0000;">7.39</span>  39.0  C        8a7b6b570027fff           10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>    10    10  10.0  -<span style="color: #BB0000;">89.9</span>  A        8a6d424ae00ffff           10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ more rows</span></span>
 <span class="r-in"><span><span class="fu">ddbh3_get_resolution</span><span class="op">(</span><span class="va">points_ddbs</span>, new_column <span class="op">=</span> <span class="st">"res"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BBBBBB;"># A duckspatial lazy spatial table</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BBBBBB;">#</span> <span style="color: #0000BB;">● CRS:</span> <span style="color: #BBBBBB;">EPSG:4326</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BBBBBB;">#</span> <span style="color: #0000BB;">● Geometry column:</span> <span style="color: #BBBBBB;">geometry</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BBBBBB;">#</span> <span style="color: #0000BB;">● Geometry type:</span> <span style="color: #BBBBBB;">POINT</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BBBBBB;">#</span> <span style="color: #0000BB;">● Bounding box:</span> <span style="color: #BBBBBB;">xmin: -97.934 ymin: -59.987 xmax: 94.802 ymax: 59.805</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BBBBBB;"># Data backed by DuckDB (dbplyr lazy evaluation)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BBBBBB;"># Use</span> <span style="color: #00BB00; font-weight: bold;">ddbs_collect()</span> <span style="color: #BBBBBB;">or</span> <span style="color: #00BB00; font-weight: bold;">st_as_sf()</span> <span style="color: #BBBBBB;">to materialize to sf</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BBBBBB;">#</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Source:   table&lt;temp_view_dd0f6e63_b102_4e3a_8b0a_93cc73b05b48&gt; [?? x 8]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.5.3/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        X    id    lat    lon category h3string          res geometry            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;wk_wkb&gt;</span>            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1     1 -<span style="color: #BB0000;">43.1</span>   16.2  B        8ad02dcc1947fff    10 &lt;POINT (16.19255 -4…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     2     2  29.2   61.9  C        8a4221ac6507fff    10 &lt;POINT (61.93297 29…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     3     3 -<span style="color: #BB0000;">20.7</span>   51.3  C        8aa20e8f6997fff    10 &lt;POINT (51.25918 -2…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     4     4  50.9  -<span style="color: #BB0000;">14.0</span>  B        8a181c6c824ffff    10 &lt;POINT (-14.04381 5…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>     5     5 -<span style="color: #BB0000;">57.6</span>    8.71 C        8ae6cece5d37fff    10 &lt;POINT (8.706529 -5…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     6     6 -<span style="color: #BB0000;">56.2</span>   21.5  B        8ae69d233d17fff    10 &lt;POINT (21.49123 -5…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>     7     7 -<span style="color: #BB0000;">33.7</span>  -<span style="color: #BB0000;">17.0</span>  C        8ac188075167fff    10 &lt;POINT (-17.00882 -…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     8     8 -<span style="color: #BB0000;">32.7</span>  -<span style="color: #BB0000;">31.9</span>  A        8ac52b36c52ffff    10 &lt;POINT (-31.87905 -…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     9     9  -<span style="color: #BB0000;">7.39</span>  39.0  C        8a7b6b570027fff    10 &lt;POINT (39.03139 -7…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>    10    10  10.0  -<span style="color: #BB0000;">89.9</span>  A        8a6d424ae00ffff    10 &lt;POINT (-89.91508 1…</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ more rows</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Add using mutate</span></span></span>
 <span class="r-in"><span><span class="va">points_tbl</span> <span class="op">|&gt;</span> </span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>res <span class="op">=</span> <span class="fu">ddbh3_get_resolution</span><span class="op">(</span><span class="va">h3string</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Source:   SQL [?? x 7]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.5.3/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        X    id    lat    lon category h3string          res</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1     1 -<span style="color: #BB0000;">43.1</span>   16.2  B        8ad02dcc1947fff    10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     2     2  29.2   61.9  C        8a4221ac6507fff    10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     3     3 -<span style="color: #BB0000;">20.7</span>   51.3  C        8aa20e8f6997fff    10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     4     4  50.9  -<span style="color: #BB0000;">14.0</span>  B        8a181c6c824ffff    10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>     5     5 -<span style="color: #BB0000;">57.6</span>    8.71 C        8ae6cece5d37fff    10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     6     6 -<span style="color: #BB0000;">56.2</span>   21.5  B        8ae69d233d17fff    10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>     7     7 -<span style="color: #BB0000;">33.7</span>  -<span style="color: #BB0000;">17.0</span>  C        8ac188075167fff    10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     8     8 -<span style="color: #BB0000;">32.7</span>  -<span style="color: #BB0000;">31.9</span>  A        8ac52b36c52ffff    10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     9     9  -<span style="color: #BB0000;">7.39</span>  39.0  C        8a7b6b570027fff    10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>    10    10  10.0  -<span style="color: #BB0000;">89.9</span>  A        8a6d424ae00ffff    10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ more rows</span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
