@@ -194,7 +194,7 @@ ddbh3_get_resolution(
   points_parent_tbl,
   h3 = "h3parent"
 )
-#> # Source:   table<temp_view_f032e220_38cd_4658_942e_6fff001d1840> [?? x 8]
+#> # Source:   table<temp_view_616ea316_ab85_403a_8f16_8b941296f99a> [?? x 8]
 #> # Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.5.3/:memory:]
 #>        X    id    lat    lon category h3string        h3parent      h3resolution
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <chr>                <int>

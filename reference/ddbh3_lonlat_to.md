@@ -185,7 +185,7 @@ ddbh3_lonlat_to_h3(
   lat = "lati",
   resolution = 10
 )
-#> # Source:   table<temp_view_340a5b34_88a3_43e3_8f44_4e4616d8010e> [?? x 6]
+#> # Source:   table<temp_view_665050bb_6145_41c1_beb4_af5177bbb7d1> [?? x 6]
 #> # Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.5.3/:memory:]
 #>        X    id   lati   long category h3string       
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>          

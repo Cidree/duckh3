@@ -275,7 +275,7 @@ ddbh3_h3_to_vertexes(points_tbl) |>
 #> # Data backed by DuckDB (dbplyr lazy evaluation)
 #> # Use ddbs_collect() or st_as_sf() to materialize to sf
 #> #
-#> # Source:   table<temp_view_f9c3931b_3d83_4f32_b92e_e26f1a41199c> [?? x 8]
+#> # Source:   table<temp_view_35ea9201_029f_4017_a4d9_fd114ad705bb> [?? x 8]
 #> # Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.5.3/:memory:]
 #>        X    id   lat   lon category h3string        h3vertex         geometry   
 #>    <int> <int> <dbl> <dbl> <chr>    <chr>           <chr>            <wk_wkb>   
@@ -303,7 +303,7 @@ ddbh3_h3_to_vertexes(points_tbl, nested = TRUE) |>
 #> # Data backed by DuckDB (dbplyr lazy evaluation)
 #> # Use ddbs_collect() or st_as_sf() to materialize to sf
 #> #
-#> # Source:   table<temp_view_35a7edcb_a626_4382_9d3a_2f1de862d0d1> [?? x 8]
+#> # Source:   table<temp_view_66de8314_4620_4234_8ebe_a009928ce77d> [?? x 8]
 #> # Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.5.3/:memory:]
 #>        X    id    lat    lon category h3string        h3vertex  geometry        
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <list>    <wk_wkb>        
