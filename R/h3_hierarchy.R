@@ -391,10 +391,6 @@ ddbh3_get_icosahedron_faces <- function(
 #' 
 #' ## Get position relative to resolution 4
 #' ddbh3_get_child_pos(points_tbl, resolution = 4)
-#' 
-#' ## Add using mutate
-#' points_tbl |> 
-#'   mutate(child_pos = ddbh3_get_child_pos(h3string, 4))
 ddbh3_get_child_pos <- function(
     x,
     resolution = 8,

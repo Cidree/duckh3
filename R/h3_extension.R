@@ -16,6 +16,7 @@
 #' @export
 #'
 #' @examples
+#' \donttest{
 #' # load packages
 #' library(duckspatial)
 #' library(duckh3)
@@ -30,6 +31,7 @@
 #' # conn <- ddbh3_create_conn(dbdir = "my_database.duckdb")
 #'
 #' ddbs_stop_conn(conn)
+#' }
 ddbh3_create_conn <- function(
   dbdir = "memory", 
   threads = NULL, 
