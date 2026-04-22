@@ -279,7 +279,8 @@ or as unsigned 64-bit integers (<code>UBIGINT</code>)</p></li>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">## Load needed packages</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="co">## Load needed packages</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r.duckdb.org/" class="external-link">duckdb</a></span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: DBI</span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cidree.github.io/duckh3/">duckh3</a></span><span class="op">)</span></span></span>
@@ -322,8 +323,8 @@ or as unsigned 64-bit integers (<code>UBIGINT</code>)</p></li>
 <span class="r-in"><span>  lat <span class="op">=</span> <span class="st">"lati"</span>,</span></span>
 <span class="r-in"><span>  resolution <span class="op">=</span> <span class="fl">10</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Source:   table&lt;temp_view_665050bb_6145_41c1_beb4_af5177bbb7d1&gt; [?? x 6]</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.5.3/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Source:   table&lt;temp_view_fb618b8a_cb9b_4257_931d_69d81910107a&gt; [?? x 6]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1011-azure:R 4.5.3/:memory:]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        X    id   lati   long category h3string       </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1     1 -<span style="color: #BB0000;">43.1</span>   16.2  B        8ad02dcc1947fff</span>
@@ -381,7 +382,7 @@ or as unsigned 64-bit integers (<code>UBIGINT</code>)</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BBBBBB;"># Use</span> <span style="color: #00BB00; font-weight: bold;">ddbs_collect()</span> <span style="color: #BBBBBB;">or</span> <span style="color: #00BB00; font-weight: bold;">st_as_sf()</span> <span style="color: #BBBBBB;">to materialize to sf</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BBBBBB;">#</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Source:   table&lt;points_strings_spatial&gt; [?? x 6]</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.5.3/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1011-azure:R 4.5.3/:memory:]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        X    id    lat    lon category geometry                                  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;wk_wkb&gt;</span>                                  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1     1 -<span style="color: #BB0000;">43.1</span>   16.2  B        &lt;POLYGON ((16.18579 -43.06821, 16.18338 -…</span>
@@ -416,6 +417,7 @@ or as unsigned 64-bit integers (<code>UBIGINT</code>)</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 8   8  8 -32.718974 -31.879051        A POLYGON ((-31.88143 -32.716...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 9   9  9  -7.388245  39.031393        C POLYGON ((39.03433 -7.39145...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 10 10 10  10.011989 -89.915075        A POLYGON ((-89.91591 10.0177...</span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

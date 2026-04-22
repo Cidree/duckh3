@@ -218,7 +218,7 @@ points_tbl |>
     v3 = ddbh3_h3_to_vertex(h3string, 3)
   )
 #> # Source:   SQL [?? x 8]
-#> # Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.5.3/:memory:]
+#> # Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1011-azure:R 4.5.3/:memory:]
 #>        X    id    lat    lon category h3string        v1               v3       
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <chr>            <chr>    
 #>  1     1     1 -43.1   16.2  B        88d02dcc19fffff 218d02dcc19fffff 258d02dc…
@@ -247,7 +247,7 @@ vertex_2_tbl |>
     lat_v2 = ddbh3_vertex_to_lat(h3vertex)
   )
 #> # Source:   SQL [?? x 9]
-#> # Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.5.3/:memory:]
+#> # Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1011-azure:R 4.5.3/:memory:]
 #>        X    id    lat    lon category h3string        h3vertex     lon_v2 lat_v2
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <chr>         <dbl>  <dbl>
 #>  1     1     1 -43.1   16.2  B        88d02dcc19fffff 208d02dcc11…  16.2  -43.1 
@@ -275,8 +275,8 @@ ddbh3_h3_to_vertexes(points_tbl) |>
 #> # Data backed by DuckDB (dbplyr lazy evaluation)
 #> # Use ddbs_collect() or st_as_sf() to materialize to sf
 #> #
-#> # Source:   table<temp_view_35ea9201_029f_4017_a4d9_fd114ad705bb> [?? x 8]
-#> # Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.5.3/:memory:]
+#> # Source:   table<temp_view_7a4df0d6_d05c_4e2c_b76e_2b54015a72fd> [?? x 8]
+#> # Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1011-azure:R 4.5.3/:memory:]
 #>        X    id   lat   lon category h3string        h3vertex         geometry   
 #>    <int> <int> <dbl> <dbl> <chr>    <chr>           <chr>            <wk_wkb>   
 #>  1     1     1 -43.1  16.2 B        88d02dcc19fffff 208d02dcc19fffff <POINT (16…
@@ -303,8 +303,8 @@ ddbh3_h3_to_vertexes(points_tbl, nested = TRUE) |>
 #> # Data backed by DuckDB (dbplyr lazy evaluation)
 #> # Use ddbs_collect() or st_as_sf() to materialize to sf
 #> #
-#> # Source:   table<temp_view_66de8314_4620_4234_8ebe_a009928ce77d> [?? x 8]
-#> # Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.5.3/:memory:]
+#> # Source:   table<temp_view_c5ff5a4d_45ec_4b0d_9b2d_bacfd890a7e4> [?? x 8]
+#> # Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1011-azure:R 4.5.3/:memory:]
 #>        X    id    lat    lon category h3string        h3vertex  geometry        
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <list>    <wk_wkb>        
 #>  1     1     1 -43.1   16.2  B        88d02dcc19fffff <chr [6]> <MULTIPOINT ((1…

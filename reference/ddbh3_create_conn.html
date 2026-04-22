@@ -196,7 +196,8 @@ or .db extension. Defaults to "memory".</p></dd>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># load packages</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="co"># load packages</span></span></span>
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://cidree.github.io/duckspatial/" class="external-link">duckspatial</a></span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> duckspatial 1.0.0 attached</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> * Compatible with DuckDB v1.5.1</span>
@@ -221,6 +222,7 @@ or .db extension. Defaults to "memory".</p></dd>
 <span class="r-in"><span><span class="co"># conn &lt;- ddbh3_create_conn(dbdir = "my_database.duckdb")</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://cidree.github.io/duckspatial/reference/ddbs_stop_conn.html" class="external-link">ddbs_stop_conn</a></span><span class="op">(</span><span class="va">conn</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

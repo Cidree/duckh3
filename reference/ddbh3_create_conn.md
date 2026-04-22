@@ -52,6 +52,7 @@ A `duckdb_connection`
 ## Examples
 
 ``` r
+# \donttest{
 # load packages
 library(duckspatial)
 #> duckspatial 1.0.0 attached
@@ -77,4 +78,5 @@ conn <- ddbh3_create_conn(threads = 1, memory_limit_gb = 2)
 # conn <- ddbh3_create_conn(dbdir = "my_database.duckdb")
 
 ddbs_stop_conn(conn)
+# }
 ```

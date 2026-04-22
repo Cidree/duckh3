@@ -281,8 +281,8 @@ in vectorized mode, returning a vector of the same length as <code>x</code>.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Get position relative to resolution 4</span></span></span>
 <span class="r-in"><span><span class="fu">ddbh3_get_child_pos</span><span class="op">(</span><span class="va">points_tbl</span>, resolution <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Source:   table&lt;temp_view_a08707c5_4a1a_488d_aef4_1884fad5299c&gt; [?? x 7]</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.5.3/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Source:   table&lt;temp_view_d84f2708_eecc_4abf_99a2_8df5067d8726&gt; [?? x 7]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1011-azure:R 4.5.3/:memory:]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        X    id    lat    lon category h3string        h3child_pos</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;int64&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1     1 -<span style="color: #BB0000;">43.1</span>   16.2  B        86d02dcc7ffffff          21</span>
@@ -295,25 +295,6 @@ in vectorized mode, returning a vector of the same length as <code>x</code>.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     8     8 -<span style="color: #BB0000;">32.7</span>  -<span style="color: #BB0000;">31.9</span>  A        86c52b36fffffff          40</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     9     9  -<span style="color: #BB0000;">7.39</span>  39.0  C        867b6b577ffffff          41</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>    10    10  10.0  -<span style="color: #BB0000;">89.9</span>  A        866d424afffffff          19</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ more rows</span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">## Add using mutate</span></span></span>
-<span class="r-in"><span><span class="va">points_tbl</span> <span class="op">|&gt;</span> </span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>child_pos <span class="op">=</span> <span class="fu">ddbh3_get_child_pos</span><span class="op">(</span><span class="va">h3string</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Source:   SQL [?? x 7]</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.5.3/:memory:]</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        X    id    lat    lon category h3string        child_pos</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;int64&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1     1 -<span style="color: #BB0000;">43.1</span>   16.2  B        86d02dcc7ffffff        21</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     2     2  29.2   61.9  C        864221ac7ffffff        21</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     3     3 -<span style="color: #BB0000;">20.7</span>   51.3  C        86a20e8f7ffffff        27</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     4     4  50.9  -<span style="color: #BB0000;">14.0</span>  B        86181c6cfffffff        22</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>     5     5 -<span style="color: #BB0000;">57.6</span>    8.71 C        86e6cece7ffffff        25</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     6     6 -<span style="color: #BB0000;">56.2</span>   21.5  B        86e69d237ffffff         6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>     7     7 -<span style="color: #BB0000;">33.7</span>  -<span style="color: #BB0000;">17.0</span>  C        86c188077ffffff        13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     8     8 -<span style="color: #BB0000;">32.7</span>  -<span style="color: #BB0000;">31.9</span>  A        86c52b36fffffff        40</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     9     9  -<span style="color: #BB0000;">7.39</span>  39.0  C        867b6b577ffffff        41</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>    10    10  10.0  -<span style="color: #BB0000;">89.9</span>  A        866d424afffffff        19</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ more rows</span></span>
 </code></pre></div>
     </div>

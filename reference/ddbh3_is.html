@@ -311,8 +311,8 @@ Class III resolution (odd resolutions: 1, 3, 5, 7, 9, 11, 13, 15)</p></li>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Check if h3 indexes are valid</span></span></span>
 <span class="r-in"><span><span class="fu">ddbh3_is_h3</span><span class="op">(</span><span class="va">points_tbl</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Source:   table&lt;temp_view_9b8eaf5d_d52a_4701_bad7_05be411e25a1&gt; [?? x 7]</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.5.3/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Source:   table&lt;temp_view_60e4ab24_5b1e_41bd_82c2_9b23ef480f9d&gt; [?? x 7]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1011-azure:R 4.5.3/:memory:]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        X    id    lat    lon category h3string        ish3 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1     1 -<span style="color: #BB0000;">43.1</span>   16.2  B        88d02dcc19fffff TRUE </span>
@@ -331,7 +331,7 @@ Class III resolution (odd resolutions: 1, 3, 5, 7, 9, 11, 13, 15)</p></li>
 <span class="r-in"><span><span class="va">points_tbl</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>valid <span class="op">=</span> <span class="fu">ddbh3_is_h3</span><span class="op">(</span><span class="va">h3string</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Source:   SQL [?? x 7]</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.5.3/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1011-azure:R 4.5.3/:memory:]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        X    id    lat    lon category h3string        valid</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1     1 -<span style="color: #BB0000;">43.1</span>   16.2  B        88d02dcc19fffff TRUE </span>
@@ -350,8 +350,8 @@ Class III resolution (odd resolutions: 1, 3, 5, 7, 9, 11, 13, 15)</p></li>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Check if h3 indexes are pentagons</span></span></span>
 <span class="r-in"><span><span class="fu">ddbh3_is_pentagon</span><span class="op">(</span><span class="va">points_tbl</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Source:   table&lt;temp_view_bcaab3d2_bdbb_42eb_bbdb_7753793252ee&gt; [?? x 7]</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.5.3/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Source:   table&lt;temp_view_f2e98b41_201e_42e9_a003_cf9069915d01&gt; [?? x 7]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1011-azure:R 4.5.3/:memory:]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        X    id    lat    lon category h3string        ispentagon</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1     1 -<span style="color: #BB0000;">43.1</span>   16.2  B        88d02dcc19fffff FALSE     </span>
@@ -370,7 +370,7 @@ Class III resolution (odd resolutions: 1, 3, 5, 7, 9, 11, 13, 15)</p></li>
 <span class="r-in"><span><span class="va">points_tbl</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>is_pent <span class="op">=</span> <span class="fu">ddbh3_is_pentagon</span><span class="op">(</span><span class="va">h3string</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Source:   SQL [?? x 7]</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.5.3/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1011-azure:R 4.5.3/:memory:]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        X    id    lat    lon category h3string        is_pent</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1     1 -<span style="color: #BB0000;">43.1</span>   16.2  B        88d02dcc19fffff FALSE  </span>
@@ -389,8 +389,8 @@ Class III resolution (odd resolutions: 1, 3, 5, 7, 9, 11, 13, 15)</p></li>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Check if h3 indexes belong to a Class III resolution</span></span></span>
 <span class="r-in"><span><span class="fu">ddbh3_is_res_class_iii</span><span class="op">(</span><span class="va">points_tbl</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Source:   table&lt;temp_view_608cca11_8344_48ce_ae09_5323b4321217&gt; [?? x 7]</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.5.3/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Source:   table&lt;temp_view_4522a3db_6c1b_4004_9ee7_ecfdbc6c3844&gt; [?? x 7]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1011-azure:R 4.5.3/:memory:]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        X    id    lat    lon category h3string        isclassiii</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1     1 -<span style="color: #BB0000;">43.1</span>   16.2  B        88d02dcc19fffff FALSE     </span>
@@ -408,8 +408,8 @@ Class III resolution (odd resolutions: 1, 3, 5, 7, 9, 11, 13, 15)</p></li>
 <span class="r-in"><span><span class="co">## Check across multiple resolutions</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="ddbh3_lonlat_to.html">ddbh3_lonlat_to_h3</a></span><span class="op">(</span><span class="va">points_tbl</span>, resolution <span class="op">=</span> <span class="fl">7</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">ddbh3_is_res_class_iii</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Source:   table&lt;temp_view_8caf070d_0f73_40cf_9cf5_2a3011442d3c&gt; [?? x 8]</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.5.3/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Source:   table&lt;temp_view_9aca75ae_512c_498d_a946_dab09462b9f5&gt; [?? x 8]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1011-azure:R 4.5.3/:memory:]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        X    id    lat    lon category h3string        h3string_1      isclassiii</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>     </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1     1 -<span style="color: #BB0000;">43.1</span>   16.2  B        88d02dcc19fffff 87d02dcc1ffffff FALSE     </span>
@@ -431,8 +431,8 @@ Class III resolution (odd resolutions: 1, 3, 5, 7, 9, 11, 13, 15)</p></li>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Check if indexes are valid vertexes</span></span></span>
 <span class="r-in"><span><span class="fu">ddbh3_is_vertex</span><span class="op">(</span><span class="va">vertex_tbl</span>, h3 <span class="op">=</span> <span class="st">"h3vertex"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Source:   table&lt;temp_view_624ab249_f464_4077_8528_6039d94d788f&gt; [?? x 8]</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.5.3/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Source:   table&lt;temp_view_2cc5f7a1_858d_41a5_a51f_53b3ff8eb7b8&gt; [?? x 8]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1011-azure:R 4.5.3/:memory:]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        X    id    lat    lon category h3string        h3vertex         isvertex</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1     1 -<span style="color: #BB0000;">43.1</span>   16.2  B        88d02dcc19fffff 218d02dcc19fffff TRUE    </span>
@@ -454,7 +454,7 @@ Class III resolution (odd resolutions: 1, 3, 5, 7, 9, 11, 13, 15)</p></li>
 <span class="r-in"><span>    vertex_valid <span class="op">=</span> <span class="fu">ddbh3_is_vertex</span><span class="op">(</span><span class="va">h3vertex</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Source:   SQL [?? x 9]</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.5.3/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1011-azure:R 4.5.3/:memory:]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        X    id    lat    lon category h3string  h3vertex cell_valid vertex_valid</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>      <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>       </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1     1 -<span style="color: #BB0000;">43.1</span>   16.2  B        88d02dcc… 218d02d… TRUE       TRUE        </span>
