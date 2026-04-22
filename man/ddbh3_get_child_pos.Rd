@@ -84,8 +84,4 @@ points_tbl <- ddbh3_lonlat_to_h3(points_tbl, resolution = 6)
 
 ## Get position relative to resolution 4
 ddbh3_get_child_pos(points_tbl, resolution = 4)
-
-## Add using mutate
-points_tbl |> 
-  mutate(child_pos = ddbh3_get_child_pos(h3string, 4))
 }

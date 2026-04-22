@@ -32,6 +32,7 @@ It creates a DuckDB connection, and then it installs and loads the
 spatial and h3 extensions
 }
 \examples{
+\donttest{
 # load packages
 library(duckspatial)
 library(duckh3)
@@ -46,4 +47,5 @@ conn <- ddbh3_create_conn(threads = 1, memory_limit_gb = 2)
 # conn <- ddbh3_create_conn(dbdir = "my_database.duckdb")
 
 ddbs_stop_conn(conn)
+}
 }
