@@ -144,7 +144,7 @@ integers (UBIGINT) from an existing column."><meta property="og:image" content="
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Get the resolution of H3 cell indexes</h1>
-      <small class="dont-index">Source: <a href="https://github.com/Cidree/duckh3/blob/v0.1.0/R/h3_get_resolution.R" class="external-link"><code>R/h3_get_resolution.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/Cidree/duckh3/blob/main/R/h3_get_resolution.R" class="external-link"><code>R/h3_get_resolution.R</code></a></small>
       <div class="d-none name"><code>ddbh3_get_resolution.Rd</code></div>
     </div>
 
@@ -271,7 +271,7 @@ in vectorized mode, returning a vector of the same length as <code>x</code>.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Get resolution of the h3 strings</span></span></span>
 <span class="r-in"><span><span class="fu">ddbh3_get_resolution</span><span class="op">(</span><span class="va">points_tbl</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Source:   table&lt;temp_view_175cce10_e37f_4fdf_a9d8_f0ac9b90ca67&gt; [?? x 7]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Source:   table&lt;temp_view_6fac718b_bd34_431b_b176_3a672a999588&gt; [?? x 7]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.6.0/:memory:]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        X    id    lat    lon category h3string        h3resolution</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
@@ -295,7 +295,7 @@ in vectorized mode, returning a vector of the same length as <code>x</code>.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BBBBBB;"># Data backed by DuckDB (dbplyr lazy evaluation)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BBBBBB;"># Use</span> <span style="color: #00BB00; font-weight: bold;">ddbs_collect()</span> <span style="color: #BBBBBB;">or</span> <span style="color: #00BB00; font-weight: bold;">st_as_sf()</span> <span style="color: #BBBBBB;">to materialize to sf</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BBBBBB;">#</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Source:   table&lt;temp_view_c34d1e48_eaf7_4cbb_9292_0a90b5837db3&gt; [?? x 8]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Source:   table&lt;temp_view_a944cbac_58c5_438d_a1bf_35822446ba98&gt; [?? x 8]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.6.0/:memory:]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        X    id    lat    lon category h3string          res geometry            </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;wk_wkb&gt;</span>            </span>

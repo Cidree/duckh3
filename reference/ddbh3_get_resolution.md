@@ -130,7 +130,7 @@ points_ddbs <- ddbs_as_points(points_tbl)
 
 ## Get resolution of the h3 strings
 ddbh3_get_resolution(points_tbl)
-#> # Source:   table<temp_view_175cce10_e37f_4fdf_a9d8_f0ac9b90ca67> [?? x 7]
+#> # Source:   table<temp_view_6fac718b_bd34_431b_b176_3a672a999588> [?? x 7]
 #> # Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.6.0/:memory:]
 #>        X    id    lat    lon category h3string        h3resolution
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>                  <int>
@@ -154,7 +154,7 @@ ddbh3_get_resolution(points_ddbs, new_column = "res")
 #> # Data backed by DuckDB (dbplyr lazy evaluation)
 #> # Use ddbs_collect() or st_as_sf() to materialize to sf
 #> #
-#> # Source:   table<temp_view_c34d1e48_eaf7_4cbb_9292_0a90b5837db3> [?? x 8]
+#> # Source:   table<temp_view_a944cbac_58c5_438d_a1bf_35822446ba98> [?? x 8]
 #> # Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.6.0/:memory:]
 #>        X    id    lat    lon category h3string          res geometry            
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <int> <wk_wkb>            
