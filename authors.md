@@ -14,7 +14,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/Cidree/duckh3/blob/main/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/Cidree/duckh3/blob/v0.1.0/DESCRIPTION)
 
 Cidre González A, Kotov E, Pereira R (2026). *duckh3: H3 Extension of
 'DuckDB'*. R package version 0.1.0, <https://cidree.github.io/duckh3/>.

@@ -140,7 +140,7 @@ faces_nested_tbl <- ddbh3_get_icosahedron_faces(points_tbl, nested = TRUE)
 points_tbl |> 
   mutate(faces = ddbh3_get_icosahedron_faces(h3string))
 #> # Source:   SQL [?? x 7]
-#> # Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1011-azure:R 4.5.3/:memory:]
+#> # Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.6.0/:memory:]
 #>        X    id    lat    lon category h3string        faces    
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <list>   
 #>  1     1     1 -43.1   16.2  B        86d02dcc7ffffff <int [1]>
@@ -160,7 +160,7 @@ points_tbl |>
   mutate(faces = ddbh3_get_icosahedron_faces(h3string)) |> 
   mutate(faces_unnested = unnest(faces))
 #> # Source:   SQL [?? x 8]
-#> # Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1011-azure:R 4.5.3/:memory:]
+#> # Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.6.0/:memory:]
 #>        X    id    lat    lon category h3string        faces     faces_unnested
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <list>             <int>
 #>  1     1     1 -43.1   16.2  B        86d02dcc7ffffff <int [1]>             13

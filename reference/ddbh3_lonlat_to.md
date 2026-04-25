@@ -186,8 +186,8 @@ ddbh3_lonlat_to_h3(
   lat = "lati",
   resolution = 10
 )
-#> # Source:   table<temp_view_fb618b8a_cb9b_4257_931d_69d81910107a> [?? x 6]
-#> # Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1011-azure:R 4.5.3/:memory:]
+#> # Source:   table<temp_view_3d9afbfc_6878_40ca_808d_9f695f550a00> [?? x 6]
+#> # Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.6.0/:memory:]
 #>        X    id   lati   long category h3string       
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>          
 #>  1     1     1 -43.1   16.2  B        8ad02dcc1947fff
@@ -245,7 +245,7 @@ as_duckspatial_df("points_strings_spatial", conn)
 #> # Use ddbs_collect() or st_as_sf() to materialize to sf
 #> #
 #> # Source:   table<points_strings_spatial> [?? x 6]
-#> # Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1011-azure:R 4.5.3/:memory:]
+#> # Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.6.0/:memory:]
 #>        X    id    lat    lon category geometry                                  
 #>    <int> <int>  <dbl>  <dbl> <chr>    <wk_wkb>                                  
 #>  1     1     1 -43.1   16.2  B        <POLYGON ((16.18579 -43.06821, 16.18338 -…

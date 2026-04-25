@@ -139,8 +139,8 @@ points_tbl <- ddbh3_lonlat_to_h3(points_tbl, resolution = 6)
 
 ## Get position relative to resolution 4
 ddbh3_get_child_pos(points_tbl, resolution = 4)
-#> # Source:   table<temp_view_d84f2708_eecc_4abf_99a2_8df5067d8726> [?? x 7]
-#> # Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1011-azure:R 4.5.3/:memory:]
+#> # Source:   table<temp_view_342224c0_bcd8_4fdf_8791_4ffbf2381895> [?? x 7]
+#> # Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.6.0/:memory:]
 #>        X    id    lat    lon category h3string        h3child_pos
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>               <int64>
 #>  1     1     1 -43.1   16.2  B        86d02dcc7ffffff          21

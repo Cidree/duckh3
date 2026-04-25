@@ -146,7 +146,7 @@ The position is a zero-based index among all children of the parent cell."><meta
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Get the position of an H3 cell within its parent</h1>
-      <small class="dont-index">Source: <a href="https://github.com/Cidree/duckh3/blob/main/R/h3_hierarchy.R" class="external-link"><code>R/h3_hierarchy.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/Cidree/duckh3/blob/v0.1.0/R/h3_hierarchy.R" class="external-link"><code>R/h3_hierarchy.R</code></a></small>
       <div class="d-none name"><code>ddbh3_get_child_pos.Rd</code></div>
     </div>
 
@@ -281,8 +281,8 @@ in vectorized mode, returning a vector of the same length as <code>x</code>.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## Get position relative to resolution 4</span></span></span>
 <span class="r-in"><span><span class="fu">ddbh3_get_child_pos</span><span class="op">(</span><span class="va">points_tbl</span>, resolution <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Source:   table&lt;temp_view_d84f2708_eecc_4abf_99a2_8df5067d8726&gt; [?? x 7]</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1011-azure:R 4.5.3/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Source:   table&lt;temp_view_342224c0_bcd8_4fdf_8791_4ffbf2381895&gt; [?? x 7]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.6.0/:memory:]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        X    id    lat    lon category h3string        h3child_pos</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;int64&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1     1 -<span style="color: #BB0000;">43.1</span>   16.2  B        86d02dcc7ffffff          21</span>
