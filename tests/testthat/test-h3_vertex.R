@@ -1051,7 +1051,7 @@ testthat::describe("ddbh3_vertex_to_spatial() works in different formats", {
     expect_s3_class(res, "duckspatial_df")
     ## Check type
     res_col <- dplyr::collect(res)
-    expect_in("geometry", colnames(res_col))
+    expect_in("geom", colnames(res_col))
   })
 
   ## FORMAT 5 - TABLE IN DUCKDB

@@ -69,8 +69,7 @@ testthat::describe("ddbh3_h3_to_lon() works in different formats", {
   testthat::it("returns the correct data for duckspatial_df", {
     ## Convert to duckspatial_df
     test_data_ddbs <- test_data |> 
-      dplyr::collect() |> 
-      duckspatial::ddbs_as_points(coords = c("lon", "lat"), crs = 4326)
+      duckspatial::ddbs_as_points(coords = c("lon", "lat"), crs = 4326, remove = FALSE)
     ## Check class
     res <- ddbh3_h3_to_lon(test_data_ddbs)
     expect_s3_class(res, "duckspatial_df")
@@ -277,7 +276,7 @@ testthat::describe("ddbh3_h3_to_lat() works in different formats", {
     ## Convert to duckspatial_df
     test_data_ddbs <- test_data |> 
       dplyr::collect() |> 
-      duckspatial::ddbs_as_points(coords = c("lon", "lat"), crs = 4326)
+      duckspatial::ddbs_as_points(coords = c("lon", "lat"), crs = 4326, remove = FALSE)
     ## Check class
     res <- ddbh3_h3_to_lat(test_data_ddbs)
     expect_s3_class(res, "duckspatial_df")
