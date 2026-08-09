@@ -1,9 +1,15 @@
 
 # development version
 
+## BUILD
+
+* Requires DuckDB >= 1.5.5
+
 ## ENHANCEMENTS
 
 * Functions in vetorized mode automatically parse to UBIGINT when the input is a numeric vector.
+
+* Error message on wrong CRS is now displayed correctly (#3).
 
 ## NEW FEATURES
 

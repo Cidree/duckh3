@@ -96,7 +96,7 @@ ddbh3_points_to_spatial <- function(
   sf_col_x <- attr(x, "sf_column")
 
   if (crs_x$input != "EPSG:4326") {
-    cli::cli_abort("The CRS of the input must be {.val EPSG:4326}, not {.val crs_x$input}.")
+    cli::cli_abort("The CRS of the input must be {.val EPSG:4326}, not {.val {crs_x$input}}.")
   }
 
 
@@ -214,7 +214,7 @@ ddbh3_points_to_h3 <- function(
   sf_col_x <- attr(x, "sf_column")
 
   if (crs_x$input != "EPSG:4326") {
-    cli::cli_abort("The CRS of the input must be {.val EPSG:4326}, not {.val crs_x$input}.")
+    cli::cli_abort("The CRS of the input must be {.val EPSG:4326}, not {.val {crs_x$input}}.")
   }
 
   ## 1.2. Normalize inputs: coerce tbl_duckdb_connection to duckspatial_df,
