@@ -37,7 +37,7 @@ Imports:
     DBI,
     dbplyr,
     dplyr,
-    duckdb,
+    duckdb (>= 1.5.5),
     duckspatial (>= 1.0.0),
     glue
 Config/testthat/edition: 3

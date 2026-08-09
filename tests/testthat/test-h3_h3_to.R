@@ -9,7 +9,7 @@ testthat::skip_if_not_installed("duckdb")
 testthat::skip_if_not_installed("duckspatial")
 
 ## create duckdb connection
-conn_test <- duckh3::ddbh3_create_conn()
+conn_test <- duckh3::ddbh3_default_conn()
 
 ## Load example data
 test_data <- read.csv(
@@ -192,8 +192,9 @@ describe("errors", {
   })
   
   it("requires connection when using table names", {
-    expect_warning(
-      expect_true(is.na(ddbh3_h3_to_lon("test_data_tbl", conn = NULL)))
+    expect_error(
+      ddbh3_h3_to_lon("test_data_tbl", conn = NULL),
+      "If `x` is a table, `conn` cannot be NULL"
     )
   })
   
@@ -399,8 +400,8 @@ describe("errors", {
   })
   
   it("requires connection when using table names", {
-    expect_warning(
-      expect_true(is.na(ddbh3_h3_to_lat("test_data_tbl", conn = NULL)))
+    expect_error(
+      ddbh3_h3_to_lat("test_data_tbl", conn = NULL)
     )
   })
   
@@ -618,8 +619,8 @@ describe("errors", {
   })
   
   it("requires connection when using table names", {
-    expect_warning(
-      expect_true(is.na(ddbh3_strings_to_bigint("test_data_tbl", conn = NULL)))
+    expect_error(
+      ddbh3_strings_to_bigint("test_data_tbl", conn = NULL)
     )
   })
   
@@ -1025,8 +1026,8 @@ describe("errors", {
   })
   
   it("requires connection when using table names", {
-    expect_warning(
-      expect_true(is.na(ddbh3_h3_to_spatial("test_data_tbl", conn = NULL)))
+    expect_error(
+      ddbh3_h3_to_spatial("test_data_tbl", conn = NULL)
     )
   })
   

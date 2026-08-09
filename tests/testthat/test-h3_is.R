@@ -8,7 +8,7 @@ testthat::skip_if_not_installed("duckdb")
 testthat::skip_if_not_installed("duckspatial")
 
 ## create duckdb connection
-conn_test <- duckh3::ddbh3_create_conn()
+conn_test <- duckh3::ddbh3_default_conn()
 
 ## Load example data
 test_data <- read.csv(
@@ -215,8 +215,8 @@ describe("errors", {
   })
   
   it("requires connection when using table names", {
-    expect_warning(
-      expect_true(is.na(ddbh3_is_pentagon("test_data_tbl", conn = NULL)))
+    expect_error(
+      ddbh3_is_pentagon("test_data_tbl", conn = NULL)
     )
   })
   
@@ -654,8 +654,8 @@ describe("errors", {
   })
 
   it("requires connection when using table names", {
-    expect_warning(
-      expect_true(is.na(ddbh3_is_res_class_iii("test_data_tbl", conn = NULL)))
+    expect_error(
+      ddbh3_is_res_class_iii("test_data_tbl", conn = NULL)
     )
   })
 

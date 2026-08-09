@@ -9,7 +9,7 @@ testthat::skip_if_not_installed("duckdb")
 testthat::skip_if_not_installed("duckspatial")
 
 ## create duckdb connection
-conn_test <- duckh3::ddbh3_create_conn()
+conn_test <- duckh3::ddbh3_default_conn()
 
 ## Load example data
 test_data <- read.csv(
@@ -241,8 +241,9 @@ describe("errors", {
   })
 
   it("requires connection when using table names", {
-    expect_warning(
-      expect_true(is.na(ddbh3_get_parent("test_data_tbl", conn = NULL)))
+    expect_error(
+      ddbh3_get_parent("test_data_tbl", conn = NULL),
+      "If `x` is a table, `conn` cannot be NULL"
     )
   })
 
@@ -564,7 +565,7 @@ testthat::describe("ddbh3_get_n_children() works in different formats", {
     ## Check type
     res_col <- dplyr::collect(res)
     expect_in("h3n_children", colnames(res_col))
-    expect_s3_class(res_col$h3n_children, "integer64")
+    expect_type(res_col$h3n_children, "double")
   })
 
   ## FORMAT 2 - DATA.FRAME
@@ -576,7 +577,7 @@ testthat::describe("ddbh3_get_n_children() works in different formats", {
     ## Check type
     res_col <- dplyr::collect(res)
     expect_in("h3n_children", colnames(res_col))
-    expect_s3_class(res_col$h3n_children, "integer64")
+    expect_type(res_col$h3n_children, "double")
   })
 
   ## FORMAT 3 - SF
@@ -595,7 +596,7 @@ testthat::describe("ddbh3_get_n_children() works in different formats", {
     ## Check type
     res_col <- dplyr::collect(res)
     expect_in("h3n_children", colnames(res_col))
-    expect_s3_class(res_col$h3n_children, "integer64")
+    expect_type(res_col$h3n_children, "double")
   })
 
   ## FORMAT 4 - DUCKSPATIAL_DF
@@ -610,7 +611,7 @@ testthat::describe("ddbh3_get_n_children() works in different formats", {
     ## Check type
     res_col <- dplyr::collect(res)
     expect_in("h3n_children", colnames(res_col))
-    expect_s3_class(res_col$h3n_children, "integer64")
+    expect_type(res_col$h3n_children, "double")
   })
 
   ## FORMAT 5 - TABLE IN DUCKDB
@@ -632,7 +633,7 @@ testthat::describe("ddbh3_get_n_children() works in different formats", {
     ## Check type
     res_col <- dplyr::collect(res)
     expect_in("h3n_children", colnames(res_col))
-    expect_s3_class(res_col$h3n_children, "integer64")
+    expect_type(res_col$h3n_children, "double")
   })
 
 })
@@ -677,7 +678,7 @@ testthat::describe("ddbh3_get_n_children() arguments work", {
     ## Check type
     res_col <- dplyr::collect(res)
     expect_in("h3n_children", colnames(res_col))
-    expect_s3_class(res_col$h3n_children, "integer64")
+    expect_type(res_col$h3n_children, "double")
   })
 
   ## ARGUMENT 2 - RESOLUTION
@@ -686,7 +687,7 @@ testthat::describe("ddbh3_get_n_children() arguments work", {
     for (r in c(9, 11, 13, 15)) {
       res <- ddbh3_get_n_children(test_data_5, resolution = r)
       res_col <- dplyr::collect(res)
-      expect_s3_class(res_col$h3n_children, "integer64")
+      expect_type(res_col$h3n_children, "double")
     }
   })
 
@@ -696,7 +697,7 @@ testthat::describe("ddbh3_get_n_children() arguments work", {
     expect_true("res" %in% colnames(res))
     res_col <- dplyr::collect(res)
     expect_in("res", colnames(res_col))
-    expect_s3_class(res_col$res, "integer64")
+    expect_type(res_col$res, "double")
   })
 
   ## ARGUMENT 4 - DATABASE ARGUMENTS
@@ -772,8 +773,9 @@ describe("errors", {
   })
 
   it("requires connection when using table names", {
-    expect_warning(
-      expect_true(is.na(ddbh3_get_n_children("test_data_5_tbl", conn = NULL)))
+    expect_error(
+      ddbh3_get_n_children("test_data_5_tbl", conn = NULL),
+      "If `x` is a table, `conn` cannot be NULL"
     )
   })
 
@@ -1038,8 +1040,9 @@ describe("errors", {
   })
 
   it("requires connection when using table names", {
-    expect_warning(
-      expect_true(is.na(ddbh3_get_center_child("test_data_tbl", conn = NULL)))
+    expect_error(
+      ddbh3_get_center_child("test_data_5_tbl", conn = NULL),
+      "If `x` is a table, `conn` cannot be NULL"
     )
   })
 
@@ -1327,7 +1330,7 @@ testthat::describe("ddbh3_get_child_pos() works in different formats", {
     ## Check type
     res_col <- dplyr::collect(res)
     expect_in("h3child_pos", colnames(res_col))
-    expect_s3_class(res_col$h3child_pos, "integer64")
+    expect_type(res_col$h3child_pos, "double")
   })
 
   ## FORMAT 2 - DATA.FRAME
@@ -1339,7 +1342,7 @@ testthat::describe("ddbh3_get_child_pos() works in different formats", {
     ## Check type
     res_col <- dplyr::collect(res)
     expect_in("h3child_pos", colnames(res_col))
-    expect_s3_class(res_col$h3child_pos, "integer64")
+    expect_type(res_col$h3child_pos, "double")
   })
 
   ## FORMAT 3 - SF
@@ -1358,7 +1361,7 @@ testthat::describe("ddbh3_get_child_pos() works in different formats", {
     ## Check type
     res_col <- dplyr::collect(res)
     expect_in("h3child_pos", colnames(res_col))
-    expect_s3_class(res_col$h3child_pos, "integer64")
+    expect_type(res_col$h3child_pos, "double")
   })
 
   ## FORMAT 4 - DUCKSPATIAL_DF
@@ -1373,7 +1376,7 @@ testthat::describe("ddbh3_get_child_pos() works in different formats", {
     ## Check type
     res_col <- dplyr::collect(res)
     expect_in("h3child_pos", colnames(res_col))
-    expect_s3_class(res_col$h3child_pos, "integer64")
+    expect_type(res_col$h3child_pos, "double")
   })
 
   ## FORMAT 5 - TABLE IN DUCKDB
@@ -1395,7 +1398,7 @@ testthat::describe("ddbh3_get_child_pos() works in different formats", {
     ## Check type
     res_col <- dplyr::collect(res)
     expect_in("h3child_pos", colnames(res_col))
-    expect_s3_class(res_col$h3child_pos, "integer64")
+    expect_type(res_col$h3child_pos, "double")
   })
 
 })
@@ -1448,7 +1451,7 @@ testthat::describe("ddbh3_get_child_pos() arguments work", {
     ## Check type
     res_col <- dplyr::collect(res)
     expect_in("h3child_pos", colnames(res_col))
-    expect_s3_class(res_col$h3child_pos, "integer64")
+    expect_type(res_col$h3child_pos, "double")
   })
 
   ## ARGUMENT 2 - RESOLUTION
@@ -1457,7 +1460,7 @@ testthat::describe("ddbh3_get_child_pos() arguments work", {
     for (r in c(9, 11, 13, 15)) {
       res <- ddbh3_get_child_pos(test_data, resolution = r)
       res_col <- dplyr::collect(res)
-      expect_s3_class(res_col$h3child_pos, "integer64")
+      expect_type(res_col$h3child_pos, "double")
     }
   })
 
@@ -1467,7 +1470,7 @@ testthat::describe("ddbh3_get_child_pos() arguments work", {
     expect_true("res" %in% colnames(res))
     res_col <- dplyr::collect(res)
     expect_in("res", colnames(res_col))
-    expect_s3_class(res_col$res, "integer64")
+    expect_type(res_col$res, "double")
   })
 
   ## ARGUMENT 4 - DATABASE ARGUMENTS
@@ -1543,8 +1546,8 @@ describe("errors", {
   })
 
   it("requires connection when using table names", {
-    expect_warning(
-      expect_true(is.na(ddbh3_get_child_pos("test_data_tbl", conn = NULL)))
+    expect_error(
+      ddbh3_get_child_pos("test_data_tbl", conn = NULL)
     )
   })
 
