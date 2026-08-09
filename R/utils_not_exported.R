@@ -124,17 +124,71 @@ check_nested_column <- function(x, column) {
 
 
 ## e.g. ddbh3_h3_to_lat("8ad02dcc1947fff") 
+# get_vectorized_result <- function(x, fun) {
+
+#   ## Create a random view name
+#   conn      <- duckspatial:::ddbs_default_conn()
+#   view_name <- duckspatial:::ddbs_temp_view_name()
+
+#   ## Register the data as a view
+#   duckdb::duckdb_register(conn, view_name, data.frame(x = x))
+#   on.exit(duckdb::duckdb_unregister(conn, view_name))
+
+#   ## Apply function, and return the pulled vector
+#   res <- dplyr::tbl(conn, view_name) |> 
+#     dplyr::mutate(res = dbplyr::sql(glue::glue("{fun}"))) |> 
+#     dplyr::pull("res")
+
+#   if (any(is.na(res))) {
+#     cli::cli_warn("Some elements of {.arg x} are invalid. Returning NA.")
+#   }
+
+#   return(res)
+
+# }
+
+
+
 get_vectorized_result <- function(x, fun) {
+
+  if (grepl("h3_cell_to|h3_get|h3_h3", fun)) {
+
+    if (is.numeric(x) && !bit64::is.integer64(x)) {
+      ## plain double: precision already lost upstream, nothing to validate
+      cli::cli_abort(c(
+        "`x` contains invalid H3 (e.g. {head(x)})",
+        "i" = "If `x` originated as plain numeric/double, precision may already be lost",
+        "i" = "Recreate `x` as a character h3string, or as int64 using {.code bit64::as.integer64('x')}"
+      ))
+    }
+
+    if (is.character(x)) {
+      all_h3 <- ddbh3_is_h3(x)
+      if (isFALSE(all(all_h3))) {
+        invalid_h3 <- x[!all_h3]
+        cli::cli_abort("`x` contains invalid H3 (e.g. {head(invalid_h3)})")
+      }
+
+    } else if (bit64::is.integer64(x)) {
+      all_h3 <- ddbh3_is_h3(x)
+      if (isFALSE(all(all_h3))) {
+        invalid_h3 <- x[!all_h3]
+        cli::cli_abort(c(
+          "`x` contains invalid H3 (e.g. {head(invalid_h3)})",
+          "i" = "If `x` originated as plain numeric/double, precision may already be lost",
+          "i" = "Recreate `x` as a character h3string, or as int64 using {.code bit64::as.integer64('x')}"
+        ))
+      }
+    }
+  }
 
   ## Create a random view name
   conn      <- duckspatial:::ddbs_default_conn()
   view_name <- duckspatial:::ddbs_temp_view_name()
 
-  ## Register the data as a view
   duckdb::duckdb_register(conn, view_name, data.frame(x = x))
   on.exit(duckdb::duckdb_unregister(conn, view_name))
 
-  ## Apply function, and return the pulled vector
   res <- dplyr::tbl(conn, view_name) |> 
     dplyr::mutate(res = dbplyr::sql(glue::glue("{fun}"))) |> 
     dplyr::pull("res")
@@ -144,6 +198,4 @@ get_vectorized_result <- function(x, fun) {
   }
 
   return(res)
-
 }
-
