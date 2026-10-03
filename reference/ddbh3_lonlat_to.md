@@ -161,6 +161,14 @@ points_tbl <- read.csv(
 
 ## Create a connection with spatial and h3 extensions
 conn <- ddbh3_create_conn(threads = 1)
+#> duckdb keeps downloaded extensions and secrets in a temporary directory:
+#> ℹ /tmp/RtmpjxdHki/duckdb
+#> This is removed when the R session ends.
+#> • Extensions are re-downloaded each session.
+#> • Secrets are lost.
+#> ℹ Run duckdb(shared_home = TRUE) (or create ~/.duckdb) to keep them (suitable for most users).
+#> ℹ Run duckdb(shared_home = FALSE) to accept the temporary directory (and silence this message).
+#> ℹ See ?duckdb_storage for details and alternatives.
 
 ## TO H3 ------------
 
@@ -186,8 +194,8 @@ ddbh3_lonlat_to_h3(
   lat = "lati",
   resolution = 10
 )
-#> # Source:   table<temp_view_a1ee2455_601c_4228_8bfa_3c97ade84b5a> [?? x 6]
-#> # Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.6.0/:memory:]
+#> # A query:  ?? x 6
+#> # Database: DuckDB 1.5.6 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
 #>        X    id   lati   long category h3string       
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>          
 #>  1     1     1 -43.1   16.2  B        8ad02dcc1947fff
@@ -244,8 +252,8 @@ as_duckspatial_df("points_strings_spatial", conn)
 #> # Data backed by DuckDB (dbplyr lazy evaluation)
 #> # Use ddbs_collect() or st_as_sf() to materialize to sf
 #> #
-#> # Source:   table<points_strings_spatial> [?? x 6]
-#> # Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.6.0/:memory:]
+#> # A query:  ?? x 6
+#> # Database: DuckDB 1.5.6 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
 #>        X    id    lat    lon category geometry                                  
 #>    <int> <int>  <dbl>  <dbl> <chr>    <wk_wkb>                                  
 #>  1     1     1 -43.1   16.2  B        <POLYGON ((16.18579 -43.06821, 16.18338 -…

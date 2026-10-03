@@ -65,6 +65,7 @@ the data:
 Install the stable release from CRAN:
 
 ``` r
+
 pak::pak("duckh3")
 ```
 
@@ -72,6 +73,7 @@ Install the latest GitHub version (more features, fewer accumulated
 bugs):
 
 ``` r
+
 # install.packages("pak")
 pak::pak("Cidree/duckh3")
 ```
@@ -79,6 +81,7 @@ pak::pak("Cidree/duckh3")
 Install the development version (may be unstable):
 
 ``` r
+
 pak::pak("Cidree/duckh3@dev")
 ```
 

@@ -125,13 +125,15 @@ points_tbl <- ddbh3_lonlat_to_h3(points_tbl, resolution = 10)
 ## Convert to duckspatial_df
 points_ddbs <- ddbs_as_points(points_tbl)
 #> Warning: Could not auto-detect CRS for <tbl_duckdb_connection> object.
-#> ℹ The object may not be a view created from a spatial file.
-#> ℹ Use `as_duckspatial_df(x, crs = ...)` to set CRS explicitly.
+#> ℹ This typically occurs when reopening a persistent DuckDB database created
+#>   without recoverable CRS metadata (for example, pre-1.5 files without
+#>   duckspatial comments) or when the table/file has an unknown or missing CRS.
+#> ℹ Use `as_duckspatial_df(x, crs = ...)` to set the CRS explicitly.
 
 ## Get resolution of the h3 strings
 ddbh3_get_resolution(points_tbl)
-#> # Source:   table<temp_view_6fac718b_bd34_431b_b176_3a672a999588> [?? x 7]
-#> # Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.6.0/:memory:]
+#> # A query:  ?? x 7
+#> # Database: DuckDB 1.5.6 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
 #>        X    id    lat    lon category h3string        h3resolution
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>                  <int>
 #>  1     1     1 -43.1   16.2  B        8ad02dcc1947fff           10
@@ -148,33 +150,33 @@ ddbh3_get_resolution(points_tbl)
 ddbh3_get_resolution(points_ddbs, new_column = "res")
 #> # A duckspatial lazy spatial table
 #> # ● CRS: EPSG:4326 
-#> # ● Geometry column: geometry 
+#> # ● Geometry column: geom 
 #> # ● Geometry type: POINT 
 #> # ● Bounding box: xmin: -97.934 ymin: -59.987 xmax: 94.802 ymax: 59.805 
 #> # Data backed by DuckDB (dbplyr lazy evaluation)
 #> # Use ddbs_collect() or st_as_sf() to materialize to sf
 #> #
-#> # Source:   table<temp_view_a944cbac_58c5_438d_a1bf_35822446ba98> [?? x 8]
-#> # Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.6.0/:memory:]
-#>        X    id    lat    lon category h3string          res geometry            
-#>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <int> <wk_wkb>            
-#>  1     1     1 -43.1   16.2  B        8ad02dcc1947fff    10 <POINT (16.19255 -4…
-#>  2     2     2  29.2   61.9  C        8a4221ac6507fff    10 <POINT (61.93297 29…
-#>  3     3     3 -20.7   51.3  C        8aa20e8f6997fff    10 <POINT (51.25918 -2…
-#>  4     4     4  50.9  -14.0  B        8a181c6c824ffff    10 <POINT (-14.04381 5…
-#>  5     5     5 -57.6    8.71 C        8ae6cece5d37fff    10 <POINT (8.706529 -5…
-#>  6     6     6 -56.2   21.5  B        8ae69d233d17fff    10 <POINT (21.49123 -5…
-#>  7     7     7 -33.7  -17.0  C        8ac188075167fff    10 <POINT (-17.00882 -…
-#>  8     8     8 -32.7  -31.9  A        8ac52b36c52ffff    10 <POINT (-31.87905 -…
-#>  9     9     9  -7.39  39.0  C        8a7b6b570027fff    10 <POINT (39.03139 -7…
-#> 10    10    10  10.0  -89.9  A        8a6d424ae00ffff    10 <POINT (-89.91508 1…
+#> # A query:  ?? x 6
+#> # Database: DuckDB 1.5.6 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
+#>        X    id category h3string          res geom                         
+#>    <int> <int> <chr>    <chr>           <int> <wk_wkb>                     
+#>  1     1     1 B        8ad02dcc1947fff    10 <POINT (16.19255 -43.06925)> 
+#>  2     2     2 C        8a4221ac6507fff    10 <POINT (61.93297 29.18512)>  
+#>  3     3     3 C        8aa20e8f6997fff    10 <POINT (51.25918 -20.68259)> 
+#>  4     4     4 B        8a181c6c824ffff    10 <POINT (-14.04381 50.85681)> 
+#>  5     5     5 C        8ae6cece5d37fff    10 <POINT (8.706529 -57.62037)> 
+#>  6     6     6 B        8ae69d233d17fff    10 <POINT (21.49123 -56.21054)> 
+#>  7     7     7 C        8ac188075167fff    10 <POINT (-17.00882 -33.70216)>
+#>  8     8     8 A        8ac52b36c52ffff    10 <POINT (-31.87905 -32.71897)>
+#>  9     9     9 C        8a7b6b570027fff    10 <POINT (39.03139 -7.388245)> 
+#> 10    10    10 A        8a6d424ae00ffff    10 <POINT (-89.91508 10.01199)> 
 #> # ℹ more rows
 
 ## Add using mutate
 points_tbl |> 
   mutate(res = ddbh3_get_resolution(h3string))
-#> # Source:   SQL [?? x 7]
-#> # Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.6.0/:memory:]
+#> # A query:  ?? x 7
+#> # Database: DuckDB 1.5.6 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
 #>        X    id    lat    lon category h3string          res
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <int>
 #>  1     1     1 -43.1   16.2  B        8ad02dcc1947fff    10

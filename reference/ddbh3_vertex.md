@@ -217,8 +217,8 @@ points_tbl |>
     v1 = ddbh3_h3_to_vertex(h3string, 1),
     v3 = ddbh3_h3_to_vertex(h3string, 3)
   )
-#> # Source:   SQL [?? x 8]
-#> # Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.6.0/:memory:]
+#> # A query:  ?? x 8
+#> # Database: DuckDB 1.5.6 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
 #>        X    id    lat    lon category h3string        v1               v3       
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <chr>            <chr>    
 #>  1     1     1 -43.1   16.2  B        88d02dcc19fffff 218d02dcc19fffff 258d02dc…
@@ -246,8 +246,8 @@ vertex_2_tbl |>
     lon_v2 = ddbh3_vertex_to_lon(h3vertex),
     lat_v2 = ddbh3_vertex_to_lat(h3vertex)
   )
-#> # Source:   SQL [?? x 9]
-#> # Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.6.0/:memory:]
+#> # A query:  ?? x 9
+#> # Database: DuckDB 1.5.6 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
 #>        X    id    lat    lon category h3string        h3vertex     lon_v2 lat_v2
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <chr>         <dbl>  <dbl>
 #>  1     1     1 -43.1   16.2  B        88d02dcc19fffff 208d02dcc11…  16.2  -43.1 
@@ -275,8 +275,8 @@ ddbh3_h3_to_vertexes(points_tbl) |>
 #> # Data backed by DuckDB (dbplyr lazy evaluation)
 #> # Use ddbs_collect() or st_as_sf() to materialize to sf
 #> #
-#> # Source:   table<temp_view_75d5b77a_2f13_405f_af57_f616a94af3f5> [?? x 8]
-#> # Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.6.0/:memory:]
+#> # A query:  ?? x 8
+#> # Database: DuckDB 1.5.6 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
 #>        X    id   lat   lon category h3string        h3vertex         geometry   
 #>    <int> <int> <dbl> <dbl> <chr>    <chr>           <chr>            <wk_wkb>   
 #>  1     1     1 -43.1  16.2 B        88d02dcc19fffff 208d02dcc19fffff <POINT (16…
@@ -303,8 +303,8 @@ ddbh3_h3_to_vertexes(points_tbl, nested = TRUE) |>
 #> # Data backed by DuckDB (dbplyr lazy evaluation)
 #> # Use ddbs_collect() or st_as_sf() to materialize to sf
 #> #
-#> # Source:   table<temp_view_24d8611b_8368_4bb7_b9a8_741819687f21> [?? x 8]
-#> # Database: DuckDB 1.5.2 [unknown@Linux 6.17.0-1010-azure:R 4.6.0/:memory:]
+#> # A query:  ?? x 8
+#> # Database: DuckDB 1.5.6 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
 #>        X    id    lat    lon category h3string        h3vertex  geometry        
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <list>    <wk_wkb>        
 #>  1     1     1 -43.1   16.2  B        88d02dcc19fffff <chr [6]> <MULTIPOINT ((1…

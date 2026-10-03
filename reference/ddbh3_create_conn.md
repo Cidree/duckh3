@@ -55,24 +55,38 @@ A `duckdb_connection`
 # \donttest{
 # load packages
 library(duckspatial)
-#> duckspatial 1.0.0 attached
-#> * Compatible with DuckDB v1.5.1
-#> * This release introduces breaking changes
-#> * See full release notes for migration guidance
+#> duckspatial 1.2.1 attached
+#> * Compatible with DuckDB >= v1.5.4.2
 #> 
-#> Default output has changed:
+#> Default output has changed on v1.0.0:
 #>   duckspatial now returns lazy `duckspatial_df` (dbplyr) objects
 #>   instead of `sf` objects.
 #> 
 #> To restore the previous behaviour:
-#>   ddbs_options(duckspatial.mode = 'sf')
+#>   ddbs_options(mode = 'sf')
 library(duckh3)
 
 # create a duckdb database in memory
 conn <- ddbh3_create_conn(dbdir = "memory", threads = 1)
+#> duckdb keeps downloaded extensions and secrets in a temporary directory:
+#> ℹ /tmp/RtmpjxdHki/duckdb
+#> This is removed when the R session ends.
+#> • Extensions are re-downloaded each session.
+#> • Secrets are lost.
+#> ℹ Run duckdb(shared_home = TRUE) (or create ~/.duckdb) to keep them (suitable for most users).
+#> ℹ Run duckdb(shared_home = FALSE) to accept the temporary directory (and silence this message).
+#> ℹ See ?duckdb_storage for details and alternatives.
 
 # create an in-memory connection with 1 thread and 2GB memory limit
 conn <- ddbh3_create_conn(threads = 1, memory_limit_gb = 2)
+#> duckdb keeps downloaded extensions and secrets in a temporary directory:
+#> ℹ /tmp/RtmpjxdHki/duckdb
+#> This is removed when the R session ends.
+#> • Extensions are re-downloaded each session.
+#> • Secrets are lost.
+#> ℹ Run duckdb(shared_home = TRUE) (or create ~/.duckdb) to keep them (suitable for most users).
+#> ℹ Run duckdb(shared_home = FALSE) to accept the temporary directory (and silence this message).
+#> ℹ See ?duckdb_storage for details and alternatives.
 
 # Create a persistent database in disk
 # conn <- ddbh3_create_conn(dbdir = "my_database.duckdb")
