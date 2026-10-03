@@ -38,21 +38,17 @@ testthat::describe("ddbh3_points_to_spatial() works in different formats", {
     expect_s3_class(res, "duckspatial_df")
     ## Check geometry
     res_col <- dplyr::collect(res)
-    expect_in("geometry", colnames(res_col))
+    expect_in("geom", colnames(res_col))
   })
 
   ## FORMAT 2 - DUCKSPATIAL_DF
   testthat::it("returns the correct data for duckspatial_df", {
-    ## Convert to duckspatial_df
-    test_data_ddbs <- test_data |>
-      dplyr::collect() |>
-      duckspatial::ddbs_as_points(coords = c("lon", "lat"), crs = 4326)
     ## Check class
-    res <- ddbh3_points_to_spatial(test_data_ddbs, resolution = 8)
+    res <- ddbh3_points_to_spatial(test_data, resolution = 8)
     expect_s3_class(res, "duckspatial_df")
     ## Check geometry
     res_col <- dplyr::collect(res)
-    expect_in("geometry", colnames(res_col))
+    expect_in("geom", colnames(res_col))
   })
 
   ## FORMAT 3 - TABLE IN DUCKDB
@@ -68,7 +64,7 @@ testthat::describe("ddbh3_points_to_spatial() works in different formats", {
     expect_s3_class(res, "duckspatial_df")
     ## Check geometry
     res_col <- dplyr::collect(res)
-    expect_in("geometry", colnames(res_col))
+    expect_in("geom", colnames(res_col))
   })
 
 })
@@ -90,7 +86,7 @@ testthat::test_that("different resolutions return different geometries", {
     dplyr::collect()
   res_coarse <- ddbh3_points_to_spatial(test_data, resolution = 5) |>
     dplyr::collect()
-  expect_false(identical(res_fine$geometry, res_coarse$geometry))
+  expect_false(identical(res_fine$geom, res_coarse$geom))
 })
 
 testthat::test_that("finer resolution returns smaller polygons", {
@@ -121,7 +117,7 @@ testthat::describe("ddbh3_points_to_spatial() arguments work", {
       res <- ddbh3_points_to_spatial(test_data, resolution = r)
       expect_s3_class(res, "duckspatial_df")
       res_col <- dplyr::collect(res)
-      expect_in("geometry", colnames(res_col))
+      expect_in("geom", colnames(res_col))
     }
   })
 
@@ -189,7 +185,7 @@ describe("errors", {
   it("requires point geometry input", {
     ## Create a polygon input instead of points
     test_data_poly <- test_data |>
-      ddbh3_lonlat_to_spatial(resolution = 8)
+      ddbh3_points_to_spatial(resolution = 8)
     expect_error(ddbh3_points_to_spatial(test_data_poly, resolution = 8))
   })
 
@@ -263,12 +259,8 @@ testthat::describe("ddbh3_points_to_h3() works in different formats", {
 
   ## FORMAT 2 - DUCKSPATIAL_DF
   testthat::it("returns the correct data for duckspatial_df", {
-    ## Convert to duckspatial_df
-    test_data_ddbs <- test_data |>
-      dplyr::collect() |>
-      duckspatial::ddbs_as_points(coords = c("lon", "lat"), crs = 4326)
     ## Check class
-    res <- ddbh3_points_to_h3(test_data_ddbs, resolution = 8)
+    res <- ddbh3_points_to_h3(test_data, resolution = 8)
     expect_s3_class(res, "duckspatial_df")
     ## Check column
     res_col <- dplyr::collect(res)
@@ -305,7 +297,7 @@ testthat::test_that("returns one row per input row", {
 testthat::test_that("geometry column is preserved", {
   res <- ddbh3_points_to_h3(test_data, resolution = 8) |>
     dplyr::collect()
-  expect_in("geometry", colnames(res))
+  expect_in("geom", colnames(res))
 })
 
 testthat::test_that("string format returns valid h3 cells", {
@@ -457,7 +449,7 @@ describe("errors", {
 
   it("requires point geometry input", {
     test_data_poly <- test_data |>
-      ddbh3_lonlat_to_spatial(resolution = 8)
+      ddbh3_points_to_spatial(resolution = 8)
     expect_error(ddbh3_points_to_h3(test_data_poly, resolution = 8))
   })
 

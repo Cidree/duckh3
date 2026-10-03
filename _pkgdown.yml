@@ -181,6 +181,7 @@ reference:
   contents:
   - ddbh3_h3_to
   - ddbh3_lonlat_to
+  - ddbh3_geom_to
   - ddbh3_points_to
 
 - title: H3 hierarchy
