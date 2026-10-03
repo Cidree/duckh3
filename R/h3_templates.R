@@ -59,6 +59,9 @@ template_h3_base <- function(
   ## register cleanup of the connection
   on.exit(resolve_conn$cleanup(), add = TRUE)
 
+  ## Check if h3 is installed
+  check_installed_h3(conn = target_conn)
+
   ## 1.5. Get list with query names for the input data
   x_list <- duckspatial:::get_query_list(x, target_conn)
   on.exit(x_list$cleanup(), add = TRUE)
@@ -160,6 +163,9 @@ template_h3_to_spatial <- function(
   x            <- resolve_conn$x
   ## register cleanup of the connection
   on.exit(resolve_conn$cleanup(), add = TRUE)
+
+  ## Check if h3 is installed
+  check_installed_h3(conn = target_conn)
 
   ## 1.5. Get list with query names for the input data
   x_list <- duckspatial:::get_query_list(x, target_conn)
@@ -275,6 +281,9 @@ template_h3_geom_to_spatial <- function(
   target_conn  <- resolve_conn$conn
   x            <- resolve_conn$x
   on.exit(resolve_conn$cleanup(), add = TRUE)
+
+  ## Check if h3 is installed
+  check_installed_h3(conn = target_conn)
 
   ## 2.2. Get query list of table names
   x_list <- duckspatial:::get_query_list(x, target_conn)
@@ -393,6 +402,9 @@ template_h3_geom_to_h3 <- function(
   target_conn  <- resolve_conn$conn
   x            <- resolve_conn$x
   on.exit(resolve_conn$cleanup(), add = TRUE)
+  
+  ## Check if h3 is installed
+  check_installed_h3(conn = target_conn)
 
   ## 1.4. Get query list of table names
   x_list <- duckspatial:::get_query_list(x, target_conn)

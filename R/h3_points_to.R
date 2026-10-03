@@ -113,6 +113,9 @@ ddbh3_points_to_spatial <- function(
   ## register cleanup of the connection
   on.exit(resolve_conn$cleanup(), add = TRUE)
 
+  ## Check if h3 is installed
+  check_installed_h3(conn = target_conn)
+
   ## 2.2. Get query list of table names
   x_list <- duckspatial:::get_query_list(x, target_conn)
   on.exit(x_list$cleanup(), add = TRUE)
@@ -227,6 +230,9 @@ ddbh3_points_to_h3 <- function(
   x            <- resolve_conn$x
   ## register cleanup of the connection
   on.exit(resolve_conn$cleanup(), add = TRUE)
+
+  ## Check if h3 is installed
+  check_installed_h3(conn = target_conn)
 
   ## 1.4. Get query list of table names
   x_list <- duckspatial:::get_query_list(x, target_conn)
