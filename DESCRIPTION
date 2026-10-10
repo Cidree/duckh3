@@ -1,7 +1,7 @@
 Type: Package
 Package: duckh3
 Title: H3 Extension of 'DuckDB'
-Version: 0.1.0.9000
+Version: 0.2.0
 Authors@R: c(
     person(
         "Adrián", "Cidre González", 
@@ -45,4 +45,4 @@ Roxygen: list(markdown = TRUE)
 Suggests: 
     sf,
     testthat (>= 3.0.0)
-Config/roxygen2/version: 8.0.0
+Config/roxygen2/version: 8.1.1
