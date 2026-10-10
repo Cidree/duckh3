@@ -114,7 +114,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">duckh3</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -146,11 +146,34 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.2.0" id="duckh3-020">duckh3 0.2.0<a class="anchor" aria-label="anchor" href="#duckh3-020"></a></h2>
+<div class="section level3">
+<h3 id="build-0-2-0">BUILD<a class="anchor" aria-label="anchor" href="#build-0-2-0"></a></h3>
+<ul><li>Requires DuckDB &gt;= 1.5.5</li>
+</ul></div>
+<div class="section level3">
+<h3 id="enhancements-0-2-0">ENHANCEMENTS<a class="anchor" aria-label="anchor" href="#enhancements-0-2-0"></a></h3>
+<ul><li><p>Functions in vetorized mode automatically parse to UBIGINT when the input is a numeric vector.</p></li>
+<li><p>Error message on wrong CRS is now displayed correctly (<a href="https://github.com/Cidree/duckh3/issues/3" class="external-link">#3</a>).</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="new-features-0-2-0">NEW FEATURES<a class="anchor" aria-label="anchor" href="#new-features-0-2-0"></a></h3>
+<ul><li>New functions to convert polygon and linestring geometries to H3 cells (<a href="https://github.com/Cidree/duckh3/issues/2" class="external-link">#2</a>):
+<ul><li>
+<code><a href="../reference/ddbh3_geom_to.html">ddbh3_polygons_to_h3()</a></code> / <code><a href="../reference/ddbh3_geom_to.html">ddbh3_lines_to_h3()</a></code> add a list column with the H3 cells intersecting each feature (string or <code>UBIGINT</code>).</li>
+<li>
+<code><a href="../reference/ddbh3_geom_to.html">ddbh3_polygons_to_spatial()</a></code> / <code><a href="../reference/ddbh3_geom_to.html">ddbh3_lines_to_spatial()</a></code> return one row per intersecting cell, with geometry replaced by the cell hexagon boundary.</li>
+<li>Polygons use DuckDB’s experimental polygon polyfill (<code>overlap</code> containment by default); lines are polyfilled via a buffer-then-exact-trim strategy since they have no native polyfill (<code>buffer_scale</code> argument).</li>
+</ul></li>
+</ul></div>
+</div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.0" id="duckh3-010">duckh3 0.1.0<a class="anchor" aria-label="anchor" href="#duckh3-010"></a></h2><p class="text-muted">CRAN release: 2026-04-24</p>
 <p>Learn more about this release <a href="https://adrian-cidre.com/posts/016_duckh3/" target="_blank" class="external-link">here</a>.</p>
 <ul><li>Initial CRAN submission.</li>
 </ul></div>
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">
