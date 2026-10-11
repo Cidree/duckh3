@@ -74,7 +74,7 @@ create_ddbh3_macros <- function(conn) {
 
 
 create_ddbh3_default_macros <- function() {
-  create_ddbh3_macros(duckspatial:::ddbs_default_conn())
+  create_ddbh3_macros(duckspatial::ddbs_default_conn())
 }
 
 
@@ -127,7 +127,7 @@ check_nested_column <- function(x, column) {
 # get_vectorized_result <- function(x, fun) {
 
 #   ## Create a random view name
-#   conn      <- duckspatial:::ddbs_default_conn()
+#   conn      <- duckspatial::ddbs_default_conn()
 #   view_name <- duckspatial:::ddbs_temp_view_name()
 
 #   ## Register the data as a view
@@ -187,7 +187,7 @@ get_vectorized_result <- function(x, fun) {
   }
 
   ## Create a random view name
-  conn      <- duckspatial:::ddbs_default_conn()
+  conn      <- duckspatial::ddbs_default_conn()
   view_name <- duckspatial:::ddbs_temp_view_name()
 
   duckdb::duckdb_register(conn, view_name, data.frame(x = x))

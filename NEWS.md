@@ -3,7 +3,9 @@
 
 ## BUILD
 
-* Requires DuckDB >= 1.5.5
+* Requires DuckDB >= 1.5.6
+
+* Requires `duckspatial` >= 1.3.0
 
 ## ENHANCEMENTS
 
