@@ -162,7 +162,7 @@ points_tbl <- read.csv(
 ## Create a connection with spatial and h3 extensions
 conn <- ddbh3_create_conn(threads = 1)
 #> duckdb keeps downloaded extensions and secrets in a temporary directory:
-#> ℹ /tmp/RtmpONmMRP/duckdb
+#> ℹ /tmp/RtmpKnbGTb/duckdb
 #> This is removed when the R session ends.
 #> • Extensions are re-downloaded each session.
 #> • Secrets are lost.

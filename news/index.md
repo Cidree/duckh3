@@ -2,6 +2,8 @@
 
 ## duckh3 0.2.0
 
+CRAN release: 2026-10-11
+
 ### BUILD
 
 - Requires DuckDB \>= 1.5.6
