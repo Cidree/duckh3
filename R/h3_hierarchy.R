@@ -430,3 +430,131 @@ ddbh3_get_child_pos <- function(
 
 
 
+#' Get an H3 child cell from a parent and child position
+#'
+#' Get the child H3 cell at a given position within a parent cell at a 
+#' specified child resolution.
+#'
+#' @template x
+#' @param child_pos Numeric. Column name containing the child position index.
+#' @param parent Character. Column name containing the parent H3 cell index.
+#' @template resolution
+#' @template new_column
+#' @template conn_null
+#' @template name
+#' @template overwrite
+#' @template quiet
+#'
+#' @template returns_tbl
+#' @export
+ddbh3_child_pos_to_cell <- function(
+    x,
+    child_pos = "h3child_pos",
+    parent = "h3string",
+    resolution = 8,
+    new_column = "h3children",
+    conn = NULL,
+    name = NULL,
+    overwrite = FALSE,
+    quiet = FALSE
+) {
+  
+  
+  # 0. Handle function-specific errors
+  duckspatial:::assert_character_scalar(child_pos, "child_pos")
+  duckspatial:::assert_character_scalar(parent, "parent")
+  duckspatial:::assert_character_scalar(new_column, "new_column")
+  duckspatial:::assert_integer_scalar(resolution, "resolution")
+  duckspatial:::assert_numeric_interval(resolution, 0, 15, "resolution")
+
+
+  # 1. Build parameters string
+  built_fun <- glue::glue("h3_child_pos_to_cell({child_pos}, {parent}, {resolution})")
+
+
+  # 2. Pass to template
+  template_h3_base(
+    x = x,
+    conn = conn,
+    name = name,
+    new_column = new_column,
+    overwrite = overwrite,
+    quiet = quiet,
+    fun = built_fun,
+    base_fun = glue::glue("h3_child_pos_to_cell(x, y, {resolution})")
+  ) 
+
+}
+
+
+
+
+#' Get the base cell number of an H3 cell
+#'
+#' Get the base cell number (ranging from 0 to 121) of H3 cell indexes stored 
+#' as strings or unsigned 64-bit integers (`UBIGINT`). Every H3 cell descends 
+#' from one of these foundational global base cells.
+#'
+#' @template x
+#' @template h3
+#' @template new_column
+#' @template conn_null
+#' @template name
+#' @template overwrite
+#' @template quiet
+#'
+#' @template returns_tbl
+#' @export
+#'
+#' @examples
+#' ## Load needed packages
+#' library(duckh3)
+#' library(dplyr)
+#' 
+#' ## Setup the default connection with h3 and spatial extensions
+#' ## This is a mandatory step to use duckh3 functions
+#' ddbh3_default_conn(threads = 1)
+#' 
+#' ## Load example data
+#' points_tbl <- read.csv(
+#'   system.file("extdata/example_pts.csv", package = "duckh3")
+#' )
+#' 
+#' ## Add H3 string column
+#' points_tbl <- ddbh3_lonlat_to_h3(points_tbl, resolution = 6)
+#' 
+#' ## Get the base cell number
+#' ddbh3_get_base_cell_number(points_tbl)
+ddbh3_get_base_cell_number <- function(
+    x,
+    h3 = "h3string",
+    new_column = "base_cell",
+    conn = NULL,
+    name = NULL,
+    overwrite = FALSE,
+    quiet = FALSE
+) {
+  
+  
+  # 0. Handle function-specific errors
+  duckspatial:::assert_character_scalar(h3, "h3")
+  duckspatial:::assert_character_scalar(new_column, "new_column")
+
+
+  # 1. Build parameters string
+  built_fun <- glue::glue("h3_get_base_cell_number({h3})")
+
+
+  # 2. Pass to template
+  template_h3_base(
+    x = x,
+    conn = conn,
+    name = name,
+    new_column = new_column,
+    overwrite = overwrite,
+    quiet = quiet,
+    fun = built_fun,
+    base_fun = glue::glue("h3_get_base_cell_number(x)")
+  ) 
+
+}

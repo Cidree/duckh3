@@ -5,6 +5,16 @@
 
 * Remove arrow lambda syntax for compatibility with DuckDB v2.0 (#6).
 
+## NEW FEATURES
+
+* `ddbh3_grid_disk()`, `dbh3_grid_disk_distances()`, `ddbh3_grid_ring()`: get H3 grid neighborhoods (disks, rings, and distances).
+
+* `ddbh3_max_grid_disk_size()`: get the maximum grid disk size for a given distance k.
+
+* `ddbh3_child_pos_to_cell()`: get an H3 child cell from a parent and child position.
+
+* `ddbh3_get_base_cell_number()`: get the base cell number of an H3 cell.
+
 
 # duckh3 0.2.0
 
