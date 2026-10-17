@@ -1,4 +1,11 @@
 
+# Development version
+
+## ENHANCEMENTS
+
+* Remove arrow lambda syntax for compatibility with DuckDB v2.0 (#6).
+
+
 # duckh3 0.2.0
 
 ## BUILD

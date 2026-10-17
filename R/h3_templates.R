@@ -424,9 +424,13 @@ template_h3_geom_to_h3 <- function(
     build_line_cells_lateral(x_geom, resolution, containment, buffer_scale)
   }
 
-  list_expr <- glue::glue("(SELECT list_distinct(list(agg.h3)) FROM ({cells_lateral}) AS agg)")
+  # list_expr <- glue::glue("(SELECT list_distinct(list(agg.h3)) FROM ({cells_lateral}) AS agg)")
+  # if (h3_format == "string") {
+  #   list_expr <- glue::glue("list_transform({list_expr}, cell -> h3_h3_to_string(cell))")
+  # }
+    list_expr <- glue::glue("(SELECT list_distinct(list(agg.h3)) FROM ({cells_lateral}) AS agg)")
   if (h3_format == "string") {
-    list_expr <- glue::glue("list_transform({list_expr}, cell -> h3_h3_to_string(cell))")
+    list_expr <- glue::glue("list_transform({list_expr}, lambda cell: h3_h3_to_string(cell))")
   }
 
   ## 2.3. Build the base query
