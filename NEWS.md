@@ -5,6 +5,10 @@
 
 * Remove arrow lambda syntax for compatibility with DuckDB v2.0 (#6).
 
+## NEW FEATURES
+
+* `ddbh3_get_base_cell_number()`: get the base cell number of an H3 cell.
+
 
 # duckh3 0.2.0
 
