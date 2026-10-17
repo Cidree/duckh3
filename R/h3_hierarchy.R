@@ -430,6 +430,63 @@ ddbh3_get_child_pos <- function(
 
 
 
+#' Get an H3 child cell from a parent and child position
+#'
+#' Get the child H3 cell at a given position within a parent cell at a 
+#' specified child resolution.
+#'
+#' @template x
+#' @param child_pos Numeric. Column name containing the child position index.
+#' @param parent Character. Column name containing the parent H3 cell index.
+#' @template resolution
+#' @template new_column
+#' @template conn_null
+#' @template name
+#' @template overwrite
+#' @template quiet
+#'
+#' @template returns_tbl
+#' @export
+ddbh3_child_pos_to_cell <- function(
+    x,
+    child_pos = "h3child_pos",
+    parent = "h3string",
+    resolution = 8,
+    new_column = "h3children",
+    conn = NULL,
+    name = NULL,
+    overwrite = FALSE,
+    quiet = FALSE
+) {
+  
+  
+  # 0. Handle function-specific errors
+  duckspatial:::assert_character_scalar(h3, "h3")
+  duckspatial:::assert_character_scalar(new_column, "new_column")
+  duckspatial:::assert_integer_scalar(resolution, "resolution")
+  duckspatial:::assert_numeric_interval(resolution, 0, 15, "resolution")
+
+
+  # 1. Build parameters string
+  built_fun <- glue::glue("h3_child_pos_to_cell({child_pos}, {parent}, {resolution})")
+
+
+  # 2. Pass to template
+  template_h3_base(
+    x = x,
+    conn = conn,
+    name = name,
+    new_column = new_column,
+    overwrite = overwrite,
+    quiet = quiet,
+    fun = built_fun,
+    base_fun = glue::glue("h3_child_pos_to_cell(x, y, {resolution})")
+  ) 
+
+}
+
+
+
 
 #' Get the base cell number of an H3 cell
 #'

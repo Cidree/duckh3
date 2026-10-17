@@ -7,6 +7,8 @@
 
 ## NEW FEATURES
 
+* `ddbh3_child_pos_to_cell()`: get an H3 child cell from a parent and child position.
+
 * `ddbh3_get_base_cell_number()`: get the base cell number of an H3 cell.
 
 

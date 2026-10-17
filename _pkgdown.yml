@@ -190,6 +190,7 @@ reference:
   - ddbh3_get_base_cell_number
   - ddbh3_get_resolution
   - ddbh3_get_child_pos
+  - ddbh3_child_pos_to_cell
   - ddbh3_get_n_children
   - ddbh3_get_hierarchy
   - ddbh3_get_icosahedron_faces
