@@ -461,7 +461,8 @@ ddbh3_child_pos_to_cell <- function(
   
   
   # 0. Handle function-specific errors
-  duckspatial:::assert_character_scalar(h3, "h3")
+  duckspatial:::assert_character_scalar(child_pos, "child_pos")
+  duckspatial:::assert_character_scalar(parent, "parent")
   duckspatial:::assert_character_scalar(new_column, "new_column")
   duckspatial:::assert_integer_scalar(resolution, "resolution")
   duckspatial:::assert_numeric_interval(resolution, 0, 15, "resolution")
