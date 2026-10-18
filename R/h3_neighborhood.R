@@ -218,3 +218,187 @@ ddbh3_max_grid_disk_size <- function(k = 1, conn = NULL) {
 
 
 
+
+#' Find a grid path connecting two H3 cells
+#'
+#' Given a starting H3 cell and a destination H3 cell, returns a 
+#' minimal-length contiguous path of cells between them (inclusive).
+#'
+#' @template x
+#' @template h3start
+#' @template h3end
+#' @param new_column Character. Name of the new column to be created. 
+#'   Defaults to `"h3path"`.
+#' @template nested
+#' @template conn_null
+#' @template name
+#' @template overwrite
+#' @template quiet
+#'
+#' @template returns_tbl
+#' @export
+#' 
+#' @examples
+#' ## Load packages
+#' library(duckh3)
+#' library(duckspatial)
+#' library(sf)
+#' ddbh3_default_conn()
+#' 
+#' ## Create a data frame with the start and end of the path
+#' h3_tbl <- data.frame(
+#'   h3start = "883923059bfffff",
+#'   h3end   = "883923d04dfffff"
+#' )
+#' 
+#' ## Get the number of cells distance between them
+#' h3path_tbl <- ddbh3_grid_path_cells(
+#'   h3_tbl,
+#'   h3start = "h3start",
+#'   h3end = "h3end"
+#' )
+#' 
+#' ## Convert path to spatial
+#' h3path_sf <- ddbh3_h3_to_spatial(h3path_tbl, "h3path") |>
+#'   ddbs_collect()
+#' 
+#' ## Convert start and end to spatial
+#' start_sf <- ddbh3_h3_to_spatial(h3_tbl, "h3start") |>
+#'   ddbs_collect()
+#' 
+#' end_sf <- ddbh3_h3_to_spatial(h3_tbl, "h3end") |>
+#'   ddbs_collect()
+#' 
+#' ## Visualize the path
+#' plot(h3path_sf$geometry)
+#' plot(start_sf, add = TRUE, col = "red")
+#' plot(end_sf, add = TRUE, col = "blue")
+ddbh3_grid_path_cells <- function(
+    x,
+    h3start = "h3string",
+    h3end,
+    new_column = "h3path",
+    nested = FALSE,
+    conn = NULL,
+    name = NULL,
+    mode = NULL,
+    overwrite = FALSE,
+    quiet = FALSE
+) {
+  
+  # 0. Handle function-specific errors
+  duckspatial:::assert_logic(nested, "nested")
+  duckspatial:::assert_character_scalar(h3start, "h3start")
+  duckspatial:::assert_character_scalar(h3end, "h3end")
+  duckspatial:::assert_character_scalar(new_column, "new_column")
+
+  # 1. Build parameters string
+  if (isTRUE(nested)) {
+    built_fun <- glue::glue("h3_grid_path_cells({h3start}, {h3end})")
+  } else {
+    built_fun <- glue::glue("unnest(h3_grid_path_cells({h3start}, {h3end}))")
+  }
+
+  # 2. Pass to template
+  template_h3_base(
+    x = x,
+    conn = conn,
+    name = name,
+    mode = mode,
+    new_column = new_column,
+    overwrite = overwrite,
+    quiet = quiet,
+    fun = built_fun,
+    base_fun = glue::glue("h3_grid_path_cells(x, y)")
+  ) 
+}
+
+
+
+
+#' Get the grid distance between two H3 cells
+#'
+#' Computes the minimum number of step-by-step neighbor hops required 
+#' to travel from a starting H3 cell to a destination H3 cell.
+#'
+#' @template x
+#' @template h3start
+#' @template h3end
+#' @param new_column Character. Name of the new column to be created. 
+#'   Defaults to `"grid_distance"`.
+#' @template conn_null
+#' @template name
+#' @template overwrite
+#' @template quiet
+#'
+#' @template returns_tbl
+#' @export
+#' 
+#' @examples
+#' ## Load packages
+#' library(duckh3)
+#' library(duckspatial)
+#' ddbh3_default_conn()
+#' 
+#' ## Create a data frame with the start and end of the path
+#' h3_tbl <- data.frame(
+#'   h3start = "883923059bfffff",
+#'   h3end   = "883923d04dfffff"
+#' )
+#' 
+#' ## Get the number of cells distance between them
+#' ddbh3_grid_distance(
+#'   h3_tbl,
+#'   h3start = "h3start",
+#'   h3end = "h3end"
+#' )
+ddbh3_grid_distance <- function(
+    x,
+    h3start = "h3string",
+    h3end,
+    new_column = "grid_distance",
+    conn = NULL,
+    name = NULL,
+    overwrite = FALSE,
+    quiet = FALSE
+) {
+  
+  # 0. Handle function-specific errors
+  duckspatial:::assert_character_scalar(h3start, "h3start")
+  duckspatial:::assert_character_scalar(h3end, "h3end")
+  duckspatial:::assert_character_scalar(new_column, "new_column")
+
+  # 1. Build parameters string
+  built_fun <- glue::glue("h3_grid_distance({h3start}, {h3end})")
+
+  # 2. Pass to template
+  template_h3_base(
+    x = x,
+    conn = conn,
+    name = name,
+    new_column = new_column,
+    overwrite = overwrite,
+    quiet = quiet,
+    fun = built_fun,
+    base_fun = glue::glue("h3_grid_distance(x, y)")
+  ) 
+}
+
+
+
+
+
+# ddbh3_grid_path_cells(x, "h3string")
+
+
+# ddbh3_grid_ring(x, 10, nested = FALSE) |> 
+#   ddbh3_h3_to_spatial("h3neighbors") |> 
+#   ddbs_collect() |> 
+#   mapview()
+# ddbh3_grid_ring(x, 5, nested = TRUE)
+
+
+# ddbh3_grid_disk(x, 5, nested = FALSE)
+# ddbh3_grid_disk(x, 5, nested = TRUE)
+# ddbh3_grid_disk_distances(x, nested = TRUE)
+# ddbh3_grid_disk_distances(x, nested = FALSE)

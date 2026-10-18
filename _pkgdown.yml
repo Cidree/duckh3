@@ -199,6 +199,8 @@ reference:
   desc: Work with neighbors of H3 cells
   contents:
   - ddbh3_grid_disk
+  - ddbh3_grid_distance
+  - ddbh3_grid_path_cells
   - ddbh3_max_grid_disk_size
 
 - title: H3 properties

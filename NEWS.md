@@ -7,6 +7,10 @@
 
 ## NEW FEATURES
 
+* `ddbh3_grid_path_cells()`: find a grid path connecting two H3 cells.
+
+* `ddbh3_grid_distance()`: get the grid distance between two H3 cells.
+
 * `ddbh3_grid_disk()`, `dbh3_grid_disk_distances()`, `ddbh3_grid_ring()`: get H3 grid neighborhoods (disks, rings, and distances).
 
 * `ddbh3_max_grid_disk_size()`: get the maximum grid disk size for a given distance k.
