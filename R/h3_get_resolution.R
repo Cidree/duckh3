@@ -8,6 +8,7 @@
 #' @template new_column
 #' @template conn_null
 #' @template name
+#' @template mode
 #' @template overwrite
 #' @template quiet
 #'
@@ -48,6 +49,7 @@ ddbh3_get_resolution <- function(
     new_column = "h3resolution",
     conn = NULL,
     name = NULL,
+    mode = NULL,
     overwrite = FALSE,
     quiet = FALSE
 ) {
@@ -67,6 +69,7 @@ ddbh3_get_resolution <- function(
     x = x,
     conn = conn,
     name = name,
+    mode = mode,
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,

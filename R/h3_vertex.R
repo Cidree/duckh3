@@ -12,6 +12,7 @@
 #' @template new_column
 #' @template conn_null
 #' @template name
+#' @template mode
 #' @template nested
 #' @template overwrite
 #' @template quiet
@@ -109,6 +110,7 @@ ddbh3_h3_to_vertex <- function(
     new_column = "h3vertex",
     conn = NULL,
     name = NULL,
+    mode = NULL,
     overwrite = FALSE,
     quiet = FALSE
 ) {
@@ -129,6 +131,7 @@ ddbh3_h3_to_vertex <- function(
     x = x,
     conn = conn,
     name = name,
+    mode = mode,
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,
@@ -148,6 +151,7 @@ ddbh3_vertex_to_lon <- function(
     new_column = "lon_vertex",
     conn = NULL,
     name = NULL,
+    mode = NULL,
     overwrite = FALSE,
     quiet = FALSE
 ) {
@@ -163,6 +167,7 @@ ddbh3_vertex_to_lon <- function(
     x = x,
     conn = conn,
     name = name,
+    mode = mode,
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,
@@ -184,6 +189,7 @@ ddbh3_vertex_to_lat <- function(
     new_column = "lat_vertex",
     conn = NULL,
     name = NULL,
+    mode = NULL,
     overwrite = FALSE,
     quiet = FALSE
 ) {
@@ -199,6 +205,7 @@ ddbh3_vertex_to_lat <- function(
     x = x,
     conn = conn,
     name = name,
+    mode = mode,
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,
@@ -220,6 +227,7 @@ ddbh3_h3_to_vertexes <- function(
     new_column = "h3vertex",
     conn = NULL,
     name = NULL,
+    mode = NULL,
     nested = FALSE,
     overwrite = FALSE,
     quiet = FALSE
@@ -241,6 +249,7 @@ ddbh3_h3_to_vertexes <- function(
     x = x,
     conn = conn,
     name = name,
+    mode = mode,
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,
@@ -261,6 +270,7 @@ ddbh3_vertex_to_spatial <- function(
     h3vertex = "h3vertex",
     conn = NULL,
     name = NULL,
+    mode = NULL,
     overwrite = FALSE,
     quiet = FALSE
 ) {
@@ -296,6 +306,7 @@ ddbh3_vertex_to_spatial <- function(
     x = x,
     conn = conn,
     name = name,
+    mode = mode,
     overwrite = overwrite,
     quiet = quiet,
     fun = built_fun

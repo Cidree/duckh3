@@ -12,6 +12,7 @@
 #' @template safe
 #' @template conn_null
 #' @template name
+#' @template mode
 #' @template overwrite
 #' @template quiet
 #' 
@@ -52,6 +53,7 @@ ddbh3_grid_disk <- function(
     new_column = "h3neighbors",
     conn = NULL,
     name = NULL,
+    mode = NULL,
     nested = FALSE,
     overwrite = FALSE,
     safe = FALSE,
@@ -79,6 +81,7 @@ ddbh3_grid_disk <- function(
     x = x,
     conn = conn,
     name = name,
+    mode = mode,
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,
@@ -98,6 +101,7 @@ ddbh3_grid_disk_distances <- function(
     new_column = "h3neighbors",
     conn = NULL,
     name = NULL,
+    mode = NULL,
     nested = FALSE,
     overwrite = FALSE,
     safe = TRUE,
@@ -125,6 +129,7 @@ ddbh3_grid_disk_distances <- function(
     x = x,
     conn = conn,
     name = name,
+    mode = mode,
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,
@@ -144,6 +149,7 @@ ddbh3_grid_ring <- function(
     new_column = "h3neighbors",
     conn = NULL,
     name = NULL,
+    mode = NULL,
     nested = FALSE,
     overwrite = FALSE,
     safe = FALSE,
@@ -171,6 +177,7 @@ ddbh3_grid_ring <- function(
     x = x,
     conn = conn,
     name = name,
+    mode = mode,
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,
@@ -232,6 +239,7 @@ ddbh3_max_grid_disk_size <- function(k = 1, conn = NULL) {
 #' @template nested
 #' @template conn_null
 #' @template name
+#' @template mode
 #' @template overwrite
 #' @template quiet
 #'
@@ -328,6 +336,7 @@ ddbh3_grid_path_cells <- function(
 #'   Defaults to `"grid_distance"`.
 #' @template conn_null
 #' @template name
+#' @template mode
 #' @template overwrite
 #' @template quiet
 #'
@@ -359,6 +368,7 @@ ddbh3_grid_distance <- function(
     new_column = "grid_distance",
     conn = NULL,
     name = NULL,
+    mode = NULL,
     overwrite = FALSE,
     quiet = FALSE
 ) {
@@ -376,6 +386,7 @@ ddbh3_grid_distance <- function(
     x = x,
     conn = conn,
     name = name,
+    mode = mode,
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,
@@ -385,20 +396,3 @@ ddbh3_grid_distance <- function(
 }
 
 
-
-
-
-# ddbh3_grid_path_cells(x, "h3string")
-
-
-# ddbh3_grid_ring(x, 10, nested = FALSE) |> 
-#   ddbh3_h3_to_spatial("h3neighbors") |> 
-#   ddbs_collect() |> 
-#   mapview()
-# ddbh3_grid_ring(x, 5, nested = TRUE)
-
-
-# ddbh3_grid_disk(x, 5, nested = FALSE)
-# ddbh3_grid_disk(x, 5, nested = TRUE)
-# ddbh3_grid_disk_distances(x, nested = TRUE)
-# ddbh3_grid_disk_distances(x, nested = FALSE)

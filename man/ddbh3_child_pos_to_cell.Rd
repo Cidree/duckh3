@@ -12,6 +12,7 @@ ddbh3_child_pos_to_cell(
   new_column = "h3children",
   conn = NULL,
   name = NULL,
+  mode = NULL,
   overwrite = FALSE,
   quiet = FALSE
 )
@@ -44,6 +45,14 @@ runs on a temporary DuckDB database.}
 or a character string of length two specifying the schema and table
 names. If \code{NULL} (the default), the function returns the result as an
 \code{sf} object}
+
+\item{mode}{Character. Controls the return type. Options:
+\itemize{
+\item \code{"duckspatial"} (default): Lazy spatial data frame backed by dbplyr/DuckDB
+\item \code{"sf"}: Eagerly collected sf object (uses memory)
+}
+Can be set globally via \code{\link[duckspatial]{ddbs_options}(mode = "...")} or
+per-function via this argument. Per-function overrides global setting.}
 
 \item{overwrite}{Boolean. whether to overwrite the existing table if it exists. Defaults
 to \code{FALSE}. This argument is ignored when \code{name} is \code{NULL}.}

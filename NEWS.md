@@ -7,6 +7,8 @@
 
 ## NEW FEATURES
 
+* All functions gain a `mode` argument that can be set to "sf" or "duckspatial" to return the output in that format. Alternatively, the user can use `duckspatial::ddbs_options()` to set the mode globally.
+
 * `ddbh3_grid_path_cells()`: find a grid path connecting two H3 cells.
 
 * `ddbh3_grid_distance()`: get the grid distance between two H3 cells.

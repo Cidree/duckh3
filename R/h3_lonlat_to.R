@@ -12,6 +12,7 @@
 #' `bigint`
 #' @template conn_null
 #' @template name
+#' @template mode
 #' @template overwrite
 #' @template quiet
 #' 
@@ -125,6 +126,7 @@ ddbh3_lonlat_to_spatial <- function(
     resolution = 8,
     conn = NULL,
     name = NULL,
+    mode = NULL,
     overwrite = FALSE,
     quiet = FALSE
 ) {
@@ -150,6 +152,7 @@ ddbh3_lonlat_to_spatial <- function(
     x = x,
     conn = conn,
     name = name,
+    mode = mode,
     overwrite = overwrite,
     quiet = quiet,
     fun = built_fun
@@ -171,6 +174,7 @@ ddbh3_lonlat_to_h3 <- function(
     h3_format = "string",
     conn = NULL,
     name = NULL,
+    mode = NULL,
     overwrite = FALSE,
     quiet = FALSE
 ) {
@@ -195,6 +199,7 @@ ddbh3_lonlat_to_h3 <- function(
     x = x,
     conn = conn,
     name = name,
+    mode = mode,
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,

@@ -12,6 +12,7 @@
 #' @template new_column
 #' @template conn_null
 #' @template name
+#' @template mode
 #' @template nested
 #' @template overwrite
 #' @template quiet
@@ -109,6 +110,7 @@ ddbh3_get_parent <- function(
     new_column = "h3parent",
     conn = NULL,
     name = NULL,
+    mode = NULL,
     overwrite = FALSE,
     quiet = FALSE
 ) {
@@ -127,6 +129,7 @@ ddbh3_get_parent <- function(
     x = x,
     conn = conn,
     name = name,
+    mode = mode,
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,
@@ -149,6 +152,7 @@ ddbh3_get_children <- function(
     new_column = "h3children",
     conn = NULL,
     name = NULL,
+    mode = NULL,
     nested = FALSE,
     overwrite = FALSE,
     quiet = FALSE
@@ -172,6 +176,7 @@ ddbh3_get_children <- function(
     x = x,
     conn = conn,
     name = name,
+    mode = mode,
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,
@@ -194,6 +199,7 @@ ddbh3_get_n_children <- function(
     new_column = "h3n_children",
     conn = NULL,
     name = NULL,
+    mode = NULL,
     overwrite = FALSE,
     quiet = FALSE
 ) {
@@ -211,6 +217,7 @@ ddbh3_get_n_children <- function(
     x = x,
     conn = conn,
     name = name,
+    mode = mode,
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,
@@ -233,6 +240,7 @@ ddbh3_get_center_child <- function(
     new_column = "h3center_child",
     conn = NULL,
     name = NULL,
+    mode = NULL,
     overwrite = FALSE,
     quiet = FALSE
 ) {
@@ -250,6 +258,7 @@ ddbh3_get_center_child <- function(
     x = x,
     conn = conn,
     name = name,
+    mode = mode,
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,
@@ -275,6 +284,7 @@ ddbh3_get_center_child <- function(
 #' @template new_column
 #' @template conn_null
 #' @template name
+#' @template mode
 #' @template nested
 #' @template overwrite
 #' @template quiet
@@ -319,6 +329,7 @@ ddbh3_get_icosahedron_faces <- function(
     new_column = "h3faces",
     conn = NULL,
     name = NULL,
+    mode = NULL,
     nested = FALSE,
     overwrite = FALSE,
     quiet = FALSE
@@ -341,6 +352,7 @@ ddbh3_get_icosahedron_faces <- function(
     x = x,
     conn = conn,
     name = name,
+    mode = mode,
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,
@@ -366,6 +378,7 @@ ddbh3_get_icosahedron_faces <- function(
 #' @template new_column
 #' @template conn_null
 #' @template name
+#' @template mode
 #' @template overwrite
 #' @template quiet
 #'
@@ -398,6 +411,7 @@ ddbh3_get_child_pos <- function(
     new_column = "h3child_pos",
     conn = NULL,
     name = NULL,
+    mode = NULL,
     overwrite = FALSE,
     quiet = FALSE
 ) {
@@ -419,6 +433,7 @@ ddbh3_get_child_pos <- function(
     x = x,
     conn = conn,
     name = name,
+    mode = mode,
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,
@@ -442,6 +457,7 @@ ddbh3_get_child_pos <- function(
 #' @template new_column
 #' @template conn_null
 #' @template name
+#' @template mode
 #' @template overwrite
 #' @template quiet
 #'
@@ -455,6 +471,7 @@ ddbh3_child_pos_to_cell <- function(
     new_column = "h3children",
     conn = NULL,
     name = NULL,
+    mode = NULL,
     overwrite = FALSE,
     quiet = FALSE
 ) {
@@ -477,6 +494,7 @@ ddbh3_child_pos_to_cell <- function(
     x = x,
     conn = conn,
     name = name,
+    mode = mode,
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,
@@ -500,6 +518,7 @@ ddbh3_child_pos_to_cell <- function(
 #' @template new_column
 #' @template conn_null
 #' @template name
+#' @template mode
 #' @template overwrite
 #' @template quiet
 #'
@@ -531,6 +550,7 @@ ddbh3_get_base_cell_number <- function(
     new_column = "base_cell",
     conn = NULL,
     name = NULL,
+    mode = NULL,
     overwrite = FALSE,
     quiet = FALSE
 ) {
@@ -550,6 +570,7 @@ ddbh3_get_base_cell_number <- function(
     x = x,
     conn = conn,
     name = name,
+    mode = mode,
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,
