@@ -343,3 +343,65 @@ check_installed_h3 <- function(conn = NULL) {
   
 
 }
+
+
+
+#' Create a table from a query, safely overwriting existing tables
+#'
+#' Wrapper around `duckspatial:::create_duckdb_table()`. When `overwrite = TRUE`,
+#' the result is first written to a staging table and only then swapped in
+#' place of `name` (inside a transaction). This keeps the source data intact
+#' when `name` is the same table that `query` reads from (directly or through
+#' a view or lazy query).
+#'
+#' @template conn_null
+#' @template name
+#' @param query SQL `SELECT` query that produces the table
+#' @template overwrite
+#' @template quiet
+#'
+#' @keywords internal
+#' @noRd
+#' @returns invisible TRUE
+create_h3_table <- function(conn, name, query, overwrite, quiet) {
+
+  ## Without overwrite there's nothing to drop: use the duckspatial helper
+  if (!isTRUE(overwrite)) {
+    return(duckspatial:::create_duckdb_table(
+      conn      = conn,
+      name      = name,
+      query     = query,
+      overwrite = overwrite,
+      quiet     = quiet
+    ))
+  }
+
+  ## Names of the target and of the staging table (same schema as the target)
+  name_list     <- duckspatial:::get_query_name(name)
+  staging_table <- basename(tempfile(paste0(name_list$table_name, "_ddbh3_staging_")))
+  staging_name  <- if (length(name) == 2) {
+    paste(name_list$schema_name, staging_table, sep = ".")
+  } else {
+    staging_table
+  }
+
+  ## 1. Materialize the result before touching the target table
+  DBI::dbExecute(conn, glue::glue("CREATE TABLE {staging_name} AS {query}"))
+  on.exit(
+    DBI::dbExecute(conn, glue::glue("DROP TABLE IF EXISTS {staging_name}")),
+    add = TRUE
+  )
+
+  ## 2. Swap the staging table in place of the target
+  DBI::dbWithTransaction(conn, {
+    DBI::dbExecute(conn, glue::glue("DROP TABLE IF EXISTS {name_list$query_name}"))
+    DBI::dbExecute(
+      conn,
+      glue::glue("ALTER TABLE {staging_name} RENAME TO {name_list$table_name}")
+    )
+  })
+  if (isFALSE(quiet)) cli::cli_alert_info("Table <{name_list$query_name}> dropped")
+
+  duckspatial:::feedback_query(quiet)
+  invisible(TRUE)
+}

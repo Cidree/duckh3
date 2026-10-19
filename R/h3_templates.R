@@ -100,7 +100,7 @@ template_h3_base <- function(
   # 3. Table creation if name is provided, or 
   # create duckspatial_df or sf object if name is NULL
   if (!is.null(name)) {
-    duckspatial:::create_duckdb_table(
+    create_h3_table(
       conn      = target_conn,
       name      = name,
       query     = base.query,
@@ -203,7 +203,7 @@ template_h3_to_spatial <- function(
   # 3. Table creation if name is provided, or 
   # create duckspatial_df or sf object if name is NULL
   if (!is.null(name)) {
-    duckspatial:::create_duckdb_table(
+    create_h3_table(
       conn      = target_conn,
       name      = name,
       query     = base.query,
@@ -324,7 +324,7 @@ template_h3_geom_to_spatial <- function(
   # 4. Table creation if name is provided, or
   # create duckspatial_df or sf object if name is NULL
   if (!is.null(name)) {
-    duckspatial:::create_duckdb_table(
+    create_h3_table(
       conn      = target_conn,
       name      = name,
       query     = base.query,
@@ -446,7 +446,7 @@ template_h3_geom_to_h3 <- function(
   # 3. Table creation if name is provided, or
   # create duckspatial_df or sf object if name is NULL
   if (!is.null(name)) {
-    duckspatial:::create_duckdb_table(
+    create_h3_table(
       conn      = target_conn,
       name      = name,
       query     = base.query,

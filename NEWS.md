@@ -1,6 +1,10 @@
 
 # Development version
 
+## BUG FIXES
+
+* Writing the result to the input table itself (`name` equal to the source table and `overwrite = TRUE`) no longer deletes the source table: the result is now built in a staging table and swapped in place.
+
 ## ENHANCEMENTS
 
 * Remove arrow lambda syntax for compatibility with DuckDB v2.0 (#6).
