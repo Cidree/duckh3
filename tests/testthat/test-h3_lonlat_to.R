@@ -571,3 +571,23 @@ describe("errors", {
   })
 
 })
+
+
+## Column names are quoted as identifiers ----------
+
+testthat::describe("ddbh3_lonlat_to_h3() quotes column names", {
+
+  testthat::it("accepts new_column, lon and lat with spaces", {
+    df  <- data.frame(`my lon` = 10, `my lat` = 5, check.names = FALSE)
+    res <- ddbh3_lonlat_to_h3(df, lon = "my lon", lat = "my lat", resolution = 5, new_column = "my col") |>
+      dplyr::collect()
+    expect_in("my col", colnames(res))
+    expect_identical(res[["my col"]], ddbh3_lonlat_to_h3(data.frame(lon = 10, lat = 5), resolution = 5) |> dplyr::pull(h3string))
+  })
+
+  testthat::it("does not execute SQL expressions passed as column names", {
+    df <- data.frame(x = 10, y = 5)
+    expect_error(dplyr::collect(ddbh3_lonlat_to_h3(df, lon = "x + 1", lat = "y", resolution = 12)), "x + 1", fixed = TRUE)
+  })
+
+})

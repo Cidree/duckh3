@@ -1,6 +1,10 @@
 
 # Development version
 
+## BUG FIXES
+
+* Column-name arguments (`new_column`, `h3`, `h3vertex`, `lon`, `lat`) and the geometry column name are now quoted as SQL identifiers, so names with spaces or quotes work and SQL expressions passed as column names are no longer executed.
+
 ## ENHANCEMENTS
 
 * Remove arrow lambda syntax for compatibility with DuckDB v2.0 (#6).

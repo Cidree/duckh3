@@ -1198,3 +1198,22 @@ describe("errors", {
   })
 
 })
+
+
+## Column names are quoted as identifiers ----------
+
+testthat::describe("vertex functions quote column names", {
+
+  testthat::it("ddbh3_vertex_to_spatial() works with a vertex column with spaces and quotes", {
+    vtx <- ddbh3_h3_to_vertex(test_data, new_column = "my \"vertex\"")
+    res <- ddbh3_vertex_to_spatial(vtx, h3vertex = "my \"vertex\"") |> dplyr::collect()
+    expect_equal(nrow(res), nrow(dplyr::collect(test_data)))
+  })
+
+  testthat::it("ddbh3_vertex_to_lat() works with a vertex column with spaces", {
+    vtx <- ddbh3_h3_to_vertex(test_data, new_column = "my vertex")
+    res <- ddbh3_vertex_to_lat(vtx, h3vertex = "my vertex", new_column = "v lat") |> dplyr::collect()
+    expect_type(res[["v lat"]], "double")
+  })
+
+})

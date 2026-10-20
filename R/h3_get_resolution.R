@@ -59,7 +59,7 @@ ddbh3_get_resolution <- function(
 
 
   # 1. Build parameters string
-  built_fun <- glue::glue("h3_get_resolution({h3})")
+  built_fun <- glue::glue("h3_get_resolution({quote_ident(h3)})")
 
 
   # 2. Pass to template

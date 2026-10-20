@@ -107,7 +107,7 @@ ddbh3_is_pentagon <- function(
   duckspatial:::assert_character_scalar(h3, "h3")
 
   # 1. Build parameters string
-  built_fun <- glue::glue("h3_is_pentagon({h3})")
+  built_fun <- glue::glue("h3_is_pentagon({quote_ident(h3)})")
 
   # 2. Pass to template
   template_h3_base(
@@ -142,7 +142,7 @@ ddbh3_is_h3 <- function(
   duckspatial:::assert_character_scalar(h3, "h3")
 
   # 1. Build parameters string
-  built_fun <- glue::glue("h3_is_valid_cell({h3})")
+  built_fun <- glue::glue("h3_is_valid_cell({quote_ident(h3)})")
 
   # 2. Pass to template
   template_h3_base(
@@ -178,7 +178,7 @@ ddbh3_is_res_class_iii <- function(
   duckspatial:::assert_character_scalar(h3, "h3")
 
   # 1. Build parameters string
-  built_fun <- glue::glue("h3_is_res_class_iii({h3})")
+  built_fun <- glue::glue("h3_is_res_class_iii({quote_ident(h3)})")
 
   # 2. Pass to template
   template_h3_base(
@@ -213,7 +213,7 @@ ddbh3_is_vertex <- function(
   duckspatial:::assert_character_scalar(h3vertex, "h3vertex")
 
   # 1. Build parameters string
-  built_fun <- glue::glue("h3_is_valid_vertex({h3vertex})")
+  built_fun <- glue::glue("h3_is_valid_vertex({quote_ident(h3vertex)})")
 
   # 2. Pass to template
   template_h3_base(
