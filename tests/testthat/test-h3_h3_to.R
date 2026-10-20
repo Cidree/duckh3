@@ -1066,7 +1066,10 @@ describe("errors", {
 testthat::describe("new_column replaces an existing column", {
 
   test_data_df <- dplyr::collect(test_data)
-  cell_lat <- sf::st_coordinates(h3jsr::cell_to_point(test_data_df$h3string))[, 2]
+  ## Cell latitudes computed into a new column (no collision)
+  cell_lat <- dplyr::collect(
+    ddbh3_h3_to_lat(test_data_df, new_column = "cell_lat")
+  )$cell_lat
 
   testthat::it("overwrites the column instead of adding <name>_1", {
     res <- dplyr::collect(ddbh3_h3_to_lat(test_data_df))

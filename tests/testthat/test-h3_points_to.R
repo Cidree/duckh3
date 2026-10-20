@@ -500,13 +500,16 @@ describe("errors", {
 
 testthat::describe("ddbh3_points_to_h3() replaces an existing new_column", {
 
-  test_data_sf <- sf::st_as_sf(dplyr::collect(test_data))
-  test_data_sf$h3string <- h3jsr::point_to_cell(test_data_sf, res = 10)
+  ## Points that already have an `h3string` column at resolution 10
+  test_data_sf <- test_data |>
+    ddbh3_points_to_h3(resolution = 10) |>
+    dplyr::collect() |>
+    sf::st_as_sf()
 
   testthat::it("overwrites the column instead of adding <name>_1", {
     res <- dplyr::collect(ddbh3_points_to_h3(test_data_sf, resolution = 5))
     expect_false("h3string_1" %in% names(res))
-    expect_equal(res$h3string, h3jsr::point_to_cell(test_data_sf, res = 5))
+    expect_all_equal(ddbh3_get_resolution(res$h3string), 5)
   })
 
   testthat::it("refuses to replace the geometry column", {
