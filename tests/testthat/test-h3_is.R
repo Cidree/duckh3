@@ -905,3 +905,16 @@ describe("errors", {
   })
 
 })
+
+
+# Vectorized mode without validation -----------------------------------------
+
+testthat::describe("ddbh3_is_h3() and ddbh3_is_vertex() return FALSE for invalid input", {
+
+  testthat::it("does not abort on invalid input", {
+    vertex <- ddbh3_h3_to_vertex("8928308280fffff", n = 0)
+    expect_equal(ddbh3_is_h3(c("8928308280fffff", "zzz")), c(TRUE, FALSE))
+    expect_equal(ddbh3_is_vertex(c(vertex, "zzz")), c(TRUE, FALSE))
+  })
+
+})
