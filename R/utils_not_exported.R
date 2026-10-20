@@ -372,13 +372,6 @@ build_new_column_select <- function(
     star = "*"
 ) {
 
-  ## new_column can't replace a column that is excluded (e.g. the geometry)
-  if (tolower(new_column) %in% tolower(exclude)) {
-    cli::cli_abort(
-      "{.arg new_column} can't be {.val {new_column}}: it is the geometry column of {.arg x}."
-    )
-  }
-
   ## Columns of the input (DuckDB identifiers are case-insensitive)
   x_cols <- names(DBI::dbGetQuery(conn, glue::glue("SELECT * FROM {query_name} LIMIT 0")))
   exclude_clause <- if (length(exclude) > 0) {
