@@ -147,12 +147,12 @@ ddbh3_points_to_spatial <- function(
       ST_GeomFromWKB(
         h3_cell_to_boundary_wkb(
           h3_latlng_to_cell(
-            ST_Y({x_geom}),
-            ST_X({x_geom}),
+            ST_Y({quote_ident(x_geom)}),
+            ST_X({quote_ident(x_geom)}),
             {resolution}
           )
         )
-      ) as {x_geom}
+      ) as {quote_ident(x_geom)}
     FROM
       {x_list$query_name};
   ")
@@ -266,13 +266,13 @@ ddbh3_points_to_h3 <- function(
   )
   base.query <- glue::glue("
     SELECT
-      * EXCLUDE {x_geom},
+      * EXCLUDE {quote_ident(x_geom)},
       {st_function}(
-        ST_Y({x_geom}),
-        ST_X({x_geom}),
+        ST_Y({quote_ident(x_geom)}),
+        ST_X({quote_ident(x_geom)}),
         {resolution}
-      ) as {new_column},
-      {duckspatial:::build_geom_query(x_geom, name, crs_x, 'duckspatial')} AS {x_geom}
+      ) as {quote_ident(new_column)},
+      {duckspatial:::build_geom_query(quote_ident(x_geom), name, crs_x, 'duckspatial')} AS {quote_ident(x_geom)}
     FROM
       {x_list$query_name};
   ")

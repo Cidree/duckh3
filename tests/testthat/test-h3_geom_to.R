@@ -305,3 +305,24 @@ describe("errors", {
   })
 
 })
+
+
+## Column names are quoted as identifiers ----------
+
+testthat::describe("geometry-to-H3 functions quote column names", {
+
+  poly_sp <- sf::st_set_geometry(poly_sf, "my geom")
+  line_sp <- sf::st_set_geometry(line_sf, "my geom")
+
+  testthat::it("ddbh3_polygons_to_h3() works with a geometry column and new_column with spaces", {
+    res <- ddbh3_polygons_to_h3(poly_sp, resolution = 5, new_column = "h3 cells") |> dplyr::collect()
+    expected <- ddbh3_polygons_to_h3(poly_sf, resolution = 5) |> dplyr::pull(h3string)
+    expect_identical(sort(res[["h3 cells"]][[1]]), sort(expected[[1]]))
+  })
+
+  testthat::it("ddbh3_lines_to_spatial() works with a geometry column with spaces", {
+    res <- ddbh3_lines_to_spatial(line_sp, resolution = 5) |> dplyr::collect()
+    expect_equal(nrow(res), nrow(dplyr::collect(ddbh3_lines_to_spatial(line_sf, resolution = 5))))
+  })
+
+})

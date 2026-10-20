@@ -123,7 +123,7 @@ ddbh3_h3_to_lon <- function(
   duckspatial:::assert_character_scalar(h3, "h3")
 
   # 1. Build parameters string
-  built_fun <- glue::glue("h3_cell_to_lng({h3})")
+  built_fun <- glue::glue("h3_cell_to_lng({quote_ident(h3)})")
 
   # 2. Pass to template
   template_h3_base(
@@ -160,7 +160,7 @@ ddbh3_h3_to_lat <- function(
   duckspatial:::assert_character_scalar(h3, "h3")
 
   # 1. Build parameters string
-  built_fun <- glue::glue("h3_cell_to_lat({h3})")
+  built_fun <- glue::glue("h3_cell_to_lat({quote_ident(h3)})")
 
   # 2. Pass to template
   template_h3_base(
@@ -197,7 +197,7 @@ ddbh3_h3_to_spatial <- function(
   # 1. Build parameters string
   built_fun <- glue::glue("
     ST_GeomFromWKB(
-      h3_cell_to_boundary_wkb({h3})
+      h3_cell_to_boundary_wkb({quote_ident(h3)})
     )"
   )
 
@@ -235,7 +235,7 @@ ddbh3_strings_to_bigint <- function(
   duckspatial:::assert_character_scalar(h3, "h3")
 
   # 1. Build parameters string
-  built_fun <- glue::glue("h3_string_to_h3({h3})")
+  built_fun <- glue::glue("h3_string_to_h3({quote_ident(h3)})")
 
   # 2. Pass to template
   template_h3_base(
@@ -270,7 +270,7 @@ ddbh3_bigint_to_strings <- function(
   duckspatial:::assert_character_scalar(h3, "h3")
 
   # 1. Build parameters string
-  built_fun <- glue::glue("h3_h3_to_string({h3})")
+  built_fun <- glue::glue("h3_h3_to_string({quote_ident(h3)})")
 
   # 2. Pass to template
   template_h3_base(
@@ -307,8 +307,8 @@ ddbh3_h3_to_points <- function(
   # 1. Build parameters string
   built_fun <- glue::glue("
     ST_Point(
-      h3_cell_to_lng({h3}),
-      h3_cell_to_lat({h3})
+      h3_cell_to_lng({quote_ident(h3)}),
+      h3_cell_to_lat({quote_ident(h3)})
     )
   ")
 

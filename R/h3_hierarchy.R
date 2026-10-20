@@ -120,7 +120,7 @@ ddbh3_get_parent <- function(
   duckspatial:::assert_numeric_interval(resolution, 0, 15, "resolution")
 
   # 1. Build parameters string
-  built_fun <- glue::glue("h3_cell_to_parent({h3}, {resolution})")
+  built_fun <- glue::glue("h3_cell_to_parent({quote_ident(h3)}, {resolution})")
 
   # 2. Pass to template
   template_h3_base(
@@ -162,9 +162,9 @@ ddbh3_get_children <- function(
 
   # 1. Build parameters string
   if (isTRUE(nested)) {
-    built_fun <- glue::glue("h3_cell_to_children({h3}, {resolution})")
+    built_fun <- glue::glue("h3_cell_to_children({quote_ident(h3)}, {resolution})")
   } else {
-    built_fun <- glue::glue("UNNEST(h3_cell_to_children({h3}, {resolution}))")
+    built_fun <- glue::glue("UNNEST(h3_cell_to_children({quote_ident(h3)}, {resolution}))")
   }
 
   # 2. Pass to template
@@ -204,7 +204,7 @@ ddbh3_get_n_children <- function(
   duckspatial:::assert_numeric_interval(resolution, 0, 15, "resolution")
 
   # 1. Build parameters string
-  built_fun <- glue::glue("h3_cell_to_children_size({h3}, {resolution})")
+  built_fun <- glue::glue("h3_cell_to_children_size({quote_ident(h3)}, {resolution})")
 
   # 2. Pass to template
   template_h3_base(
@@ -243,7 +243,7 @@ ddbh3_get_center_child <- function(
   duckspatial:::assert_numeric_interval(resolution, 0, 15, "resolution")
 
   # 1. Build parameters string
-  built_fun <- glue::glue("h3_cell_to_center_child({h3}, {resolution})")
+  built_fun <- glue::glue("h3_cell_to_center_child({quote_ident(h3)}, {resolution})")
 
   # 2. Pass to template
   template_h3_base(
@@ -331,9 +331,9 @@ ddbh3_get_icosahedron_faces <- function(
 
   # 1. Build parameters string  
   if (isTRUE(nested)) {
-    built_fun <- glue::glue("h3_get_icosahedron_faces({h3})")
+    built_fun <- glue::glue("h3_get_icosahedron_faces({quote_ident(h3)})")
   } else {
-    built_fun <- glue::glue("UNNEST(h3_get_icosahedron_faces({h3}))")
+    built_fun <- glue::glue("UNNEST(h3_get_icosahedron_faces({quote_ident(h3)}))")
   }
 
   # 2. Pass to template
@@ -411,7 +411,7 @@ ddbh3_get_child_pos <- function(
 
 
   # 1. Build parameters string
-  built_fun <- glue::glue("h3_cell_to_child_pos({h3}, {resolution})")
+  built_fun <- glue::glue("h3_cell_to_child_pos({quote_ident(h3)}, {resolution})")
 
 
   # 2. Pass to template
