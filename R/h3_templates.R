@@ -81,14 +81,17 @@ template_h3_base <- function(
   if (length(x_geom != 0)) duckspatial:::assert_geometry_column(x_geom, x_list)
 
   ## 2.2. Build the base query
+  ## (replaces new_column if x already has it)
+  select_list <- build_new_column_select(
+    target_conn, x_list$query_name, new_column, fun, exclude = x_geom
+  )
   geom_clause <- if (length(x_geom) > 0) {
     glue::glue("
-      * EXCLUDE {x_geom},
-      {fun} as {new_column},
+      {select_list},
       {duckspatial:::build_geom_query(x_geom, name, crs_x, 'duckspatial')} AS {x_geom}"
     )
   } else {
-    glue::glue("*, {fun} as {new_column}")
+    select_list
   }
   base.query <- glue::glue("
     SELECT
@@ -433,11 +436,14 @@ template_h3_geom_to_h3 <- function(
     list_expr <- glue::glue("list_transform({list_expr}, lambda cell: h3_h3_to_string(cell))")
   }
 
-  ## 2.3. Build the base query
+  ## 2.3. Build the base query (replaces new_column if x already has it)
+  select_list <- build_new_column_select(
+    target_conn, x_list$query_name, new_column, list_expr,
+    exclude = x_geom, star = "src.*"
+  )
   base.query <- glue::glue("
     SELECT
-      src.* EXCLUDE {x_geom},
-      {list_expr} AS {new_column},
+      {select_list},
       {duckspatial:::build_geom_query(x_geom, name, crs_x, 'duckspatial')} AS {x_geom}
     FROM
       {x_list$query_name} AS src;

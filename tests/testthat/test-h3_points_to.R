@@ -493,3 +493,27 @@ describe("errors", {
   })
 
 })
+
+
+
+# 3. Replacing an existing column ----------------------------------------
+
+testthat::describe("ddbh3_points_to_h3() replaces an existing new_column", {
+
+  test_data_sf <- sf::st_as_sf(dplyr::collect(test_data))
+  test_data_sf$h3string <- h3jsr::point_to_cell(test_data_sf, res = 10)
+
+  testthat::it("overwrites the column instead of adding <name>_1", {
+    res <- dplyr::collect(ddbh3_points_to_h3(test_data_sf, resolution = 5))
+    expect_false("h3string_1" %in% names(res))
+    expect_equal(res$h3string, h3jsr::point_to_cell(test_data_sf, res = 5))
+  })
+
+  testthat::it("refuses to replace the geometry column", {
+    geom_col <- attr(test_data_sf, "sf_column")
+    expect_error(
+      ddbh3_points_to_h3(test_data_sf, resolution = 5, new_column = geom_col),
+      "geometry column"
+    )
+  })
+})

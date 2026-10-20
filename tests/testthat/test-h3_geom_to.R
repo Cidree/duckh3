@@ -305,3 +305,22 @@ describe("errors", {
   })
 
 })
+
+
+
+# 5. Replacing an existing column ----------------------------------------
+
+testthat::describe("ddbh3_polygons_to_h3() replaces an existing new_column", {
+
+  testthat::it("overwrites the column instead of adding <name>_1", {
+    poly_attr <- poly_sf
+    poly_attr$h3string <- "old value"
+    res <- sf::st_as_sf(ddbh3_polygons_to_h3(poly_attr, resolution = 3))
+    expect_false("h3string_1" %in% names(res))
+    expect_type(res$h3string, "list")
+    expect_equal(
+      sort(res$h3string[[1]]),
+      sort(sf::st_as_sf(ddbh3_polygons_to_h3(poly_sf, resolution = 3))$h3string[[1]])
+    )
+  })
+})

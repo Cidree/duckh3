@@ -94,7 +94,8 @@ result is trimmed back to the exact intersecting set. Larger values are
 safer (slower) but never change correctness.}
 
 \item{new_column}{Name of the new column to create on the input data. If NULL,
-the function will return a vector with the result}
+the function will return a vector with the result. If the input already has a
+column with this name, it is replaced by the result}
 
 \item{h3_format}{Character. Output format for the H3 cell indexes stored
 in \code{new_column}. Either \code{"string"} (default) or \code{"bigint"}. Only used in
