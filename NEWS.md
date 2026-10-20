@@ -1,6 +1,10 @@
 
 # Development version
 
+## BUG FIXES
+
+* `ddbh3_default_conn()` no longer reuses a default connection created by `duckspatial` with `bigint = "numeric"`, which silently rounded UBIGINT H3 indexes. It now warns and replaces it with an `integer64` connection.
+
 ## ENHANCEMENTS
 
 * Remove arrow lambda syntax for compatibility with DuckDB v2.0 (#6).
