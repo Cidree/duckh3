@@ -90,6 +90,17 @@ ddbh3_default_conn <- function(
     }
   }
 
+  # A default connection created by duckspatial uses bigint = "numeric", which
+  # rounds UBIGINT H3 indexes, so replace it with an integer64 connection
+  if (!is.null(conn) && create && !identical(conn@bigint, "integer64")) {
+    cli::cli_warn(c(
+      "The existing default connection uses {.code bigint = \"{conn@bigint}\"}, which rounds H3 indexes.",
+      "i" = "Replacing it with a new default connection that uses {.code bigint = \"integer64\"}.",
+      "i" = "Call {.fn ddbh3_default_conn} before any {.pkg duckspatial} function to avoid this."
+    ))
+    conn <- NULL
+  }
+
   # Create new connection if needed
   if (is.null(conn) && create) {
     conn <- duckspatial::ddbs_create_conn(
