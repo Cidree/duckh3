@@ -85,7 +85,7 @@ testthat::describe("ddbh3_h3_to_lon() works in different formats", {
   ## FORMAT 5 - TABLE IN DUCKDB
   testthat::it("returns the correct resolution for table", {
     ## Create connection
-    conn_test <- ddbh3_create_conn()
+    conn_test <- reset_conn_alt()
     ## Convert to duckspatial_df
     test_data_sf <- test_data |> 
       dplyr::collect() |> 
@@ -136,7 +136,7 @@ testthat::describe("ddbh3_h3_to_lon() arguments work", {
   ## ARGUMENT 3 - DATABASE ARGUMENTS
   testthat::it("database arguments work", {
     ## Create connection
-    conn_test <- ddbh3_create_conn()
+    conn_test <- reset_conn_alt()
     ## Apply operation with connection
     expect_message(ddbh3_h3_to_lon(
       dplyr::collect(test_data), 
@@ -178,7 +178,7 @@ testthat::describe("ddbh3_h3_to_lon() arguments work", {
 describe("errors", {
 
   ## Get h3strings
-  conn_test <- ddbh3_create_conn()
+  conn_test <- reset_conn_alt()
   duckdb::dbWriteTable(conn_test, "test_data_tbl", dplyr::collect(test_data))
     
   ## Tests
@@ -293,7 +293,7 @@ testthat::describe("ddbh3_h3_to_lat() works in different formats", {
   ## FORMAT 5 - TABLE IN DUCKDB
   testthat::it("returns the correct resolution for table", {
     ## Create connection
-    conn_test <- ddbh3_create_conn()
+    conn_test <- reset_conn_alt()
     ## Convert to duckspatial_df
     test_data_sf <- test_data |> 
       dplyr::collect() |> 
@@ -344,7 +344,7 @@ testthat::describe("ddbh3_h3_to_lat() arguments work", {
   ## ARGUMENT 3 - DATABASE ARGUMENTS
   testthat::it("database arguments work", {
     ## Create connection
-    conn_test <- ddbh3_create_conn()
+    conn_test <- reset_conn_alt()
     ## Apply operation with connection
     expect_message(ddbh3_h3_to_lat(
       dplyr::collect(test_data), 
@@ -386,7 +386,7 @@ testthat::describe("ddbh3_h3_to_lat() arguments work", {
 describe("errors", {
 
   ## Get h3strings
-  conn_test <- ddbh3_create_conn()
+  conn_test <- reset_conn_alt()
   duckdb::dbWriteTable(conn_test, "test_data_tbl", dplyr::collect(test_data))
     
   ## Tests
@@ -500,7 +500,7 @@ testthat::describe("ddbh3_strings_to_bigint() works in different formats", {
   ## FORMAT 5 - TABLE IN DUCKDB
   testthat::it("returns the correct resolution for table", {
     ## Create connection
-    conn_test <- ddbh3_create_conn()
+    conn_test <- reset_conn_alt()
     ## Convert to duckspatial_df
     test_data_sf <- test_data |> 
       dplyr::collect() |> 
@@ -551,7 +551,7 @@ testthat::describe("ddbh3_strings_to_bigint() arguments work", {
   ## ARGUMENT 3 - DATABASE ARGUMENTS
   testthat::it("database arguments work", {
     ## Create connection
-    conn_test <- ddbh3_create_conn()
+    conn_test <- reset_conn_alt()
     ## Apply operation with connection
     expect_message(ddbh3_strings_to_bigint(
       dplyr::collect(test_data), 
@@ -587,7 +587,7 @@ testthat::describe("ddbh3_strings_to_bigint() arguments work", {
 
   testthat::it("returns numeric", {
     ## Create a conn
-    conn_test <- ddbh3_create_conn(bigint = "numeric")
+    conn_test <- ddbh3_create_conn(threads = 1, bigint = "numeric")
     ## Check class
     res <- ddbh3_strings_to_bigint(dplyr::collect(test_data), conn = conn_test)
     expect_s3_class(res, "tbl_duckdb_connection")
@@ -595,6 +595,7 @@ testthat::describe("ddbh3_strings_to_bigint() arguments work", {
     res_col <- dplyr::collect(res)
     expect_type(res_col$h3bigint, "double")
     expect_false(inherits(res_col$h3bigint, "integer64"))
+    duckspatial::ddbs_stop_conn(conn_test)
   })
   
 })
@@ -605,7 +606,7 @@ testthat::describe("ddbh3_strings_to_bigint() arguments work", {
 describe("errors", {
 
   ## Get h3strings
-  conn_test <- ddbh3_create_conn()
+  conn_test <- reset_conn_alt()
   duckdb::dbWriteTable(conn_test, "test_data_tbl", dplyr::collect(test_data))
     
   ## Tests
@@ -721,7 +722,7 @@ testthat::describe("ddbh3_bigint_to_strings() works in different formats", {
   ## FORMAT 5 - TABLE IN DUCKDB
   testthat::it("returns the correct resolution for table", {
     ## Create connection
-    conn_test <- ddbh3_create_conn()
+    conn_test <- reset_conn_alt()
     ## Convert to duckspatial_df
     test_data_bigint_sf <- test_data_bigint |> 
       dplyr::collect() |> 
@@ -775,7 +776,7 @@ testthat::describe("ddbh3_bigint_to_strings() arguments work", {
   ## ARGUMENT 3 - DATABASE ARGUMENTS
   testthat::it("database arguments work", {
     ## Create connection
-    conn_test <- ddbh3_create_conn()
+    conn_test <- reset_conn_alt()
     ## Apply operation with connection
     expect_message(ddbh3_bigint_to_strings(
       dplyr::collect(test_data_bigint), 
@@ -821,7 +822,7 @@ describe("errors", {
     dplyr::select(-h3string)
 
   ## Get h3strings
-  conn_test <- ddbh3_create_conn()
+  conn_test <- reset_conn_alt()
   duckdb::dbWriteTable(conn_test, "test_data_bigint_tbl", dplyr::collect(test_data_bigint))
     
   ## Tests
@@ -924,7 +925,7 @@ testthat::describe("ddbh3_h3_to_spatial() works in different formats", {
   ## FORMAT 5 - TABLE IN DUCKDB
   testthat::it("returns the correct resolution for table", {
     ## Create connection
-    conn_test <- ddbh3_create_conn()
+    conn_test <- reset_conn_alt()
     ## Convert to duckspatial_df
     test_data_sf <- test_data |> 
       dplyr::collect() |> 
@@ -980,7 +981,7 @@ testthat::describe("ddbh3_h3_to_spatial() arguments work", {
   ## ARGUMENT 2 - DATABASE ARGUMENTS
   testthat::it("database arguments work", {
     ## Create connection
-    conn_test <- ddbh3_create_conn()
+    conn_test <- reset_conn_alt()
     ## Apply operation with connection
     expect_message(ddbh3_h3_to_spatial(
       dplyr::collect(test_data),
@@ -1018,7 +1019,7 @@ testthat::describe("ddbh3_h3_to_spatial() arguments work", {
 describe("errors", {
 
   ## Get h3strings
-  conn_test <- ddbh3_create_conn()
+  conn_test <- reset_conn_alt()
   duckdb::dbWriteTable(conn_test, "test_data_tbl", dplyr::collect(test_data))
     
   ## Tests
