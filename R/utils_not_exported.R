@@ -243,6 +243,31 @@ assert_containment <- function(containment) {
 }
 
 
+#' Validate the geometry types of an already-prepared input
+#'
+#' Same check as `duckspatial:::assert_geom_type()`, but it runs on the view
+#' returned by `get_query_list()`, so the input is not normalized/registered a
+#' second time. Only the offending types are returned by the query.
+#' @keywords internal
+#' @noRd
+assert_geom_type_query <- function(conn, query_name, x_geom, geom, multi = TRUE) {
+  if (isTRUE(multi)) geom <- c(geom, paste0("MULTI", geom))
+  allowed <- paste0("'", geom, "'", collapse = ", ")
+  invalid_types <- DBI::dbGetQuery(conn, glue::glue("
+    SELECT DISTINCT ST_GeometryType({quote_ident(x_geom)})::VARCHAR AS type
+    FROM {query_name}
+    WHERE ST_GeometryType({quote_ident(x_geom)})::VARCHAR NOT IN ({allowed})
+  "))$type
+  if (length(invalid_types) > 0) {
+    cli::cli_abort(c(
+      "Invalid geometry type{?s} found: {.val {invalid_types}}",
+      i = "Allowed type{?s}: {.val {geom}}"
+    ))
+  }
+  invisible(TRUE)
+}
+
+
 #' Builds polygon cells lateral
 #'
 #' Build a LATERAL subquery yielding one row per (feature, intersecting h3
@@ -261,8 +286,8 @@ build_polygon_cells_lateral <- function(x_geom, resolution, containment) {
     ) AS parts,
     LATERAL (
       SELECT unnest(
-        h3_polygon_wkt_to_cells_experimental(
-          ST_AsText(parts.geom), {resolution}, '{containment}'
+        h3_polygon_wkb_to_cells_experimental(
+          ST_AsWKB(parts.geom), {resolution}, '{containment}'
         )
       ) AS h3
     ) AS pc
@@ -309,8 +334,8 @@ build_line_cells_lateral <- function(x_geom, resolution, containment, buffer_sca
     ) AS parts,
     LATERAL (
       SELECT unnest(
-        h3_polygon_wkt_to_cells_experimental(
-          ST_AsText(parts.geom), {resolution}, '{containment}'
+        h3_polygon_wkb_to_cells_experimental(
+          ST_AsWKB(parts.geom), {resolution}, '{containment}'
         )
       ) AS h3
     ) AS pc

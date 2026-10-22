@@ -13,6 +13,8 @@
 
 * Remove arrow lambda syntax for compatibility with DuckDB v2.0 (#6).
 
+* Faster polygon/line to H3 conversion: polyfill reads WKB instead of WKT, the geometry type is validated on the already-prepared input instead of preparing it twice, and the cell list is no longer de-duplicated twice.
+
 ## NEW FEATURES
 
 * All functions gain a `mode` argument that can be set to "sf" or "duckspatial" to return the output in that format. Alternatively, the user can use `duckspatial::ddbs_options()` to set the mode globally.

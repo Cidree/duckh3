@@ -270,7 +270,6 @@ template_h3_geom_to_spatial <- function(
   duckspatial:::assert_logic(quiet, "quiet")
   duckspatial:::assert_integer_scalar(resolution, "resolution")
   duckspatial:::assert_numeric_interval(resolution, 0, 15, "resolution")
-  duckspatial:::assert_geom_type(x = x, conn = conn, geom = geom_family, multi = TRUE)
   duckspatial:::assert_name(mode, "mode")
   containment <- assert_containment(containment)
 
@@ -309,6 +308,7 @@ template_h3_geom_to_spatial <- function(
   ## 3.1. Get names of geometry columns (use saved sf_col_x from before transformation)
   x_geom <- sf_col_x %||% duckspatial:::get_geom_name(target_conn, x_list$query_name)
   duckspatial:::assert_geometry_column(x_geom, x_list)
+  assert_geom_type_query(target_conn, x_list$query_name, x_geom, geom_family)
 
   ## 3.2. Get names of the rest of the columns
   x_rest <- duckspatial:::get_geom_name(
@@ -394,7 +394,6 @@ template_h3_geom_to_h3 <- function(
   duckspatial:::assert_logic(quiet, "quiet")
   duckspatial:::assert_integer_scalar(resolution, "resolution")
   duckspatial:::assert_numeric_interval(resolution, 0, 15, "resolution")
-  duckspatial:::assert_geom_type(x = x, conn = conn, geom = geom_family, multi = TRUE)
   containment <- assert_containment(containment)
   duckspatial:::assert_name(mode, "mode")
   if (!h3_format %in% c("string", "bigint")) {
@@ -433,6 +432,7 @@ template_h3_geom_to_h3 <- function(
   ## 2.1. Get names of geometry columns
   x_geom <- sf_col_x %||% duckspatial:::get_geom_name(target_conn, x_list$query_name)
   duckspatial:::assert_geometry_column(x_geom, x_list)
+  assert_geom_type_query(target_conn, x_list$query_name, x_geom, geom_family)
 
   ## 2.2. Build the per-feature cells LATERAL as a correlated subquery,
   ## producing a distinct list of bigint cells, cast to strings if requested
@@ -442,10 +442,9 @@ template_h3_geom_to_h3 <- function(
     build_line_cells_lateral(x_geom, resolution, containment, buffer_scale)
   }
 
-  list_expr <- glue::glue("(SELECT list_distinct(list(agg.h3)) FROM ({cells_lateral}) AS agg)")
-  if (h3_format == "string") {
-    list_expr <- glue::glue("list_transform({list_expr}, lambda cell: h3_h3_to_string(cell))")
-  }
+  ## The lateral already yields distinct cells, so a plain list() is enough
+  cell_expr <- if (h3_format == "string") "h3_h3_to_string(agg.h3)" else "agg.h3"
+  list_expr <- glue::glue("(SELECT list({cell_expr}) FROM ({cells_lateral}) AS agg)")
 
   ## 2.3. Build the base query (replaces new_column if x already has it)
   select_list <- build_new_column_select(
