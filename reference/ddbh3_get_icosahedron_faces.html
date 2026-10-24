@@ -205,7 +205,8 @@ H3 unsigned 64-bit integers (<code>UBIGINT</code>)</p></dd>
 
 <dt id="arg-new-column">new_column<a class="anchor" aria-label="anchor" href="#arg-new-column"></a></dt>
 <dd><p>Name of the new column to create on the input data. If NULL,
-the function will return a vector with the result</p></dd>
+the function will return a vector with the result. If the input already has a
+column with this name, it is replaced by the result</p></dd>
 
 
 <dt id="arg-conn">conn<a class="anchor" aria-label="anchor" href="#arg-conn"></a></dt>
@@ -290,7 +291,7 @@ in vectorized mode, returning a vector of the same length as <code>x</code>.</p>
 <span class="r-in"><span><span class="va">points_tbl</span> <span class="op">|&gt;</span> </span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>faces <span class="op">=</span> <span class="fu">ddbh3_get_icosahedron_faces</span><span class="op">(</span><span class="va">h3string</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A query:  ?? x 7</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.6 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 2.0.0 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        X    id    lat    lon category h3string        faces    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1     1 -<span style="color: #BB0000;">43.1</span>   16.2  B        86d02dcc7ffffff <span style="color: #949494;">&lt;int [1]&gt;</span></span>
@@ -310,7 +311,7 @@ in vectorized mode, returning a vector of the same length as <code>x</code>.</p>
 <span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>faces <span class="op">=</span> <span class="fu">ddbh3_get_icosahedron_faces</span><span class="op">(</span><span class="va">h3string</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>faces_unnested <span class="op">=</span> <span class="fu">unnest</span><span class="op">(</span><span class="va">faces</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A query:  ?? x 8</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.6 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 2.0.0 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        X    id    lat    lon category h3string        faces     faces_unnested</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1     1 -<span style="color: #BB0000;">43.1</span>   16.2  B        86d02dcc7ffffff <span style="color: #949494;">&lt;int [1]&gt;</span>             13</span>

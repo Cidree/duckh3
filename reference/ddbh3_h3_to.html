@@ -254,7 +254,8 @@ H3 unsigned 64-bit integers (<code>UBIGINT</code>)</p></dd>
 
 <dt id="arg-new-column">new_column<a class="anchor" aria-label="anchor" href="#arg-new-column"></a></dt>
 <dd><p>Name of the new column to create on the input data. If NULL,
-the function will return a vector with the result</p></dd>
+the function will return a vector with the result. If the input already has a
+column with this name, it is replaced by the result</p></dd>
 
 
 <dt id="arg-conn">conn<a class="anchor" aria-label="anchor" href="#arg-conn"></a></dt>
@@ -354,7 +355,7 @@ of the H3 cell</p></li>
 <span class="r-in"><span>    lat <span class="op">=</span> <span class="fu">ddbh3_h3_to_lat</span><span class="op">(</span><span class="va">h3string</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A query:  ?? x 6</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.6 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 2.0.0 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        X    id category h3string           lon    lat</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1     1 B        86d02dcc7ffffff  16.2  -<span style="color: #BB0000;">43.1</span> </span>
@@ -390,7 +391,7 @@ of the H3 cell</p></li>
 <span class="r-in"><span><span class="va">points_tbl</span> <span class="op">|&gt;</span> </span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>h3int <span class="op">=</span> <span class="fu">ddbh3_strings_to_bigint</span><span class="op">(</span><span class="va">h3string</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A query:  ?? x 5</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.6 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 2.0.0 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        X    id category h3string          h3int</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;int64&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1     1 B        86d02dcc7ffffff    6<span style="color: #949494;">e</span>17</span>
@@ -417,7 +418,7 @@ of the H3 cell</p></li>
 <span class="r-in"><span><span class="va">points_bigint_tbl</span> <span class="op">|&gt;</span> </span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>h3string <span class="op">=</span> <span class="fu">ddbh3_bigint_to_strings</span><span class="op">(</span><span class="va">h3_integers</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A query:  ?? x 5</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.6 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 2.0.0 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        X    id category h3_integers h3string       </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;int64&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1     1 B               6<span style="color: #949494;">e</span>17 86d02dcc7ffffff</span>

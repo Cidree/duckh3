@@ -116,7 +116,8 @@ ddbh3_lonlat_to_h3(
 - new_column:
 
   Name of the new column to create on the input data. If NULL, the
-  function will return a vector with the result
+  function will return a vector with the result. If the input already
+  has a column with this name, it is replaced by the result
 
 - h3_format:
 
@@ -178,7 +179,7 @@ points_tbl <- read.csv(
 ## Create a connection with spatial and h3 extensions
 conn <- ddbh3_create_conn(threads = 1)
 #> duckdb keeps downloaded extensions and secrets in a temporary directory:
-#> ℹ /tmp/RtmpOdJ2XL/duckdb
+#> ℹ /tmp/RtmpkcnZUc/duckdb
 #> This is removed when the R session ends.
 #> • Extensions are re-downloaded each session.
 #> • Secrets are lost.
@@ -211,7 +212,7 @@ ddbh3_lonlat_to_h3(
   resolution = 10
 )
 #> # A query:  ?? x 6
-#> # Database: DuckDB 1.5.6 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
+#> # Database: DuckDB 2.0.0 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
 #>        X    id   lati   long category h3string       
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>          
 #>  1     1     1 -43.1   16.2  B        8ad02dcc1947fff
@@ -269,7 +270,7 @@ as_duckspatial_df("points_strings_spatial", conn)
 #> # Use ddbs_collect() or st_as_sf() to materialize to sf
 #> #
 #> # A query:  ?? x 6
-#> # Database: DuckDB 1.5.6 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
+#> # Database: DuckDB 2.0.0 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
 #>        X    id    lat    lon category geometry                                  
 #>    <int> <int>  <dbl>  <dbl> <chr>    <wk_wkb>                                  
 #>  1     1     1 -43.1   16.2  B        <POLYGON ((16.18579 -43.06821, 16.18338 -…

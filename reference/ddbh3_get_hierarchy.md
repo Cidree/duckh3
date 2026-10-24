@@ -102,7 +102,8 @@ ddbh3_get_center_child(
 - new_column:
 
   Name of the new column to create on the input data. If NULL, the
-  function will return a vector with the result
+  function will return a vector with the result. If the input already
+  has a column with this name, it is replaced by the result
 
 - conn:
 
@@ -213,7 +214,7 @@ ddbh3_get_resolution(
   h3 = "h3parent"
 )
 #> # A query:  ?? x 8
-#> # Database: DuckDB 1.5.6 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
+#> # Database: DuckDB 2.0.0 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
 #>        X    id    lat    lon category h3string        h3parent      h3resolution
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <chr>                <int>
 #>  1     1     1 -43.1   16.2  B        88d02dcc19fffff 87d02dcc1fff…            7
@@ -232,7 +233,7 @@ ddbh3_get_resolution(
 points_tbl |> 
   mutate(parent4 = ddbh3_get_parent(h3string, 4))
 #> # A query:  ?? x 7
-#> # Database: DuckDB 1.5.6 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
+#> # Database: DuckDB 2.0.0 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
 #>        X    id    lat    lon category h3string        parent4        
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <chr>          
 #>  1     1     1 -43.1   16.2  B        88d02dcc19fffff 84d02ddffffffff
@@ -259,7 +260,7 @@ children_9_nested_tbl <- ddbh3_get_children(points_tbl, resolution = 9, nested =
 points_tbl |> 
   mutate(children9 = ddbh3_get_children(h3string, 9))
 #> # A query:  ?? x 7
-#> # Database: DuckDB 1.5.6 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
+#> # Database: DuckDB 2.0.0 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
 #>        X    id    lat    lon category h3string        children9
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <list>   
 #>  1     1     1 -43.1   16.2  B        88d02dcc19fffff <chr [7]>
@@ -279,7 +280,7 @@ points_tbl |>
   mutate(children9 = ddbh3_get_children(h3string, 9)) |> 
   mutate(children9 = unnest(children9))
 #> # A query:  ?? x 7
-#> # Database: DuckDB 1.5.6 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
+#> # Database: DuckDB 2.0.0 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
 #>        X    id   lat   lon category h3string        children9      
 #>    <int> <int> <dbl> <dbl> <chr>    <chr>           <chr>          
 #>  1     1     1 -43.1  16.2 B        88d02dcc19fffff 89d02dcc183ffff
@@ -303,7 +304,7 @@ center_child_10_tbl <- ddbh3_get_center_child(points_tbl, resolution = 10)
 points_tbl |> 
   mutate(center = ddbh3_get_center_child(h3string, 9))
 #> # A query:  ?? x 7
-#> # Database: DuckDB 1.5.6 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
+#> # Database: DuckDB 2.0.0 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
 #>        X    id    lat    lon category h3string        center         
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <chr>          
 #>  1     1     1 -43.1   16.2  B        88d02dcc19fffff 89d02dcc183ffff
@@ -327,7 +328,7 @@ n_children_tbl <- ddbh3_get_n_children(points_tbl, resolution = 10)
 points_tbl |> 
   mutate(n_children = ddbh3_get_n_children(h3string, 15))
 #> # A query:  ?? x 7
-#> # Database: DuckDB 1.5.6 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
+#> # Database: DuckDB 2.0.0 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
 #>        X    id    lat    lon category h3string        n_children
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>              <int64>
 #>  1     1     1 -43.1   16.2  B        88d02dcc19fffff     823543

@@ -57,7 +57,8 @@ ddbh3_get_resolution(
 - new_column:
 
   Name of the new column to create on the input data. If NULL, the
-  function will return a vector with the result
+  function will return a vector with the result. If the input already
+  has a column with this name, it is replaced by the result
 
 - conn:
 
@@ -148,7 +149,7 @@ points_ddbs <- ddbs_as_points(points_tbl)
 ## Get resolution of the h3 strings
 ddbh3_get_resolution(points_tbl)
 #> # A query:  ?? x 7
-#> # Database: DuckDB 1.5.6 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
+#> # Database: DuckDB 2.0.0 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
 #>        X    id    lat    lon category h3string        h3resolution
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>                  <int>
 #>  1     1     1 -43.1   16.2  B        8ad02dcc1947fff           10
@@ -172,7 +173,7 @@ ddbh3_get_resolution(points_ddbs, new_column = "res")
 #> # Use ddbs_collect() or st_as_sf() to materialize to sf
 #> #
 #> # A query:  ?? x 6
-#> # Database: DuckDB 1.5.6 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
+#> # Database: DuckDB 2.0.0 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
 #>        X    id category h3string          res geom                         
 #>    <int> <int> <chr>    <chr>           <int> <wk_wkb>                     
 #>  1     1     1 B        8ad02dcc1947fff    10 <POINT (16.19255 -43.06925)> 
@@ -191,7 +192,7 @@ ddbh3_get_resolution(points_ddbs, new_column = "res")
 points_tbl |> 
   mutate(res = ddbh3_get_resolution(h3string))
 #> # A query:  ?? x 7
-#> # Database: DuckDB 1.5.6 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
+#> # Database: DuckDB 2.0.0 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
 #>        X    id    lat    lon category h3string          res
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <int>
 #>  1     1     1 -43.1   16.2  B        8ad02dcc1947fff    10

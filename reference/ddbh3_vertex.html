@@ -251,7 +251,8 @@ H3 unsigned 64-bit integers (<code>UBIGINT</code>)</p></dd>
 
 <dt id="arg-new-column">new_column<a class="anchor" aria-label="anchor" href="#arg-new-column"></a></dt>
 <dd><p>Name of the new column to create on the input data. If NULL,
-the function will return a vector with the result</p></dd>
+the function will return a vector with the result. If the input already has a
+column with this name, it is replaced by the result</p></dd>
 
 
 <dt id="arg-conn">conn<a class="anchor" aria-label="anchor" href="#arg-conn"></a></dt>
@@ -364,7 +365,7 @@ unnested and aggregated into a <code>MULTIPOINT</code> geometry per cell</p></li
 <span class="r-in"><span>    v3 <span class="op">=</span> <span class="fu">ddbh3_h3_to_vertex</span><span class="op">(</span><span class="va">h3string</span>, <span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A query:  ?? x 8</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.6 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 2.0.0 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        X    id    lat    lon category h3string        v1               v3       </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1     1 -<span style="color: #BB0000;">43.1</span>   16.2  B        88d02dcc19fffff 218d02dcc19fffff 258d02dc…</span>
@@ -393,7 +394,7 @@ unnested and aggregated into a <code>MULTIPOINT</code> geometry per cell</p></li
 <span class="r-in"><span>    lat_v2 <span class="op">=</span> <span class="fu">ddbh3_vertex_to_lat</span><span class="op">(</span><span class="va">h3vertex</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A query:  ?? x 9</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.6 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 2.0.0 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        X    id    lat    lon category h3string        h3vertex     lon_v2 lat_v2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1     1 -<span style="color: #BB0000;">43.1</span>   16.2  B        88d02dcc19fffff 208d02dcc11…  16.2  -<span style="color: #BB0000;">43.1</span> </span>
@@ -422,7 +423,7 @@ unnested and aggregated into a <code>MULTIPOINT</code> geometry per cell</p></li
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BBBBBB;"># Use</span> <span style="color: #00BB00; font-weight: bold;">ddbs_collect()</span> <span style="color: #BBBBBB;">or</span> <span style="color: #00BB00; font-weight: bold;">st_as_sf()</span> <span style="color: #BBBBBB;">to materialize to sf</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BBBBBB;">#</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A query:  ?? x 8</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.6 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 2.0.0 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        X    id   lat   lon category h3string        h3vertex         geometry   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;wk_wkb&gt;</span>   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1     1 -<span style="color: #BB0000;">43.1</span>  16.2 B        88d02dcc19fffff 208d02dcc19fffff &lt;POINT (16…</span>
@@ -450,7 +451,7 @@ unnested and aggregated into a <code>MULTIPOINT</code> geometry per cell</p></li
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BBBBBB;"># Use</span> <span style="color: #00BB00; font-weight: bold;">ddbs_collect()</span> <span style="color: #BBBBBB;">or</span> <span style="color: #00BB00; font-weight: bold;">st_as_sf()</span> <span style="color: #BBBBBB;">to materialize to sf</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BBBBBB;">#</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A query:  ?? x 8</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.6 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 2.0.0 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        X    id    lat    lon category h3string        h3vertex  geometry        </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;wk_wkb&gt;</span>        </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1     1 -<span style="color: #BB0000;">43.1</span>   16.2  B        88d02dcc19fffff <span style="color: #949494;">&lt;chr [6]&gt;</span> &lt;MULTIPOINT ((1…</span>

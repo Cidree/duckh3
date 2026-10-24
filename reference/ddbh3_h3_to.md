@@ -110,7 +110,8 @@ ddbh3_h3_to_points(
 - new_column:
 
   Name of the new column to create on the input data. If NULL, the
-  function will return a vector with the result
+  function will return a vector with the result. If the input already
+  has a column with this name, it is replaced by the result
 
 - conn:
 
@@ -230,7 +231,7 @@ points_tbl |>
     lat = ddbh3_h3_to_lat(h3string)
   )
 #> # A query:  ?? x 6
-#> # Database: DuckDB 1.5.6 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
+#> # Database: DuckDB 2.0.0 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
 #>        X    id category h3string           lon    lat
 #>    <int> <int> <chr>    <chr>            <dbl>  <dbl>
 #>  1     1     1 B        86d02dcc7ffffff  16.2  -43.1 
@@ -266,7 +267,7 @@ points_bigint_tbl <- ddbh3_strings_to_bigint(
 points_tbl |> 
   mutate(h3int = ddbh3_strings_to_bigint(h3string))
 #> # A query:  ?? x 5
-#> # Database: DuckDB 1.5.6 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
+#> # Database: DuckDB 2.0.0 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
 #>        X    id category h3string          h3int
 #>    <int> <int> <chr>    <chr>           <int64>
 #>  1     1     1 B        86d02dcc7ffffff    6e17
@@ -293,7 +294,7 @@ points_strings_tbl <- ddbh3_bigint_to_strings(
 points_bigint_tbl |> 
   mutate(h3string = ddbh3_bigint_to_strings(h3_integers))
 #> # A query:  ?? x 5
-#> # Database: DuckDB 1.5.6 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
+#> # Database: DuckDB 2.0.0 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
 #>        X    id category h3_integers h3string       
 #>    <int> <int> <chr>        <int64> <chr>          
 #>  1     1     1 B               6e17 86d02dcc7ffffff

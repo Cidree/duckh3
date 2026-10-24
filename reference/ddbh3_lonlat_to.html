@@ -253,7 +253,8 @@ Defaults to <code>FALSE</code>.</p></dd>
 
 <dt id="arg-new-column">new_column<a class="anchor" aria-label="anchor" href="#arg-new-column"></a></dt>
 <dd><p>Name of the new column to create on the input data. If NULL,
-the function will return a vector with the result</p></dd>
+the function will return a vector with the result. If the input already has a
+column with this name, it is replaced by the result</p></dd>
 
 
 <dt id="arg-h-format">h3_format<a class="anchor" aria-label="anchor" href="#arg-h-format"></a></dt>
@@ -308,7 +309,7 @@ or as unsigned 64-bit integers (<code>UBIGINT</code>)</p></li>
 <span class="r-in"><span><span class="co">## Create a connection with spatial and h3 extensions</span></span></span>
 <span class="r-in"><span><span class="va">conn</span> <span class="op">&lt;-</span> <span class="fu"><a href="ddbh3_create_conn.html">ddbh3_create_conn</a></span><span class="op">(</span>threads <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> duckdb keeps downloaded extensions and secrets in a temporary directory:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> /tmp/RtmpOdJ2XL/duckdb</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> /tmp/RtmpkcnZUc/duckdb</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> This is removed when the R session ends.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Extensions are re-downloaded each session.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Secrets are lost.</span>
@@ -341,7 +342,7 @@ or as unsigned 64-bit integers (<code>UBIGINT</code>)</p></li>
 <span class="r-in"><span>  resolution <span class="op">=</span> <span class="fl">10</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A query:  ?? x 6</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.6 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 2.0.0 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        X    id   lati   long category h3string       </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1     1 -<span style="color: #BB0000;">43.1</span>   16.2  B        8ad02dcc1947fff</span>
@@ -399,7 +400,7 @@ or as unsigned 64-bit integers (<code>UBIGINT</code>)</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BBBBBB;"># Use</span> <span style="color: #00BB00; font-weight: bold;">ddbs_collect()</span> <span style="color: #BBBBBB;">or</span> <span style="color: #00BB00; font-weight: bold;">st_as_sf()</span> <span style="color: #BBBBBB;">to materialize to sf</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BBBBBB;">#</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A query:  ?? x 6</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 1.5.6 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 2.0.0 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        X    id    lat    lon category geometry                                  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;wk_wkb&gt;</span>                                  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1     1 -<span style="color: #BB0000;">43.1</span>   16.2  B        &lt;POLYGON ((16.18579 -43.06821, 16.18338 -…</span>

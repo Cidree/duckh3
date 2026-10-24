@@ -148,7 +148,7 @@ points_tbl <- ddbh3_lonlat_to_h3(points_tbl, resolution = 6)
 ## Get the base cell number
 ddbh3_get_base_cell_number(points_tbl)
 #> # A query:  ?? x 7
-#> # Database: DuckDB 1.5.6 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
+#> # Database: DuckDB 2.0.0 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
 #>        X    id    lat    lon category h3string        base_cell
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>               <int>
 #>  1     1     1 -43.1   16.2  B        86d02dcc7ffffff       104

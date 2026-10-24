@@ -90,7 +90,8 @@ ddbh3_is_vertex(
 - new_column:
 
   Name of the new column to create on the input data. If NULL, the
-  function will return a vector with the result
+  function will return a vector with the result. If the input already
+  has a column with this name, it is replaced by the result
 
 - conn:
 
@@ -195,7 +196,7 @@ points_tbl <- ddbh3_lonlat_to_h3(points_tbl, resolution = 8)
 ## Check if h3 indexes are valid
 ddbh3_is_h3(points_tbl)
 #> # A query:  ?? x 7
-#> # Database: DuckDB 1.5.6 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
+#> # Database: DuckDB 2.0.0 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
 #>        X    id    lat    lon category h3string        ish3 
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <lgl>
 #>  1     1     1 -43.1   16.2  B        88d02dcc19fffff TRUE 
@@ -214,7 +215,7 @@ ddbh3_is_h3(points_tbl)
 points_tbl |>
   mutate(valid = ddbh3_is_h3(h3string))
 #> # A query:  ?? x 7
-#> # Database: DuckDB 1.5.6 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
+#> # Database: DuckDB 2.0.0 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
 #>        X    id    lat    lon category h3string        valid
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <lgl>
 #>  1     1     1 -43.1   16.2  B        88d02dcc19fffff TRUE 
@@ -234,7 +235,7 @@ points_tbl |>
 ## Check if h3 indexes are pentagons
 ddbh3_is_pentagon(points_tbl)
 #> # A query:  ?? x 7
-#> # Database: DuckDB 1.5.6 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
+#> # Database: DuckDB 2.0.0 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
 #>        X    id    lat    lon category h3string        ispentagon
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <lgl>     
 #>  1     1     1 -43.1   16.2  B        88d02dcc19fffff FALSE     
@@ -253,7 +254,7 @@ ddbh3_is_pentagon(points_tbl)
 points_tbl |>
   mutate(is_pent = ddbh3_is_pentagon(h3string))
 #> # A query:  ?? x 7
-#> # Database: DuckDB 1.5.6 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
+#> # Database: DuckDB 2.0.0 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
 #>        X    id    lat    lon category h3string        is_pent
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <lgl>  
 #>  1     1     1 -43.1   16.2  B        88d02dcc19fffff FALSE  
@@ -273,7 +274,7 @@ points_tbl |>
 ## Check if h3 indexes belong to a Class III resolution
 ddbh3_is_res_class_iii(points_tbl)
 #> # A query:  ?? x 7
-#> # Database: DuckDB 1.5.6 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
+#> # Database: DuckDB 2.0.0 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
 #>        X    id    lat    lon category h3string        isclassiii
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <lgl>     
 #>  1     1     1 -43.1   16.2  B        88d02dcc19fffff FALSE     
@@ -291,20 +292,20 @@ ddbh3_is_res_class_iii(points_tbl)
 ## Check across multiple resolutions
 ddbh3_lonlat_to_h3(points_tbl, resolution = 7) |>
   ddbh3_is_res_class_iii()
-#> # A query:  ?? x 8
-#> # Database: DuckDB 1.5.6 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
-#>        X    id    lat    lon category h3string        h3string_1      isclassiii
-#>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <chr>           <lgl>     
-#>  1     1     1 -43.1   16.2  B        88d02dcc19fffff 87d02dcc1ffffff FALSE     
-#>  2     2     2  29.2   61.9  C        884221ac65fffff 874221ac6ffffff FALSE     
-#>  3     3     3 -20.7   51.3  C        88a20e8f69fffff 87a20e8f6ffffff FALSE     
-#>  4     4     4  50.9  -14.0  B        88181c6c95fffff 87181c6c9ffffff FALSE     
-#>  5     5     5 -57.6    8.71 C        88e6cece5dfffff 87e6cece5ffffff FALSE     
-#>  6     6     6 -56.2   21.5  B        88e69d233dfffff 87e69d233ffffff FALSE     
-#>  7     7     7 -33.7  -17.0  C        88c1880751fffff 87c188075ffffff FALSE     
-#>  8     8     8 -32.7  -31.9  A        88c52b36c5fffff 87c52b36cffffff FALSE     
-#>  9     9     9  -7.39  39.0  C        887b6b5701fffff 877b6b570ffffff FALSE     
-#> 10    10    10  10.0  -89.9  A        886d424ae1fffff 876d424aeffffff FALSE     
+#> # A query:  ?? x 7
+#> # Database: DuckDB 2.0.0 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
+#>        X    id    lat    lon category h3string        isclassiii
+#>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <lgl>     
+#>  1     1     1 -43.1   16.2  B        87d02dcc1ffffff TRUE      
+#>  2     2     2  29.2   61.9  C        874221ac6ffffff TRUE      
+#>  3     3     3 -20.7   51.3  C        87a20e8f6ffffff TRUE      
+#>  4     4     4  50.9  -14.0  B        87181c6c9ffffff TRUE      
+#>  5     5     5 -57.6    8.71 C        87e6cece5ffffff TRUE      
+#>  6     6     6 -56.2   21.5  B        87e69d233ffffff TRUE      
+#>  7     7     7 -33.7  -17.0  C        87c188075ffffff TRUE      
+#>  8     8     8 -32.7  -31.9  A        87c52b36cffffff TRUE      
+#>  9     9     9  -7.39  39.0  C        877b6b570ffffff TRUE      
+#> 10    10    10  10.0  -89.9  A        876d424aeffffff TRUE      
 #> # ℹ more rows
 
 ## IS VERTEX ---------------
@@ -315,7 +316,7 @@ vertex_tbl <- ddbh3_h3_to_vertex(points_tbl, n = 1)
 ## Check if indexes are valid vertexes
 ddbh3_is_vertex(vertex_tbl, h3 = "h3vertex")
 #> # A query:  ?? x 8
-#> # Database: DuckDB 1.5.6 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
+#> # Database: DuckDB 2.0.0 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
 #>        X    id    lat    lon category h3string        h3vertex         isvertex
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <chr>            <lgl>   
 #>  1     1     1 -43.1   16.2  B        88d02dcc19fffff 218d02dcc19fffff TRUE    
@@ -337,7 +338,7 @@ vertex_tbl |>
     vertex_valid = ddbh3_is_vertex(h3vertex)
   )
 #> # A query:  ?? x 9
-#> # Database: DuckDB 1.5.6 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
+#> # Database: DuckDB 2.0.0 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
 #>        X    id    lat    lon category h3string  h3vertex cell_valid vertex_valid
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>     <chr>    <lgl>      <lgl>       
 #>  1     1     1 -43.1   16.2  B        88d02dcc… 218d02d… TRUE       TRUE        

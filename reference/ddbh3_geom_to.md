@@ -149,7 +149,8 @@ ddbh3_lines_to_h3(
 - new_column:
 
   Name of the new column to create on the input data. If NULL, the
-  function will return a vector with the result
+  function will return a vector with the result. If the input already
+  has a column with this name, it is replaced by the result
 
 - h3_format:
 
@@ -212,7 +213,7 @@ library(sf)
 ## Setup the default connection with h3 and spatial extensions
 ddbh3_default_conn(threads = 1)
 #> duckdb keeps downloaded extensions and secrets in a temporary directory:
-#> ℹ /tmp/RtmpOdJ2XL/duckdb
+#> ℹ /tmp/RtmpkcnZUc/duckdb
 #> This is removed when the R session ends.
 #> • Extensions are re-downloaded each session.
 #> • Secrets are lost.

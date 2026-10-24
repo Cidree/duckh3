@@ -60,7 +60,8 @@ ddbh3_get_icosahedron_faces(
 - new_column:
 
   Name of the new column to create on the input data. If NULL, the
-  function will return a vector with the result
+  function will return a vector with the result. If the input already
+  has a column with this name, it is replaced by the result
 
 - conn:
 
@@ -155,7 +156,7 @@ faces_nested_tbl <- ddbh3_get_icosahedron_faces(points_tbl, nested = TRUE)
 points_tbl |> 
   mutate(faces = ddbh3_get_icosahedron_faces(h3string))
 #> # A query:  ?? x 7
-#> # Database: DuckDB 1.5.6 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
+#> # Database: DuckDB 2.0.0 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
 #>        X    id    lat    lon category h3string        faces    
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <list>   
 #>  1     1     1 -43.1   16.2  B        86d02dcc7ffffff <int [1]>
@@ -175,7 +176,7 @@ points_tbl |>
   mutate(faces = ddbh3_get_icosahedron_faces(h3string)) |> 
   mutate(faces_unnested = unnest(faces))
 #> # A query:  ?? x 8
-#> # Database: DuckDB 1.5.6 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
+#> # Database: DuckDB 2.0.0 [unknown@Linux 6.17.0-1022-azure:R 4.6.1/:memory:]
 #>        X    id    lat    lon category h3string        faces     faces_unnested
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <list>             <int>
 #>  1     1     1 -43.1   16.2  B        86d02dcc7ffffff <int [1]>             13
