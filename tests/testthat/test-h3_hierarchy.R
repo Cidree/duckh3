@@ -1791,3 +1791,281 @@ describe("errors", {
   })
 
 })
+
+
+
+## 7.4. Correctness, H3 types and mode -----------
+
+testthat::describe("ddbh3_get_base_cell_number() returns correct values", {
+
+  testthat::it("returns a known base cell", {
+    res <- ddbh3_get_base_cell_number(data.frame(h3string = "883923059bfffff")) |>
+      dplyr::collect()
+    expect_equal(res$base_cell, 28)
+  })
+
+  testthat::it("works with UBIGINT h3 column", {
+    res_big <- ddbh3_strings_to_bigint(test_data) |>
+      ddbh3_get_base_cell_number(h3 = "h3bigint") |>
+      dplyr::collect()
+    res_str <- ddbh3_get_base_cell_number(test_data) |>
+      dplyr::collect()
+    expect_equal(res_big$base_cell, res_str$base_cell)
+  })
+
+  testthat::it("works with character and UBIGINT vectors", {
+    expect_equal(ddbh3_get_base_cell_number("883923059bfffff"), 28)
+    expect_equal(
+      ddbh3_get_base_cell_number(ddbh3_strings_to_bigint("883923059bfffff")),
+      28
+    )
+  })
+
+  testthat::it("children share the base cell of their parent", {
+    res <- ddbh3_get_parent(test_data, resolution = 2) |>
+      ddbh3_get_base_cell_number(new_column = "bc_child") |>
+      ddbh3_get_base_cell_number(h3 = "h3parent", new_column = "bc_parent") |>
+      dplyr::collect()
+    expect_equal(res$bc_child, res$bc_parent)
+  })
+
+  testthat::it("mode argument works", {
+    test_data_sf <- test_data |>
+      dplyr::collect() |>
+      sf::st_as_sf(coords = c("lon", "lat"), crs = 4326, remove = FALSE)
+    expect_s3_class(ddbh3_get_base_cell_number(test_data_sf, mode = "sf"), "sf")
+    expect_s3_class(ddbh3_get_base_cell_number(test_data_sf, mode = "duckspatial"), "duckspatial_df")
+  })
+
+})
+
+
+
+# 8. child_pos_to_cell() ---------------------------------------------------------
+
+## Input with a parent at resolution 9 and the child position of each cell
+test_data_cp <- test_data |>
+  ddbh3_get_parent(resolution = 9) |>
+  ddbh3_get_child_pos(resolution = 9)
+
+test_data_cp_df <- dplyr::collect(test_data_cp)
+
+## 8.1. Input data in different formats ----------
+
+testthat::describe("ddbh3_child_pos_to_cell() works in different formats", {
+
+  ## FORMAT 1 - TBL_DUCKDB_CONNECTION
+  testthat::it("returns the correct data for tbl_duckdb_connection", {
+    res <- ddbh3_child_pos_to_cell(test_data_cp, parent = "h3parent", resolution = 10)
+    expect_s3_class(res, "tbl_duckdb_connection")
+    res_col <- dplyr::collect(res)
+    expect_in("h3children", colnames(res_col))
+    expect_type(res_col$h3children, "character")
+  })
+
+  ## FORMAT 2 - DATA.FRAME
+  testthat::it("returns the correct data for data.frame", {
+    res <- ddbh3_child_pos_to_cell(test_data_cp_df, parent = "h3parent", resolution = 10)
+    expect_s3_class(res, "tbl_duckdb_connection")
+    res_col <- dplyr::collect(res)
+    expect_in("h3children", colnames(res_col))
+    expect_type(res_col$h3children, "character")
+  })
+
+  ## FORMAT 3 - SF
+  testthat::it("returns the correct data for sf", {
+    test_data_sf <- test_data_cp_df |>
+      sf::st_as_sf(coords = c("lon", "lat"), crs = 4326, remove = FALSE)
+    res <- ddbh3_child_pos_to_cell(test_data_sf, parent = "h3parent", resolution = 10)
+    expect_s3_class(res, "duckspatial_df")
+    res_col <- dplyr::collect(res)
+    expect_in("h3children", colnames(res_col))
+    expect_type(res_col$h3children, "character")
+  })
+
+  ## FORMAT 4 - DUCKSPATIAL_DF
+  testthat::it("returns the correct data for duckspatial_df", {
+    test_data_ddbs <- test_data_cp_df |>
+      duckspatial::ddbs_as_points(coords = c("lon", "lat"), crs = 4326)
+    res <- ddbh3_child_pos_to_cell(test_data_ddbs, parent = "h3parent", resolution = 10)
+    expect_s3_class(res, "duckspatial_df")
+    res_col <- dplyr::collect(res)
+    expect_in("h3children", colnames(res_col))
+    expect_type(res_col$h3children, "character")
+  })
+
+  ## FORMAT 5 - TABLE IN DUCKDB
+  testthat::it("returns the correct data for table", {
+    conn_test <- ddbh3_create_conn()
+    test_data_sf <- test_data_cp_df |>
+      sf::st_as_sf(coords = c("lon", "lat"), crs = 4326, remove = FALSE)
+    duckspatial::ddbs_write_table(conn_test, test_data_sf, "sf_pts")
+    res <- ddbh3_child_pos_to_cell("sf_pts", parent = "h3parent", resolution = 10, conn = conn_test)
+    res_col <- dplyr::collect(res)
+    expect_in("h3children", colnames(res_col))
+    expect_type(res_col$h3children, "character")
+  })
+
+  ## FORMAT 6 - VECTORIZED
+  testthat::it("works with vectors", {
+    testthat::skip("bug (#8): vectorized base_fun references `y`, which get_vectorized_result() never binds")
+    expect_equal(
+      ddbh3_child_pos_to_cell(0, parent = "873923059ffffff"),
+      "8839230591fffff"
+    )
+  })
+
+})
+
+
+## 8.2. Correctness ------------
+
+testthat::describe("ddbh3_child_pos_to_cell() returns correct cells", {
+
+  testthat::it("round trips with get_child_pos()", {
+    res <- ddbh3_child_pos_to_cell(test_data_cp, parent = "h3parent", resolution = 10) |>
+      dplyr::collect()
+    expect_equal(res$h3children, res$h3string)
+  })
+
+  testthat::it("returns a known child", {
+    res <- data.frame(h3child_pos = 0L, h3string = "873923059ffffff") |>
+      ddbh3_child_pos_to_cell(resolution = 8) |>
+      dplyr::collect()
+    expect_equal(res$h3children, "8839230591fffff")
+  })
+
+  testthat::it("accepts child positions stored as double", {
+    testthat::skip("bug (#8): h3_child_pos_to_cell() has no DOUBLE signature and child_pos is not cast to BIGINT")
+    res <- data.frame(h3child_pos = 0, h3string = "873923059ffffff") |>
+      ddbh3_child_pos_to_cell(resolution = 8) |>
+      dplyr::collect()
+    expect_equal(res$h3children, "8839230591fffff")
+  })
+
+  testthat::it("position 0 is the center child", {
+    res <- test_data_cp_df |>
+      dplyr::mutate(pos0 = 0L) |>
+      ddbh3_child_pos_to_cell(child_pos = "pos0", parent = "h3parent", resolution = 10) |>
+      ddbh3_get_center_child(h3 = "h3parent", resolution = 10) |>
+      dplyr::collect()
+    expect_equal(res$h3children, res$h3center_child)
+  })
+
+  testthat::it("children have the requested resolution", {
+    res <- ddbh3_child_pos_to_cell(test_data_cp, parent = "h3parent", resolution = 10) |>
+      dplyr::collect()
+    expect_true(all(ddbh3_get_resolution(res$h3children) == 10))
+  })
+
+})
+
+
+## 8.3. Arguments work ------------
+
+testthat::describe("ddbh3_child_pos_to_cell() arguments work", {
+
+  ## ARGUMENT 1 - CHILD_POS AND PARENT
+  testthat::it("child_pos and parent arguments work", {
+    test_data_mod <- test_data_cp |>
+      dplyr::rename(pos = h3child_pos, par = h3parent)
+    res <- ddbh3_child_pos_to_cell(test_data_mod, child_pos = "pos", parent = "par", resolution = 10) |>
+      dplyr::collect()
+    expect_equal(res$h3children, res$h3string)
+  })
+
+  testthat::it("works with UBIGINT parent column", {
+    res <- test_data_cp |>
+      ddbh3_strings_to_bigint(h3 = "h3parent", new_column = "parent_big") |>
+      ddbh3_child_pos_to_cell(parent = "parent_big", resolution = 10) |>
+      dplyr::collect()
+    expect_s3_class(res$h3children, "integer64")
+    expect_equal(ddbh3_bigint_to_strings(res$h3children), res$h3string)
+  })
+
+  ## ARGUMENT 2 - NEW_COLUMN
+  testthat::it("new_column argument works", {
+    res <- ddbh3_child_pos_to_cell(test_data_cp, parent = "h3parent", resolution = 10, new_column = "my_child")
+    expect_true("my_child" %in% colnames(res))
+  })
+
+  ## ARGUMENT 3 - MODE
+  testthat::it("mode argument works", {
+    test_data_sf <- test_data_cp_df |>
+      sf::st_as_sf(coords = c("lon", "lat"), crs = 4326, remove = FALSE)
+    expect_s3_class(
+      ddbh3_child_pos_to_cell(test_data_sf, parent = "h3parent", resolution = 10, mode = "sf"),
+      "sf"
+    )
+  })
+
+  ## ARGUMENT 4 - DATABASE ARGUMENTS
+  testthat::it("database arguments work", {
+    conn_test <- ddbh3_create_conn()
+    expect_message(ddbh3_child_pos_to_cell(
+      test_data_cp_df, parent = "h3parent", resolution = 10,
+      conn = conn_test, name = "test_data_tbl"
+    ))
+    expect_no_message(ddbh3_child_pos_to_cell(
+      test_data_cp_df, parent = "h3parent", resolution = 10,
+      conn = conn_test, name = "test_data_tbl2", quiet = TRUE
+    ))
+    expect_error(ddbh3_child_pos_to_cell(
+      test_data_cp_df, parent = "h3parent", resolution = 10,
+      conn = conn_test, name = "test_data_tbl"
+    ))
+    expect_true(ddbh3_child_pos_to_cell(
+      test_data_cp_df, parent = "h3parent", resolution = 10,
+      conn = conn_test, name = "test_data_tbl", overwrite = TRUE
+    ))
+  })
+
+})
+
+
+## 8.4. Errors on weird inputs -----------
+
+describe("ddbh3_child_pos_to_cell() errors", {
+
+  conn_test <- ddbh3_create_conn()
+
+  it("requires child_pos and parent as character", {
+    expect_error(ddbh3_child_pos_to_cell(test_data_cp, child_pos = 1, parent = "h3parent"))
+    expect_error(ddbh3_child_pos_to_cell(test_data_cp, child_pos = NULL, parent = "h3parent"))
+    expect_error(ddbh3_child_pos_to_cell(test_data_cp, parent = TRUE))
+    expect_error(ddbh3_child_pos_to_cell(test_data_cp, parent = c("h3parent", "h3string")))
+  })
+
+  it("requires a valid resolution", {
+    expect_error(ddbh3_child_pos_to_cell(test_data_cp, parent = "h3parent", resolution = 16))
+    expect_error(ddbh3_child_pos_to_cell(test_data_cp, parent = "h3parent", resolution = -1))
+    expect_error(ddbh3_child_pos_to_cell(test_data_cp, parent = "h3parent", resolution = 9.5))
+    expect_error(ddbh3_child_pos_to_cell(test_data_cp, parent = "h3parent", resolution = c(9, 10)))
+  })
+
+  it("requires new_column argument as character", {
+    expect_error(ddbh3_child_pos_to_cell(test_data_cp, parent = "h3parent", new_column = 25))
+  })
+
+  it("fails on a missing column", {
+    expect_error(ddbh3_child_pos_to_cell(test_data_cp, parent = "not_a_column", resolution = 10))
+  })
+
+  it("validates x, conn, overwrite and quiet", {
+    expect_error(ddbh3_child_pos_to_cell(x = TRUE))
+    expect_error(ddbh3_child_pos_to_cell(test_data_cp, parent = "h3parent", conn = 999))
+    expect_error(ddbh3_child_pos_to_cell(test_data_cp, parent = "h3parent", overwrite = 999))
+    expect_error(ddbh3_child_pos_to_cell(test_data_cp, parent = "h3parent", quiet = 999))
+  })
+
+  it("validates table name exists", {
+    expect_error(ddbh3_child_pos_to_cell(x = "999", conn = conn_test))
+  })
+
+  it("requires name to be single character string", {
+    expect_error(ddbh3_child_pos_to_cell(
+      test_data_cp, parent = "h3parent", conn = conn_test, name = c("banana", "banana")
+    ))
+  })
+
+})
