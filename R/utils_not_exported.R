@@ -392,15 +392,15 @@ build_new_column_select <- function(
   ## Columns of the input (DuckDB identifiers are case-insensitive)
   x_cols <- names(DBI::dbGetQuery(conn, glue::glue("SELECT * FROM {query_name} LIMIT 0")))
   exclude_clause <- if (length(exclude) > 0) {
-    glue::glue(" EXCLUDE ({paste(exclude, collapse = ', ')})")
+    glue::glue(" EXCLUDE ({paste(quote_ident(exclude), collapse = ', ')})")
   } else {
     ""
   }
 
   if (tolower(new_column) %in% tolower(x_cols)) {
-    glue::glue("{star}{exclude_clause} REPLACE ({expr} AS {new_column})")
+    glue::glue("{star}{exclude_clause} REPLACE ({expr} AS {quote_ident(new_column)})")
   } else {
-    glue::glue("{star}{exclude_clause}, {expr} AS {new_column}")
+    glue::glue("{star}{exclude_clause}, {expr} AS {quote_ident(new_column)}")
   }
 }
 
