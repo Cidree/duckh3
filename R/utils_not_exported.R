@@ -346,6 +346,49 @@ check_installed_h3 <- function(conn = NULL) {
 
 
 
+#' Build the SELECT list that adds (or replaces) `new_column`
+#'
+#' Returns `* [EXCLUDE (...)], <expr> AS new_column` when `new_column` is not a
+#' column of the input, and `* [EXCLUDE (...)] REPLACE (<expr> AS new_column)`
+#' when it is, so an existing column is overwritten in place instead of DuckDB
+#' adding a duplicate with a `_1` suffix.
+#'
+#' @template conn_null
+#' @param query_name name of the table/view with the input data
+#' @template new_column
+#' @param expr SQL expression for the new column
+#' @param exclude columns to exclude from `*` (e.g. the geometry column)
+#' @param star the star expression (e.g. `"src.*"`)
+#'
+#' @keywords internal
+#' @noRd
+#' @returns a character string with the SELECT list
+build_new_column_select <- function(
+    conn,
+    query_name,
+    new_column,
+    expr,
+    exclude = character(0),
+    star = "*"
+) {
+
+  ## Columns of the input (DuckDB identifiers are case-insensitive)
+  x_cols <- names(DBI::dbGetQuery(conn, glue::glue("SELECT * FROM {query_name} LIMIT 0")))
+  exclude_clause <- if (length(exclude) > 0) {
+    glue::glue(" EXCLUDE ({paste(exclude, collapse = ', ')})")
+  } else {
+    ""
+  }
+
+  if (tolower(new_column) %in% tolower(x_cols)) {
+    glue::glue("{star}{exclude_clause} REPLACE ({expr} AS {new_column})")
+  } else {
+    glue::glue("{star}{exclude_clause}, {expr} AS {new_column}")
+  }
+}
+
+
+
 #' Create a table from a query, safely overwriting existing tables
 #'
 #' Wrapper around `duckspatial:::create_duckdb_table()`. When `overwrite = TRUE`,

@@ -271,15 +271,15 @@ ddbh3_points_to_h3 <- function(
     "bigint" = glue::glue("h3_latlng_to_cell"),
     cli::cli_abort("The {.arg h3_format} is not valid. Valid options: {.val {c('string', 'bigint')}}")
   )
+  ## (replaces new_column if x already has it)
+  h3_expr     <- glue::glue("{st_function}(ST_Y({x_geom}), ST_X({x_geom}), {resolution})")
+  select_list <- build_new_column_select(
+    target_conn, x_list$query_name, new_column, h3_expr, exclude = x_geom
+  )
   base.query <- glue::glue("
     SELECT
-      * EXCLUDE {x_geom},
-      {st_function}(
-        ST_Y({x_geom}),
-        ST_X({x_geom}),
-        {resolution}
-      ) as {new_column},
-      {duckspatial:::build_geom_query(x_geom, name, crs_x, mode)} AS {x_geom}
+      {select_list},
+      {duckspatial:::build_geom_query(x_geom, name, crs_x, 'duckspatial')} AS {x_geom}
     FROM
       {x_list$query_name};
   ")

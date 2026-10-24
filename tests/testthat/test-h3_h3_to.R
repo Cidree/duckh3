@@ -14,8 +14,11 @@ conn_test <- duckh3::ddbh3_default_conn()
 ## Load example data
 test_data <- read.csv(
   system.file("extdata/example_pts.csv", package = "duckh3")
-) |> 
+) |>
   ddbh3_lonlat_to_h3(resolution = 10)
+
+## Original point coordinates, to compare with the cell centres
+points_lonlat <- dplyr::collect(test_data)[, c("lon", "lat")]
 
 
 # 1. h3_to_lon() ---------------------------------------------------------
@@ -31,7 +34,7 @@ testthat::describe("ddbh3_h3_to_lon() works in different formats", {
     expect_s3_class(res, "tbl_duckdb_connection")
     ## Check resolution is the same as created
     res_col <- dplyr::collect(res)
-    expect_equal(res_col$lon, res_col$lon_1, tolerance = 0.0001)
+    expect_equal(res_col$lon, points_lonlat$lon, tolerance = 0.0001)
   })
 
   ## FORMAT 2 - DATA.FRAME
@@ -42,7 +45,7 @@ testthat::describe("ddbh3_h3_to_lon() works in different formats", {
     expect_s3_class(res, "tbl_duckdb_connection")
     ## Check resolution is the same as created
     res_col <- dplyr::collect(res)
-    expect_equal(res_col$lon, res_col$lon_1, tolerance = 0.0001)
+    expect_equal(res_col$lon, points_lonlat$lon, tolerance = 0.0001)
   })
 
 
@@ -61,7 +64,7 @@ testthat::describe("ddbh3_h3_to_lon() works in different formats", {
     expect_s3_class(res, "duckspatial_df")
     ## Check resolution is the same as created
     res_col <- duckspatial::ddbs_collect(res)
-    expect_equal(res_col$lon, res_col$lon_1, tolerance = 0.0001)
+    expect_equal(res_col$lon, points_lonlat$lon, tolerance = 0.0001)
   })
 
 
@@ -75,7 +78,7 @@ testthat::describe("ddbh3_h3_to_lon() works in different formats", {
     expect_s3_class(res, "duckspatial_df")
     ## Check resolution is the same as created
     res_col <- duckspatial::ddbs_collect(res)
-    expect_equal(res_col$lon, res_col$lon_1, tolerance = 0.0001)
+    expect_equal(res_col$lon, points_lonlat$lon, tolerance = 0.0001)
   })
 
 
@@ -99,7 +102,7 @@ testthat::describe("ddbh3_h3_to_lon() works in different formats", {
     expect_s3_class(res, "duckspatial_df")
     ## Check resolution is the same as created
     res_col <-duckspatial::ddbs_collect(res)
-    expect_equal(res_col$lon, res_col$lon_1, tolerance = 0.0001)
+    expect_equal(res_col$lon, points_lonlat$lon, tolerance = 0.0001)
   })
   
 })
@@ -117,9 +120,9 @@ testthat::describe("ddbh3_h3_to_lon() arguments work", {
     ## Apply operation with new h3 column name
     res <- ddbh3_h3_to_lon(test_data_mod, h3 = "h3")
     ## Checks
-    expect_true("lon_1" %in% colnames(res))
+    expect_false("lon_1" %in% colnames(res))
     res_col <- dplyr::collect(res)
-    expect_equal(res_col$lon, res_col$lon_1, tolerance = 0.0001)
+    expect_equal(res_col$lon, points_lonlat$lon, tolerance = 0.0001)
   })
 
   ## ARGUMENT 2 - NEW_COLUMN
@@ -238,7 +241,7 @@ testthat::describe("ddbh3_h3_to_lat() works in different formats", {
     expect_s3_class(res, "tbl_duckdb_connection")
     ## Check resolution is the same as created
     res_col <- dplyr::collect(res)
-    expect_equal(res_col$lat, res_col$lat_1, tolerance = 0.0001)
+    expect_equal(res_col$lat, points_lonlat$lat, tolerance = 0.0001)
   })
 
   ## FORMAT 2 - DATA.FRAME
@@ -249,7 +252,7 @@ testthat::describe("ddbh3_h3_to_lat() works in different formats", {
     expect_s3_class(res, "tbl_duckdb_connection")
     ## Check resolution is the same as created
     res_col <- dplyr::collect(res)
-    expect_equal(res_col$lat, res_col$lat_1, tolerance = 0.0001)
+    expect_equal(res_col$lat, points_lonlat$lat, tolerance = 0.0001)
   })
 
 
@@ -268,7 +271,7 @@ testthat::describe("ddbh3_h3_to_lat() works in different formats", {
     expect_s3_class(res, "duckspatial_df")
     ## Check resolution is the same as created
     res_col <- duckspatial::ddbs_collect(res)
-    expect_equal(res_col$lat, res_col$lat_1, tolerance = 0.0001)
+    expect_equal(res_col$lat, points_lonlat$lat, tolerance = 0.0001)
   })
 
 
@@ -283,7 +286,7 @@ testthat::describe("ddbh3_h3_to_lat() works in different formats", {
     expect_s3_class(res, "duckspatial_df")
     ## Check resolution is the same as created
     res_col <- duckspatial::ddbs_collect(res)
-    expect_equal(res_col$lat, res_col$lat_1, tolerance = 0.0001)
+    expect_equal(res_col$lat, points_lonlat$lat, tolerance = 0.0001)
   })
 
 
@@ -307,7 +310,7 @@ testthat::describe("ddbh3_h3_to_lat() works in different formats", {
     expect_s3_class(res, "duckspatial_df")
     ## Check resolution is the same as created
     res_col <-duckspatial::ddbs_collect(res)
-    expect_equal(res_col$lat, res_col$lat_1, tolerance = 0.0001)
+    expect_equal(res_col$lat, points_lonlat$lat, tolerance = 0.0001)
   })
   
 })
@@ -325,9 +328,9 @@ testthat::describe("ddbh3_h3_to_lat() arguments work", {
     ## Apply operation with new h3 column name
     res <- ddbh3_h3_to_lat(test_data_mod, h3 = "h3")
     ## Checks
-    expect_true("lat_1" %in% colnames(res))
+    expect_false("lat_1" %in% colnames(res))
     res_col <- dplyr::collect(res)
-    expect_equal(res_col$lat, res_col$lat_1, tolerance = 0.0001)
+    expect_equal(res_col$lat, points_lonlat$lat, tolerance = 0.0001)
   })
 
   ## ARGUMENT 2 - NEW_COLUMN
@@ -1058,7 +1061,37 @@ describe("errors", {
 
 
 
-# 6. Overwriting the source table ----------------------------------------
+# 6. Replacing an existing column ----------------------------------------
+
+testthat::describe("new_column replaces an existing column", {
+
+  test_data_df <- dplyr::collect(test_data)
+  ## Cell latitudes computed into a new column (no collision)
+  cell_lat <- dplyr::collect(
+    ddbh3_h3_to_lat(test_data_df, new_column = "cell_lat")
+  )$cell_lat
+
+  testthat::it("overwrites the column instead of adding <name>_1", {
+    res <- dplyr::collect(ddbh3_h3_to_lat(test_data_df))
+    expect_false("lat_1" %in% names(res))
+    expect_equal(names(res), names(test_data_df))
+    expect_equal(res$lat, cell_lat, tolerance = 1e-9)
+  })
+
+  testthat::it("matches the existing column case-insensitively", {
+    res <- dplyr::collect(ddbh3_h3_to_lat(test_data_df, new_column = "LAT"))
+    expect_equal(sum(tolower(names(res)) == "lat"), 1)
+    expect_equal(res$LAT, cell_lat, tolerance = 1e-9)
+  })
+
+  testthat::it("can convert a column in place", {
+    res <- dplyr::collect(ddbh3_strings_to_bigint(test_data_df, new_column = "h3string"))
+    expect_s3_class(res$h3string, "integer64")
+    expect_equal(ddbh3_bigint_to_strings(res$h3string), test_data_df$h3string)
+  })
+})
+
+# 7. Overwriting the source table ----------------------------------------
 
 testthat::describe("ddbh3_h3_to_spatial() can overwrite its own source table", {
 

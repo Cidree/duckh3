@@ -65,7 +65,8 @@ to \code{FALSE}. This argument is ignored when \code{name} is \code{NULL}.}
 Defaults to \code{FALSE}.}
 
 \item{new_column}{Name of the new column to create on the input data. If NULL,
-the function will return a vector with the result}
+the function will return a vector with the result. If the input already has a
+column with this name, it is replaced by the result}
 
 \item{h3_format}{Character. Output format for the H3 cell index. Either
 \code{"string"} (default) or \code{"bigint"}. Only used in \code{ddbh3_points_to_h3()}.}

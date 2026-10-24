@@ -496,7 +496,24 @@ describe("errors", {
 
 
 
-# 3. Overwriting the source table ----------------------------------------
+# 3. Replacing an existing column ----------------------------------------
+
+testthat::describe("ddbh3_points_to_h3() replaces an existing new_column", {
+
+  ## Points that already have an `h3string` column at resolution 10
+  test_data_sf <- test_data |>
+    ddbh3_points_to_h3(resolution = 10) |>
+    dplyr::collect() |>
+    sf::st_as_sf()
+
+  testthat::it("overwrites the column instead of adding <name>_1", {
+    res <- dplyr::collect(ddbh3_points_to_h3(test_data_sf, resolution = 5))
+    expect_false("h3string_1" %in% names(res))
+    expect_all_equal(ddbh3_get_resolution(res$h3string), 5)
+  })
+})
+
+# 4. Overwriting the source table ----------------------------------------
 
 testthat::describe("points functions can overwrite their own source table", {
 
