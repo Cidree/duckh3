@@ -1437,7 +1437,7 @@ testthat::test_that("different resolutions return different positions", {
 })
 
 
-## 1.2. Arguments work ------------
+## 6.2. Arguments work ------------
 
 testthat::describe("ddbh3_get_child_pos() arguments work", {
 
@@ -1512,7 +1512,7 @@ testthat::describe("ddbh3_get_child_pos() arguments work", {
 })
 
 
-## 1.3. Errors on weird inputs -----------
+## 6.3. Errors on weird inputs -----------
 
 describe("errors", {
 
@@ -1573,6 +1573,221 @@ describe("errors", {
 
   it("requires name to be single character string", {
     expect_error(ddbh3_get_child_pos(test_data, conn = conn_test, name = c('banana', 'banana')))
+  })
+
+})
+
+
+
+# 7. get_base_cell_number() ---------------------------------------------------------
+
+## 7.1. Input data in different formats ----------
+
+testthat::describe("ddbh3_get_base_cell_number() works in different formats", {
+
+  ## FORMAT 1 - TBL_DUCKDB_CONNECTION
+  testthat::it("returns the correct data for tbl_duckdb_connection", {
+    ## Check class
+    res <- ddbh3_get_base_cell_number(test_data)
+    expect_s3_class(res, "tbl_duckdb_connection")
+    ## Check type
+    res_col <- dplyr::collect(res)
+    expect_in("base_cell", colnames(res_col))
+    expect_type(res_col$base_cell, "integer")
+  })
+
+  ## FORMAT 2 - DATA.FRAME
+  testthat::it("returns the correct data for data.frame", {
+    ## Check class
+    test_data_df <- dplyr::collect(test_data)
+    res <- ddbh3_get_base_cell_number(test_data_df)
+    expect_s3_class(res, "tbl_duckdb_connection")
+    ## Check type
+    res_col <- dplyr::collect(res)
+    expect_in("base_cell", colnames(res_col))
+    expect_type(res_col$base_cell, "integer")
+  })
+
+  ## FORMAT 3 - SF
+  testthat::it("returns the correct data for sf", {
+    ## Convert to sf
+    test_data_sf <- test_data |>
+      dplyr::collect() |>
+      sf::st_as_sf(
+        coords = c("lon", "lat"),
+        crs = 4326,
+        remove = FALSE
+      )
+    ## Check class
+    res <- ddbh3_get_base_cell_number(test_data_sf)
+    expect_s3_class(res, "duckspatial_df")
+    ## Check type
+    res_col <- dplyr::collect(res)
+    expect_in("base_cell", colnames(res_col))
+    expect_type(res_col$base_cell, "integer")
+  })
+
+  ## FORMAT 4 - DUCKSPATIAL_DF
+  testthat::it("returns the correct data for duckspatial_df", {
+    ## Convert to duckspatial_df
+    test_data_ddbs <- test_data |>
+      dplyr::collect() |>
+      duckspatial::ddbs_as_points(coords = c("lon", "lat"), crs = 4326)
+    ## Check class
+    res <- ddbh3_get_base_cell_number(test_data_ddbs)
+    expect_s3_class(res, "duckspatial_df")
+    ## Check type
+    res_col <- dplyr::collect(res)
+    expect_in("base_cell", colnames(res_col))
+    expect_type(res_col$base_cell, "integer")
+  })
+
+  ## FORMAT 5 - TABLE IN DUCKDB
+  testthat::it("returns the correct data for table", {
+    ## Create connection
+    conn_test <- ddbh3_create_conn()
+    ## Convert to sf
+    test_data_sf <- test_data |>
+      dplyr::collect() |>
+      sf::st_as_sf(
+        coords = c("lon", "lat"),
+        crs = 4326,
+        remove = FALSE
+      )
+    ## Store table in connection
+    duckspatial::ddbs_write_table(conn_test, test_data_sf, "sf_pts")
+    ## Apply operation
+    res <- ddbh3_get_base_cell_number("sf_pts", conn = conn_test)
+    ## Check type
+    res_col <- dplyr::collect(res)
+    expect_in("base_cell", colnames(res_col))
+    expect_type(res_col$base_cell, "integer")
+  })
+
+})
+
+testthat::test_that("result has same number of rows as input", {
+  res <- ddbh3_get_base_cell_number(test_data) |>
+    dplyr::collect()
+  expect_equal(nrow(res), nrow(dplyr::collect(test_data)))
+})
+
+testthat::test_that("base cell numbers are within valid range", {
+  ## H3 has base cells indexed 0 to 121
+  res <- ddbh3_get_base_cell_number(test_data) |>
+    dplyr::collect()
+  expect_true(all(res$base_cell >= 0 & res$base_cell <= 121))
+})
+
+
+## 7.2. Arguments work ------------
+
+testthat::describe("ddbh3_get_base_cell_number() arguments work", {
+
+  ## ARGUMENT 1 - H3
+  testthat::it("h3 argument works", {
+    ## Rename h3string column
+    test_data_mod <- test_data |>
+      dplyr::rename(h3 = h3string)
+    ## Apply operation with new h3 column name
+    res <- ddbh3_get_base_cell_number(test_data_mod, h3 = "h3")
+    ## Check type
+    res_col <- dplyr::collect(res)
+    expect_in("base_cell", colnames(res_col))
+    expect_type(res_col$base_cell, "integer")
+  })
+
+  ## ARGUMENT 2 - NEW_COLUMN
+  testthat::it("new_column argument works", {
+    res <- ddbh3_get_base_cell_number(test_data, new_column = "my_base_cell")
+    expect_true("my_base_cell" %in% colnames(res))
+    res_col <- dplyr::collect(res)
+    expect_in("my_base_cell", colnames(res_col))
+    expect_type(res_col$my_base_cell, "integer")
+  })
+
+  ## ARGUMENT 3 - DATABASE ARGUMENTS
+  testthat::it("database arguments work", {
+    ## Create connection
+    conn_test <- ddbh3_create_conn()
+    ## Apply operation with connection
+    expect_message(ddbh3_get_base_cell_number(
+      dplyr::collect(test_data),
+      new_column = "base_cell",
+      conn = conn_test,
+      name = "test_data_tbl"
+    ))
+    ## Apply operation with connection, quiet
+    expect_no_message(ddbh3_get_base_cell_number(
+      dplyr::collect(test_data),
+      new_column = "base_cell",
+      conn = conn_test,
+      name = "test_data_tbl2",
+      quiet = TRUE
+    ))
+    ## Doesn't overwrite existing table
+    expect_error(ddbh3_get_base_cell_number(
+      dplyr::collect(test_data),
+      new_column = "base_cell",
+      conn = conn_test,
+      name = "test_data_tbl"
+    ))
+    ## Overwrites existing table when overwrite = TRUE
+    expect_true(ddbh3_get_base_cell_number(
+      dplyr::collect(test_data),
+      new_column = "base_cell",
+      conn = conn_test,
+      name = "test_data_tbl",
+      overwrite = TRUE
+    ))
+  })
+
+})
+
+
+## 7.3. Errors on weird inputs -----------
+
+describe("errors", {
+
+  ## Get h3strings
+  conn_test <- ddbh3_create_conn()
+  duckdb::dbWriteTable(conn_test, "test_data_tbl", dplyr::collect(test_data))
+
+  ## Tests
+  it("requires h3 argument as character", {
+    expect_error(ddbh3_get_base_cell_number(test_data, h3 = NULL))
+    expect_error(ddbh3_get_base_cell_number(test_data, h3 = TRUE))
+    expect_error(ddbh3_get_base_cell_number(test_data, h3 = 2))
+  })
+
+  it("requires new_column argument as character", {
+    expect_error(ddbh3_get_base_cell_number(test_data, new_column = NULL))
+    expect_error(ddbh3_get_base_cell_number(test_data, new_column = FALSE))
+    expect_error(ddbh3_get_base_cell_number(test_data, new_column = 25))
+  })
+
+  it("validates x argument type", {
+    expect_error(ddbh3_get_base_cell_number(x = 999))
+  })
+
+  it("validates conn argument type", {
+    expect_error(ddbh3_get_base_cell_number(test_data, conn = 999))
+  })
+
+  it("validates overwrite argument type", {
+    expect_error(ddbh3_get_base_cell_number(test_data, overwrite = 999))
+  })
+
+  it("validates quiet argument type", {
+    expect_error(ddbh3_get_base_cell_number(test_data, quiet = 999))
+  })
+
+  it("validates table name exists", {
+    expect_error(ddbh3_get_base_cell_number(x = "999", conn = conn_test))
+  })
+
+  it("requires name to be single character string", {
+    expect_error(ddbh3_get_base_cell_number(test_data, conn = conn_test, name = c('banana', 'banana')))
   })
 
 })

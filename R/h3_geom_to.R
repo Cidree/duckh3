@@ -22,6 +22,7 @@
 #' safer (slower) but never change correctness.
 #' @template conn_null
 #' @template name
+#' @template mode
 #' @template overwrite
 #' @template quiet
 #'
@@ -105,6 +106,7 @@ ddbh3_polygons_to_spatial <- function(
     resolution,
     conn = NULL,
     name = NULL,
+    mode = NULL,
     overwrite = FALSE,
     quiet = FALSE,
     containment = "overlap"
@@ -115,6 +117,7 @@ ddbh3_polygons_to_spatial <- function(
     resolution  = resolution,
     conn        = conn,
     name        = name,
+    mode        = mode,
     overwrite   = overwrite,
     quiet       = quiet,
     containment = containment,
@@ -134,6 +137,7 @@ ddbh3_lines_to_spatial <- function(
     resolution,
     conn = NULL,
     name = NULL,
+    mode = NULL,
     overwrite = FALSE,
     quiet = FALSE,
     containment = "overlap",
@@ -145,6 +149,7 @@ ddbh3_lines_to_spatial <- function(
     resolution   = resolution,
     conn         = conn,
     name         = name,
+    mode         = mode,
     overwrite    = overwrite,
     quiet        = quiet,
     containment  = containment,
@@ -168,6 +173,7 @@ ddbh3_polygons_to_h3 <- function(
     containment = "overlap",
     conn = NULL,
     name = NULL,
+    mode = NULL,
     overwrite = FALSE,
     quiet = FALSE
 ) {
@@ -180,6 +186,7 @@ ddbh3_polygons_to_h3 <- function(
     containment = containment,
     conn        = conn,
     name        = name,
+    mode        = mode,
     overwrite   = overwrite,
     quiet       = quiet,
     geom_family = "POLYGON"
@@ -202,6 +209,7 @@ ddbh3_lines_to_h3 <- function(
     buffer_scale = 1,
     conn = NULL,
     name = NULL,
+    mode = NULL,
     overwrite = FALSE,
     quiet = FALSE
 ) {
@@ -215,6 +223,7 @@ ddbh3_lines_to_h3 <- function(
     buffer_scale = buffer_scale,
     conn         = conn,
     name         = name,
+    mode         = mode,
     overwrite    = overwrite,
     quiet        = quiet,
     geom_family  = "LINESTRING"

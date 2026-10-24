@@ -9,6 +9,7 @@
 #' @template new_column
 #' @template conn_null
 #' @template name
+#' @template mode
 #' @template overwrite
 #' @template quiet
 #' 
@@ -98,6 +99,7 @@ ddbh3_is_pentagon <- function(
     new_column = "ispentagon",
     conn = NULL,
     name = NULL,
+    mode = NULL,
     overwrite = FALSE,
     quiet = FALSE
 ) {
@@ -114,6 +116,7 @@ ddbh3_is_pentagon <- function(
     x = x,
     conn = conn,
     name = name,
+    mode = mode,
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,
@@ -134,6 +137,7 @@ ddbh3_is_h3 <- function(
     new_column = "ish3",
     conn = NULL,
     name = NULL,
+    mode = NULL,
     overwrite = FALSE,
     quiet = FALSE
 ) {
@@ -149,6 +153,7 @@ ddbh3_is_h3 <- function(
     x = x,
     conn = conn,
     name = name,
+    mode = mode,
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,
@@ -170,6 +175,7 @@ ddbh3_is_res_class_iii <- function(
     new_column = "isclassiii",
     conn = NULL,
     name = NULL,
+    mode = NULL,
     overwrite = FALSE,
     quiet = FALSE
 ) {  
@@ -185,6 +191,7 @@ ddbh3_is_res_class_iii <- function(
     x = x,
     conn = conn,
     name = name,
+    mode = mode,
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,
@@ -205,6 +212,7 @@ ddbh3_is_vertex <- function(
     new_column = "isvertex",
     conn = NULL,
     name = NULL,
+    mode = NULL,
     overwrite = FALSE,
     quiet = FALSE
 ) {
@@ -220,6 +228,7 @@ ddbh3_is_vertex <- function(
     x = x,
     conn = conn,
     name = name,
+    mode = mode,
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,
