@@ -360,3 +360,108 @@ check_installed_h3 <- function(conn = NULL) {
 quote_ident <- function(x) {
   as.character(DBI::dbQuoteIdentifier(DBI::ANSI(), x))
 }
+
+
+
+#' Build the SELECT list that adds (or replaces) `new_column`
+#'
+#' Returns `* [EXCLUDE (...)], <expr> AS new_column` when `new_column` is not a
+#' column of the input, and `* [EXCLUDE (...)] REPLACE (<expr> AS new_column)`
+#' when it is, so an existing column is overwritten in place instead of DuckDB
+#' adding a duplicate with a `_1` suffix.
+#'
+#' @template conn_null
+#' @param query_name name of the table/view with the input data
+#' @template new_column
+#' @param expr SQL expression for the new column
+#' @param exclude columns to exclude from `*` (e.g. the geometry column)
+#' @param star the star expression (e.g. `"src.*"`)
+#'
+#' @keywords internal
+#' @noRd
+#' @returns a character string with the SELECT list
+build_new_column_select <- function(
+    conn,
+    query_name,
+    new_column,
+    expr,
+    exclude = character(0),
+    star = "*"
+) {
+
+  ## Columns of the input (DuckDB identifiers are case-insensitive)
+  x_cols <- names(DBI::dbGetQuery(conn, glue::glue("SELECT * FROM {query_name} LIMIT 0")))
+  exclude_clause <- if (length(exclude) > 0) {
+    glue::glue(" EXCLUDE ({paste(exclude, collapse = ', ')})")
+  } else {
+    ""
+  }
+
+  if (tolower(new_column) %in% tolower(x_cols)) {
+    glue::glue("{star}{exclude_clause} REPLACE ({expr} AS {new_column})")
+  } else {
+    glue::glue("{star}{exclude_clause}, {expr} AS {new_column}")
+  }
+}
+
+
+
+#' Create a table from a query, safely overwriting existing tables
+#'
+#' Wrapper around `duckspatial:::create_duckdb_table()`. When `overwrite = TRUE`,
+#' the result is first written to a staging table and only then swapped in
+#' place of `name` (inside a transaction). This keeps the source data intact
+#' when `name` is the same table that `query` reads from (directly or through
+#' a view or lazy query).
+#'
+#' @template conn_null
+#' @template name
+#' @param query SQL `SELECT` query that produces the table
+#' @template overwrite
+#' @template quiet
+#'
+#' @keywords internal
+#' @noRd
+#' @returns invisible TRUE
+create_h3_table <- function(conn, name, query, overwrite, quiet) {
+
+  ## Without overwrite there's nothing to drop: use the duckspatial helper
+  if (!isTRUE(overwrite)) {
+    return(duckspatial:::create_duckdb_table(
+      conn      = conn,
+      name      = name,
+      query     = query,
+      overwrite = overwrite,
+      quiet     = quiet
+    ))
+  }
+
+  ## Names of the target and of the staging table (same schema as the target)
+  name_list     <- duckspatial:::get_query_name(name)
+  staging_table <- basename(tempfile(paste0(name_list$table_name, "_ddbh3_staging_")))
+  staging_name  <- if (length(name) == 2) {
+    paste(name_list$schema_name, staging_table, sep = ".")
+  } else {
+    staging_table
+  }
+
+  ## 1. Materialize the result before touching the target table
+  DBI::dbExecute(conn, glue::glue("CREATE TABLE {staging_name} AS {query}"))
+  on.exit(
+    DBI::dbExecute(conn, glue::glue("DROP TABLE IF EXISTS {staging_name}")),
+    add = TRUE
+  )
+
+  ## 2. Swap the staging table in place of the target
+  DBI::dbWithTransaction(conn, {
+    DBI::dbExecute(conn, glue::glue("DROP TABLE IF EXISTS {name_list$query_name}"))
+    DBI::dbExecute(
+      conn,
+      glue::glue("ALTER TABLE {staging_name} RENAME TO {name_list$table_name}")
+    )
+  })
+  if (isFALSE(quiet)) cli::cli_alert_info("Table <{name_list$query_name}> dropped")
+
+  duckspatial:::feedback_query(quiet)
+  invisible(TRUE)
+}

@@ -10,6 +10,7 @@ ddbh3_get_icosahedron_faces(
   new_column = "h3faces",
   conn = NULL,
   name = NULL,
+  mode = NULL,
   nested = FALSE,
   overwrite = FALSE,
   quiet = FALSE
@@ -30,7 +31,8 @@ ddbh3_get_icosahedron_faces(
 H3 unsigned 64-bit integers (\code{UBIGINT})}
 
 \item{new_column}{Name of the new column to create on the input data. If NULL,
-the function will return a vector with the result}
+the function will return a vector with the result. If the input already has a
+column with this name, it is replaced by the result}
 
 \item{conn}{A connection object to a DuckDB database. If \code{NULL}, the function
 runs on a temporary DuckDB database.}
@@ -39,6 +41,14 @@ runs on a temporary DuckDB database.}
 or a character string of length two specifying the schema and table
 names. If \code{NULL} (the default), the function returns the result as an
 \code{sf} object}
+
+\item{mode}{Character. Controls the return type. Options:
+\itemize{
+\item \code{"duckspatial"} (default): Lazy spatial data frame backed by dbplyr/DuckDB
+\item \code{"sf"}: Eagerly collected sf object (uses memory)
+}
+Can be set globally via \code{\link[duckspatial]{ddbs_options}(mode = "...")} or
+per-function via this argument. Per-function overrides global setting.}
 
 \item{nested}{Logical. If \code{TRUE}, children are returned as a nested list
 column (one row per parent cell). If \code{FALSE} (default), the result is

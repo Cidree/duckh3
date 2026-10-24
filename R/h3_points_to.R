@@ -11,6 +11,7 @@
 #' `"string"` (default) or `"bigint"`. Only used in `ddbh3_points_to_h3()`.
 #' @template conn_null
 #' @template name
+#' @template mode
 #' @template overwrite
 #' @template quiet
 #' 
@@ -76,6 +77,7 @@ ddbh3_points_to_spatial <- function(
     resolution,
     conn = NULL,
     name = NULL,
+    mode = NULL,
     overwrite = FALSE,
     quiet = FALSE
 ) {
@@ -88,12 +90,14 @@ ddbh3_points_to_spatial <- function(
   duckspatial:::assert_integer_scalar(resolution, "resolution")
   duckspatial:::assert_numeric_interval(resolution, 0, 15, "resolution")
   duckspatial:::assert_geom_type(x = x, conn = conn, geom = "POINT", multi = TRUE)
+  duckspatial:::assert_name(mode, "mode")
 
   # 1. Manage connection to DB
 
-  ## 1.1. Pre-extract geometry column name to overwrite, if present
+  ## 1.1. Pre-extract attributes
   crs_x    <- duckspatial::ddbs_crs(x, conn)
   sf_col_x <- attr(x, "sf_column")
+  mode     <- duckspatial:::get_mode(mode, name)
 
   if (crs_x$input != "EPSG:4326") {
     cli::cli_abort("The CRS of the input must be {.val EPSG:4326}, not {.val {crs_x$input}}.")
@@ -144,15 +148,15 @@ ddbh3_points_to_spatial <- function(
   base.query <- glue::glue("
     SELECT
       {x_rest}
-      ST_GeomFromWKB(
-        h3_cell_to_boundary_wkb(
-          h3_latlng_to_cell(
-            ST_Y({quote_ident(x_geom)}),
-            ST_X({quote_ident(x_geom)}),
-            {resolution}
-          )
-        )
-      ) as {quote_ident(x_geom)}
+      {duckspatial:::build_geom_query(
+        sprintf(
+          'ST_GeomFromWKB(h3_cell_to_boundary_wkb(h3_latlng_to_cell(ST_Y(%s), ST_X(%s), %s)))', 
+          quote_ident(x_geom), quote_ident(x_geom), resolution
+        ), 
+        name, 
+        crs_x, 
+        mode
+      )} as {quote_ident(x_geom)}
     FROM
       {x_list$query_name};
   ")
@@ -161,7 +165,7 @@ ddbh3_points_to_spatial <- function(
   # 3. Table creation if name is provided, or 
   # create duckspatial_df or sf object if name is NULL
   if (!is.null(name)) {
-    duckspatial:::create_duckdb_table(
+    create_h3_table(
       conn      = target_conn,
       name      = name,
       query     = base.query,
@@ -172,7 +176,7 @@ ddbh3_points_to_spatial <- function(
    duckspatial::: ddbs_handle_query(
       query  = base.query,
       conn   = target_conn,
-      mode   = "duckspatial",
+      mode   = mode,
       crs    = "EPSG:4326",
       x_geom = x_geom
     )
@@ -193,6 +197,7 @@ ddbh3_points_to_h3 <- function(
     h3_format = "string",
     conn = NULL,
     name = NULL,
+    mode = NULL,
     overwrite = FALSE,
     quiet = FALSE
 ) {
@@ -208,13 +213,15 @@ ddbh3_points_to_h3 <- function(
   duckspatial:::assert_integer_scalar(resolution, "resolution")
   duckspatial:::assert_numeric_interval(resolution, 0, 15, "resolution")
   duckspatial:::assert_geom_type(x = x, conn = conn, geom = "POINT", multi = TRUE)
+  duckspatial:::assert_name(mode, "mode")
 
 
   # 1. Prepare inputs
 
-  ## 1.1. Pre-extract geometry column name to overwrite, if present
+  ## 1.1. Pre-extract attributes
   crs_x    <- duckspatial::ddbs_crs(x, conn)
   sf_col_x <- attr(x, "sf_column")
+  mode     <- duckspatial:::get_mode(mode, name)
 
   if (crs_x$input != "EPSG:4326") {
     cli::cli_abort("The CRS of the input must be {.val EPSG:4326}, not {.val {crs_x$input}}.")
@@ -264,14 +271,14 @@ ddbh3_points_to_h3 <- function(
     "bigint" = glue::glue("h3_latlng_to_cell"),
     cli::cli_abort("The {.arg h3_format} is not valid. Valid options: {.val {c('string', 'bigint')}}")
   )
+  ## (replaces new_column if x already has it)
+  h3_expr     <- glue::glue("{st_function}(ST_Y({x_geom}), ST_X({x_geom}), {resolution})")
+  select_list <- build_new_column_select(
+    target_conn, x_list$query_name, new_column, h3_expr, exclude = x_geom
+  )
   base.query <- glue::glue("
     SELECT
-      * EXCLUDE {quote_ident(x_geom)},
-      {st_function}(
-        ST_Y({quote_ident(x_geom)}),
-        ST_X({quote_ident(x_geom)}),
-        {resolution}
-      ) as {quote_ident(new_column)},
+      {select_list},
       {duckspatial:::build_geom_query(quote_ident(x_geom), name, crs_x, 'duckspatial')} AS {quote_ident(x_geom)}
     FROM
       {x_list$query_name};
@@ -281,7 +288,7 @@ ddbh3_points_to_h3 <- function(
   # 3. Table creation if name is provided, or 
   # create duckspatial_df or sf object if name is NULL
   if (!is.null(name)) {
-    duckspatial:::create_duckdb_table(
+    create_h3_table(
       conn      = target_conn,
       name      = name,
       query     = base.query,
@@ -292,7 +299,7 @@ ddbh3_points_to_h3 <- function(
    duckspatial::: ddbs_handle_query(
       query  = base.query,
       conn   = target_conn,
-      mode   = "duckspatial",
+      mode   = mode,
       crs    = "EPSG:4326",
       x_geom = x_geom
     )

@@ -5,6 +5,7 @@
 #' @template new_column
 #' @template conn_null
 #' @template name
+#' @param mode Testing mode
 #' @template overwrite
 #' @template quiet
 #' @param fun The duckdb function to use
@@ -17,6 +18,7 @@ template_h3_base <- function(
     new_column = "h3string",
     conn = NULL,
     name = NULL,
+    mode = NULL,
     overwrite = FALSE,
     quiet = FALSE,
     fun = NULL,
@@ -35,6 +37,7 @@ template_h3_base <- function(
   duckspatial:::assert_name(name)
   duckspatial:::assert_logic(overwrite, "overwrite")
   duckspatial:::assert_logic(quiet, "quiet")
+  duckspatial:::assert_name(mode, "mode")
 
 
   # 1. Prepare inputs
@@ -66,6 +69,9 @@ template_h3_base <- function(
   x_list <- duckspatial:::get_query_list(x, target_conn)
   on.exit(x_list$cleanup(), add = TRUE)
 
+  ## 1.6. Resolve mode
+  mode <- duckspatial:::get_mode(mode, name)
+
   ## 1.6. Install and load h3 on target connection
   ## TODO - add argument in duckspatial:::resolve_spatial_connections() to manage it
   # duckspatial::ddbs_install(target_conn, upgrade = FALSE, quiet = TRUE, extension = "h3")
@@ -81,14 +87,17 @@ template_h3_base <- function(
   if (length(x_geom != 0)) duckspatial:::assert_geometry_column(x_geom, x_list)
 
   ## 2.2. Build the base query
+  ## (replaces new_column if x already has it)
+  select_list <- build_new_column_select(
+    target_conn, x_list$query_name, new_column, fun, exclude = x_geom
+  )
   geom_clause <- if (length(x_geom) > 0) {
     glue::glue("
-      * EXCLUDE {quote_ident(x_geom)},
-      {fun} as {quote_ident(new_column)},
+      {select_list},
       {duckspatial:::build_geom_query(quote_ident(x_geom), name, crs_x, 'duckspatial')} AS {quote_ident(x_geom)}"
     )
   } else {
-    glue::glue("*, {fun} as {quote_ident(new_column)}")
+    select_list
   }
   base.query <- glue::glue("
     SELECT
@@ -100,7 +109,7 @@ template_h3_base <- function(
   # 3. Table creation if name is provided, or 
   # create duckspatial_df or sf object if name is NULL
   if (!is.null(name)) {
-    duckspatial:::create_duckdb_table(
+    create_h3_table(
       conn      = target_conn,
       name      = name,
       query     = base.query,
@@ -111,7 +120,7 @@ template_h3_base <- function(
    duckspatial::: ddbs_handle_query(
       query  = base.query,
       conn   = target_conn,
-      mode   = "duckspatial",
+      mode   = mode,
       crs    = crs_x,
       x_geom = x_geom
     )
@@ -125,6 +134,7 @@ template_h3_to_spatial <- function(
     x,
     conn = NULL,
     name = NULL,
+    mode = NULL,
     overwrite = FALSE,
     quiet = FALSE,
     fun = NULL,
@@ -143,9 +153,11 @@ template_h3_to_spatial <- function(
   duckspatial:::assert_name(name)
   duckspatial:::assert_logic(overwrite, "overwrite")
   duckspatial:::assert_logic(quiet, "quiet")
+  duckspatial:::assert_name(mode, "mode")
 
-  ## 1.1. Pre-extract CRS  
+  ## 1.1. Pre-extract attributes  
   sf_col_x <- attr(x, "sf_column")
+  mode     <- duckspatial:::get_mode(mode, name)
   
   ## 1.2. Normalize inputs (coerce tbl_duckdb_connection to duckspatial_df, 
   ## validate character table names)
@@ -186,9 +198,9 @@ template_h3_to_spatial <- function(
   ## 3.3. Build the columns clause
   if (length(x_geom) == 0) {
     x_geom <- "geometry"
-    cols_clause <- glue::glue("*, {duckspatial:::build_geom_query(fun, name, 'EPSG:4326', 'duckspatial')} AS geometry")
+    cols_clause <- glue::glue("*, {duckspatial:::build_geom_query(fun, name, 'EPSG:4326', mode)} AS geometry")
   } else {
-    cols_clause <- glue::glue("* REPLACE ({duckspatial:::build_geom_query(fun, name, crs_x, 'duckspatial')} AS {quote_ident(x_geom)})")
+    cols_clause <- glue::glue("* REPLACE ({duckspatial:::build_geom_query(fun, name, crs_x, mode)} AS {quote_ident(x_geom)})")
   }
 
   ## 3.3. Build the base query
@@ -203,7 +215,7 @@ template_h3_to_spatial <- function(
   # 3. Table creation if name is provided, or 
   # create duckspatial_df or sf object if name is NULL
   if (!is.null(name)) {
-    duckspatial:::create_duckdb_table(
+    create_h3_table(
       conn      = target_conn,
       name      = name,
       query     = base.query,
@@ -214,7 +226,7 @@ template_h3_to_spatial <- function(
     duckspatial:::ddbs_handle_query(
       query  = base.query,
       conn   = target_conn,
-      mode   = "duckspatial",
+      mode   = mode,
       crs    = "EPSG:4326",
       x_geom = x_geom
     )
@@ -241,6 +253,7 @@ template_h3_geom_to_spatial <- function(
     resolution,
     conn = NULL,
     name = NULL,
+    mode = NULL,
     overwrite = FALSE,
     quiet = FALSE,
     containment = "overlap",
@@ -258,13 +271,15 @@ template_h3_geom_to_spatial <- function(
   duckspatial:::assert_integer_scalar(resolution, "resolution")
   duckspatial:::assert_numeric_interval(resolution, 0, 15, "resolution")
   duckspatial:::assert_geom_type(x = x, conn = conn, geom = geom_family, multi = TRUE)
+  duckspatial:::assert_name(mode, "mode")
   containment <- assert_containment(containment)
 
   # 1. Manage connection to DB
 
-  ## 1.1. Pre-extract geometry column name + CRS check (must be EPSG:4326)
+  ## 1.1. Pre-extract attributes + CRS check (must be EPSG:4326)
   crs_x    <- duckspatial::ddbs_crs(x, conn)
   sf_col_x <- attr(x, "sf_column")
+  mode     <- duckspatial:::get_mode(mode, name)
 
   if (crs_x$input != "EPSG:4326") {
     cli::cli_abort("The CRS of the input must be {.val EPSG:4326}, not {.val {crs_x$input}}.")
@@ -324,7 +339,7 @@ template_h3_geom_to_spatial <- function(
   # 4. Table creation if name is provided, or
   # create duckspatial_df or sf object if name is NULL
   if (!is.null(name)) {
-    duckspatial:::create_duckdb_table(
+    create_h3_table(
       conn      = target_conn,
       name      = name,
       query     = base.query,
@@ -335,7 +350,7 @@ template_h3_geom_to_spatial <- function(
     duckspatial:::ddbs_handle_query(
       query  = base.query,
       conn   = target_conn,
-      mode   = "duckspatial",
+      mode   = mode,
       crs    = "EPSG:4326",
       x_geom = x_geom
     )
@@ -362,6 +377,7 @@ template_h3_geom_to_h3 <- function(
     buffer_scale = 1,
     conn = NULL,
     name = NULL,
+    mode = NULL,
     overwrite = FALSE,
     quiet = FALSE,
     geom_family = c("POLYGON", "LINESTRING")
@@ -380,15 +396,17 @@ template_h3_geom_to_h3 <- function(
   duckspatial:::assert_numeric_interval(resolution, 0, 15, "resolution")
   duckspatial:::assert_geom_type(x = x, conn = conn, geom = geom_family, multi = TRUE)
   containment <- assert_containment(containment)
+  duckspatial:::assert_name(mode, "mode")
   if (!h3_format %in% c("string", "bigint")) {
     cli::cli_abort("The {.arg h3_format} is not valid. Valid options: {.val {c('string', 'bigint')}}")
   }
 
   # 1. Prepare inputs
 
-  ## 1.1. Pre-extract geometry column name + CRS check
+  ## 1.1. Pre-extract attributes + CRS check
   crs_x    <- duckspatial::ddbs_crs(x, conn)
   sf_col_x <- attr(x, "sf_column")
+  mode     <- duckspatial:::get_mode(mode, name)
 
   if (crs_x$input != "EPSG:4326") {
     cli::cli_abort("The CRS of the input must be {.val EPSG:4326}, not {.val {crs_x$input}}.")
@@ -424,20 +442,19 @@ template_h3_geom_to_h3 <- function(
     build_line_cells_lateral(x_geom, resolution, containment, buffer_scale)
   }
 
-  # list_expr <- glue::glue("(SELECT list_distinct(list(agg.h3)) FROM ({cells_lateral}) AS agg)")
-  # if (h3_format == "string") {
-  #   list_expr <- glue::glue("list_transform({list_expr}, cell -> h3_h3_to_string(cell))")
-  # }
-    list_expr <- glue::glue("(SELECT list_distinct(list(agg.h3)) FROM ({cells_lateral}) AS agg)")
+  list_expr <- glue::glue("(SELECT list_distinct(list(agg.h3)) FROM ({cells_lateral}) AS agg)")
   if (h3_format == "string") {
     list_expr <- glue::glue("list_transform({list_expr}, lambda cell: h3_h3_to_string(cell))")
   }
 
-  ## 2.3. Build the base query
+  ## 2.3. Build the base query (replaces new_column if x already has it)
+  select_list <- build_new_column_select(
+    target_conn, x_list$query_name, new_column, list_expr,
+    exclude = x_geom, star = "src.*"
+  )
   base.query <- glue::glue("
     SELECT
-      src.* EXCLUDE {quote_ident(x_geom)},
-      {list_expr} AS {quote_ident(new_column)},
+      {select_list},
       {duckspatial:::build_geom_query(quote_ident(x_geom), name, crs_x, 'duckspatial')} AS {quote_ident(x_geom)}
     FROM
       {x_list$query_name} AS src;
@@ -446,7 +463,7 @@ template_h3_geom_to_h3 <- function(
   # 3. Table creation if name is provided, or
   # create duckspatial_df or sf object if name is NULL
   if (!is.null(name)) {
-    duckspatial:::create_duckdb_table(
+    create_h3_table(
       conn      = target_conn,
       name      = name,
       query     = base.query,
@@ -457,10 +474,11 @@ template_h3_geom_to_h3 <- function(
     duckspatial:::ddbs_handle_query(
       query  = base.query,
       conn   = target_conn,
-      mode   = "duckspatial",
+      mode   = mode,
       crs    = "EPSG:4326",
       x_geom = x_geom
     )
   }
 
 }
+
