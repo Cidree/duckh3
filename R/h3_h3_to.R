@@ -8,6 +8,7 @@
 #' @template new_column
 #' @template conn_null
 #' @template name
+#' @template mode
 #' @template overwrite
 #' @template quiet
 #'
@@ -114,6 +115,7 @@ ddbh3_h3_to_lon <- function(
     new_column = "lon",
     conn = NULL,
     name = NULL,
+    mode = NULL,
     overwrite = FALSE,
     quiet = FALSE
 ) {
@@ -130,6 +132,7 @@ ddbh3_h3_to_lon <- function(
     x = x,
     conn = conn,
     name = name,
+    mode = mode,
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,
@@ -151,6 +154,7 @@ ddbh3_h3_to_lat <- function(
     new_column = "lat",
     conn = NULL,
     name = NULL,
+    mode = NULL,
     overwrite = FALSE,
     quiet = FALSE
 ) {
@@ -167,6 +171,7 @@ ddbh3_h3_to_lat <- function(
     x = x,
     conn = conn,
     name = name,
+    mode = mode,
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,
@@ -187,6 +192,7 @@ ddbh3_h3_to_spatial <- function(
     h3 = "h3string",
     conn = NULL,
     name = NULL,
+    mode = NULL,
     overwrite = FALSE,
     quiet = FALSE
 ) {
@@ -206,6 +212,7 @@ ddbh3_h3_to_spatial <- function(
     x = x,
     conn = conn,
     name = name,
+    mode = mode,
     overwrite = overwrite,
     quiet = quiet,
     fun = built_fun,
@@ -226,6 +233,7 @@ ddbh3_strings_to_bigint <- function(
     new_column = "h3bigint",
     conn = NULL,
     name = NULL,
+    mode = NULL,
     overwrite = FALSE,
     quiet = FALSE
 ) {
@@ -242,6 +250,7 @@ ddbh3_strings_to_bigint <- function(
     x = x,
     conn = conn,
     name = name,
+    mode = mode,
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,
@@ -261,6 +270,7 @@ ddbh3_bigint_to_strings <- function(
     new_column = "h3string",
     conn = NULL,
     name = NULL,
+    mode = NULL,
     overwrite = FALSE,
     quiet = FALSE
 ) {
@@ -277,6 +287,7 @@ ddbh3_bigint_to_strings <- function(
     x = x,
     conn = conn,
     name = name,
+    mode = mode,
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,
@@ -296,6 +307,7 @@ ddbh3_h3_to_points <- function(
     h3 = "h3string",
     conn = NULL,
     name = NULL,
+    mode = NULL,
     overwrite = FALSE,
     quiet = FALSE
 ) {
@@ -317,6 +329,7 @@ ddbh3_h3_to_points <- function(
     x = x,
     conn = conn,
     name = name,
+    mode = mode,
     overwrite = overwrite,
     quiet = quiet,
     fun = built_fun,

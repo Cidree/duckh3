@@ -512,3 +512,43 @@ testthat::describe("ddbh3_points_to_h3() replaces an existing new_column", {
     expect_all_equal(ddbh3_get_resolution(res$h3string), 5)
   })
 })
+
+# 4. Overwriting the source table ----------------------------------------
+
+testthat::describe("points functions can overwrite their own source table", {
+
+  test_data_sf <- sf::st_as_sf(dplyr::collect(test_data))
+
+  testthat::it("ddbh3_points_to_h3() keeps the data", {
+    conn_src <- ddbh3_create_conn(threads = 1)
+    duckspatial::ddbs_write_table(conn_src, test_data_sf, "pts_tbl", quiet = TRUE)
+
+    expect_true(ddbh3_points_to_h3(
+      "pts_tbl", resolution = 6,
+      conn = conn_src, name = "pts_tbl", overwrite = TRUE, quiet = TRUE
+    ))
+    expect_equal(
+      as.integer(DBI::dbGetQuery(conn_src, "SELECT COUNT(*) AS n FROM pts_tbl")$n),
+      nrow(test_data_sf)
+    )
+    expect_true("h3string" %in% DBI::dbListFields(conn_src, "pts_tbl"))
+
+    DBI::dbDisconnect(conn_src, shutdown = TRUE)
+  })
+
+  testthat::it("ddbh3_points_to_spatial() keeps the data", {
+    conn_src <- ddbh3_create_conn(threads = 1)
+    duckspatial::ddbs_write_table(conn_src, test_data_sf, "pts_tbl", quiet = TRUE)
+
+    expect_true(ddbh3_points_to_spatial(
+      "pts_tbl", resolution = 6,
+      conn = conn_src, name = "pts_tbl", overwrite = TRUE, quiet = TRUE
+    ))
+    expect_equal(
+      as.integer(DBI::dbGetQuery(conn_src, "SELECT COUNT(*) AS n FROM pts_tbl")$n),
+      nrow(test_data_sf)
+    )
+
+    DBI::dbDisconnect(conn_src, shutdown = TRUE)
+  })
+})

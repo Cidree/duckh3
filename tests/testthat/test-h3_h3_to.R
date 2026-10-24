@@ -1090,3 +1090,28 @@ testthat::describe("new_column replaces an existing column", {
     expect_equal(ddbh3_bigint_to_strings(res$h3string), test_data_df$h3string)
   })
 })
+
+# 7. Overwriting the source table ----------------------------------------
+
+testthat::describe("ddbh3_h3_to_spatial() can overwrite its own source table", {
+
+  testthat::it("keeps the data and the CRS when name is the input table", {
+    conn_src <- ddbh3_create_conn(threads = 1)
+    src_data <- dplyr::collect(test_data)
+    duckdb::dbWriteTable(conn_src, "src_tbl", src_data)
+
+    expect_true(ddbh3_h3_to_spatial(
+      "src_tbl", conn = conn_src, name = "src_tbl", overwrite = TRUE, quiet = TRUE
+    ))
+    expect_equal(
+      as.integer(DBI::dbGetQuery(conn_src, "SELECT COUNT(*) AS n FROM src_tbl")$n),
+      nrow(src_data)
+    )
+    expect_equal(
+      DBI::dbGetQuery(conn_src, "SELECT typeof(geometry) AS t FROM src_tbl LIMIT 1")$t,
+      "GEOMETRY('EPSG:4326')"
+    )
+
+    DBI::dbDisconnect(conn_src, shutdown = TRUE)
+  })
+})
