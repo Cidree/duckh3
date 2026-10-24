@@ -385,6 +385,10 @@ build_new_column_select <- function(
   } else {
     glue::glue("{star}{exclude_clause}, {expr} AS {new_column}")
   }
+}
+
+
+
 #' Create a table from a query, safely overwriting existing tables
 #'
 #' Wrapper around `duckspatial:::create_duckdb_table()`. When `overwrite = TRUE`,
