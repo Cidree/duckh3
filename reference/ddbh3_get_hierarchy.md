@@ -15,6 +15,7 @@ ddbh3_get_parent(
   new_column = "h3parent",
   conn = NULL,
   name = NULL,
+  mode = NULL,
   overwrite = FALSE,
   quiet = FALSE
 )
@@ -26,6 +27,7 @@ ddbh3_get_children(
   new_column = "h3children",
   conn = NULL,
   name = NULL,
+  mode = NULL,
   nested = FALSE,
   overwrite = FALSE,
   quiet = FALSE
@@ -38,6 +40,7 @@ ddbh3_get_n_children(
   new_column = "h3n_children",
   conn = NULL,
   name = NULL,
+  mode = NULL,
   overwrite = FALSE,
   quiet = FALSE
 )
@@ -49,6 +52,7 @@ ddbh3_get_center_child(
   new_column = "h3center_child",
   conn = NULL,
   name = NULL,
+  mode = NULL,
   overwrite = FALSE,
   quiet = FALSE
 )
@@ -111,6 +115,20 @@ ddbh3_get_center_child(
   a character string of length two specifying the schema and table
   names. If `NULL` (the default), the function returns the result as an
   `sf` object
+
+- mode:
+
+  Character. Controls the return type. Options:
+
+  - `"duckspatial"` (default): Lazy spatial data frame backed by
+    dbplyr/DuckDB
+
+  - `"sf"`: Eagerly collected sf object (uses memory)
+
+  Can be set globally via
+  [`ddbs_options`](https://cidree.github.io/duckspatial/reference/ddbs_options.html)`(mode = "...")`
+  or per-function via this argument. Per-function overrides global
+  setting.
 
 - overwrite:
 

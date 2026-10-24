@@ -12,6 +12,7 @@ ddbh3_is_pentagon(
   new_column = "ispentagon",
   conn = NULL,
   name = NULL,
+  mode = NULL,
   overwrite = FALSE,
   quiet = FALSE
 )
@@ -22,6 +23,7 @@ ddbh3_is_h3(
   new_column = "ish3",
   conn = NULL,
   name = NULL,
+  mode = NULL,
   overwrite = FALSE,
   quiet = FALSE
 )
@@ -32,6 +34,7 @@ ddbh3_is_res_class_iii(
   new_column = "isclassiii",
   conn = NULL,
   name = NULL,
+  mode = NULL,
   overwrite = FALSE,
   quiet = FALSE
 )
@@ -42,6 +45,7 @@ ddbh3_is_vertex(
   new_column = "isvertex",
   conn = NULL,
   name = NULL,
+  mode = NULL,
   overwrite = FALSE,
   quiet = FALSE
 )
@@ -99,6 +103,20 @@ ddbh3_is_vertex(
   a character string of length two specifying the schema and table
   names. If `NULL` (the default), the function returns the result as an
   `sf` object
+
+- mode:
+
+  Character. Controls the return type. Options:
+
+  - `"duckspatial"` (default): Lazy spatial data frame backed by
+    dbplyr/DuckDB
+
+  - `"sf"`: Eagerly collected sf object (uses memory)
+
+  Can be set globally via
+  [`ddbs_options`](https://cidree.github.io/duckspatial/reference/ddbs_options.html)`(mode = "...")`
+  or per-function via this argument. Per-function overrides global
+  setting.
 
 - overwrite:
 

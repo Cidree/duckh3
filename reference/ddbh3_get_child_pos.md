@@ -15,6 +15,7 @@ ddbh3_get_child_pos(
   new_column = "h3child_pos",
   conn = NULL,
   name = NULL,
+  mode = NULL,
   overwrite = FALSE,
   quiet = FALSE
 )
@@ -78,6 +79,20 @@ ddbh3_get_child_pos(
   names. If `NULL` (the default), the function returns the result as an
   `sf` object
 
+- mode:
+
+  Character. Controls the return type. Options:
+
+  - `"duckspatial"` (default): Lazy spatial data frame backed by
+    dbplyr/DuckDB
+
+  - `"sf"`: Eagerly collected sf object (uses memory)
+
+  Can be set globally via
+  [`ddbs_options`](https://cidree.github.io/duckspatial/reference/ddbs_options.html)`(mode = "...")`
+  or per-function via this argument. Per-function overrides global
+  setting.
+
 - overwrite:
 
   Boolean. whether to overwrite the existing table if it exists.
@@ -116,14 +131,6 @@ One of the following, depending on the inputs:
 ## Load needed packages
 library(duckh3)
 library(dplyr)
-#> 
-#> Attaching package: ‘dplyr’
-#> The following objects are masked from ‘package:stats’:
-#> 
-#>     filter, lag
-#> The following objects are masked from ‘package:base’:
-#> 
-#>     intersect, setdiff, setequal, union
 
 ## Setup the default connection with h3 and spatial extensions
 ## This is a mandatory step to use duckh3 functions

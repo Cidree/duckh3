@@ -36,10 +36,14 @@ Converts from/to different H3 representations
 
 Work with H3 resolutions and hierarchy levels
 
+- [`ddbh3_get_base_cell_number()`](https://cidree.github.io/duckh3/reference/ddbh3_get_base_cell_number.md)
+  : Get the base cell number of an H3 cell
 - [`ddbh3_get_resolution()`](https://cidree.github.io/duckh3/reference/ddbh3_get_resolution.md)
   : Get the resolution of H3 cell indexes
 - [`ddbh3_get_child_pos()`](https://cidree.github.io/duckh3/reference/ddbh3_get_child_pos.md)
   : Get the position of an H3 cell within its parent
+- [`ddbh3_child_pos_to_cell()`](https://cidree.github.io/duckh3/reference/ddbh3_child_pos_to_cell.md)
+  : Get an H3 child cell from a parent and child position
 - [`ddbh3_get_parent()`](https://cidree.github.io/duckh3/reference/ddbh3_get_hierarchy.md)
   [`ddbh3_get_children()`](https://cidree.github.io/duckh3/reference/ddbh3_get_hierarchy.md)
   [`ddbh3_get_n_children()`](https://cidree.github.io/duckh3/reference/ddbh3_get_hierarchy.md)
@@ -47,6 +51,21 @@ Work with H3 resolutions and hierarchy levels
   : Get parent and children H3 cells
 - [`ddbh3_get_icosahedron_faces()`](https://cidree.github.io/duckh3/reference/ddbh3_get_icosahedron_faces.md)
   : Get the icosahedron faces of H3 cell indexes
+
+## H3 neighborhood
+
+Work with neighbors of H3 cells
+
+- [`ddbh3_grid_disk()`](https://cidree.github.io/duckh3/reference/ddbh3_grid_disk.md)
+  [`ddbh3_grid_disk_distances()`](https://cidree.github.io/duckh3/reference/ddbh3_grid_disk.md)
+  [`ddbh3_grid_ring()`](https://cidree.github.io/duckh3/reference/ddbh3_grid_disk.md)
+  : Get H3 grid neighborhoods (disks, rings, and distances)
+- [`ddbh3_grid_distance()`](https://cidree.github.io/duckh3/reference/ddbh3_grid_distance.md)
+  : Get the grid distance between two H3 cells
+- [`ddbh3_grid_path_cells()`](https://cidree.github.io/duckh3/reference/ddbh3_grid_path_cells.md)
+  : Find a grid path connecting two H3 cells
+- [`ddbh3_max_grid_disk_size()`](https://cidree.github.io/duckh3/reference/ddbh3_max_grid_disk_size.md)
+  : Get the maximum grid disk size for a given distance k
 
 ## H3 properties
 

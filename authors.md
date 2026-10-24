@@ -17,13 +17,13 @@ Source:
 [`DESCRIPTION`](https://github.com/Cidree/duckh3/blob/main/DESCRIPTION)
 
 Cidre González A, Kotov E, Pereira R (2026). *duckh3: H3 Extension of
-'DuckDB'*. R package version 0.2.0.9000,
+'DuckDB'*. R package version 0.2.0.9003,
 <https://cidree.github.io/duckh3/>.
 
     @Manual{,
       title = {duckh3: H3 Extension of 'DuckDB'},
       author = {Adrián {Cidre González} and Egor Kotov and Rafael H. M. Pereira},
       year = {2026},
-      note = {R package version 0.2.0.9000},
+      note = {R package version 0.2.0.9003},
       url = {https://cidree.github.io/duckh3/},
     }
