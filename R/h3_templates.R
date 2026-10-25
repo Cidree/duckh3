@@ -9,7 +9,9 @@
 #' @template overwrite
 #' @template quiet
 #' @param fun The duckdb function to use
-#' @param other_params string with other function-specific parameters
+#' @param base_fun The duckdb function applied to `x` in vectorized mode
+#' @param validate SQL predicate used to validate `x` in vectorized mode
+#'   (NULL to skip validation)
 #' 
 #' @keywords internal
 #' @noRd
@@ -22,12 +24,13 @@ template_h3_base <- function(
     overwrite = FALSE,
     quiet = FALSE,
     fun = NULL,
-    base_fun = NULL
+    base_fun = NULL,
+    validate = "h3_is_valid_cell"
 ) {
 
   ## First, try vectorized option
   if (is.null(conn) && (is.character(x) | is.numeric(x)) && !is.null(base_fun)) {
-    res <- get_vectorized_result(x, base_fun)
+    res <- get_vectorized_result(x, base_fun, validate)
     return(res)
   }
 
@@ -138,13 +141,14 @@ template_h3_to_spatial <- function(
     overwrite = FALSE,
     quiet = FALSE,
     fun = NULL,
-    base_fun = NULL
+    base_fun = NULL,
+    validate = "h3_is_valid_cell"
 ) {
 
   # TODO
   # First, try vectorized option
   if (is.null(conn) && is.character(x) && !is.null(base_fun)) {
-    res <- get_vectorized_result(x, base_fun)
+    res <- get_vectorized_result(x, base_fun, validate)
     return(res)
   }
 

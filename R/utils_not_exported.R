@@ -73,8 +73,32 @@ create_ddbh3_macros <- function(conn) {
 }
 
 
-create_ddbh3_default_macros <- function() {
-  create_ddbh3_macros(duckspatial::ddbs_default_conn())
+#' Pin the pre-v2.0 axis order on a connection
+#'
+#' Since DuckDB v2.0, spheroid functions such as `ST_Area_Spheroid()` error
+#' unless `geometry_always_xy` is set explicitly. duckspatial's measure
+#' functions (e.g. `duckspatial::ddbs_area()`) call them as
+#' `ST_Area_Spheroid(ST_FlipCoordinates(geom))`, i.e. they already convert
+#' lon/lat to the pre-v2.0 [LATITUDE, LONGITUDE] convention. Setting `true`
+#' would flip the axes twice and return wrong areas (or NA for |lon| > 90), so
+#' `false` (the pre-v2.0 behaviour) is the value that matches duckspatial.
+#' The setting comes from the spatial extension and already exists in DuckDB
+#' v1.5; `try()` keeps older or unusual setups working.
+#' @keywords internal
+#' @noRd
+set_geometry_axis_order <- function(conn) {
+  try(DBI::dbExecute(conn, "SET geometry_always_xy = false"), silent = TRUE)
+  invisible(conn)
+}
+
+
+## Package-level cache: the default connection on which h3 is known to be
+## installed and loaded, so check_installed_h3() can skip the catalog query
+.ddbh3_env <- new.env(parent = emptyenv())
+
+is_h3_ready_conn <- function(conn) {
+  ready <- .ddbh3_env$h3_conn
+  !is.null(ready) && identical(conn, ready) && DBI::dbIsValid(conn)
 }
 
 
@@ -149,53 +173,58 @@ check_nested_column <- function(x, column) {
 
 
 
-get_vectorized_result <- function(x, fun) {
+## `validate` is the SQL predicate used to check `x` before applying `fun`
+## (NULL skips validation, e.g. for the `ddbh3_is_*` predicates themselves)
+get_vectorized_result <- function(x, fun, validate = "h3_is_valid_cell") {
 
-  if (!grepl("h3_is_valid_cell", fun)) {
-
-    if (is.numeric(x) && !bit64::is.integer64(x)) {
-      ## plain double: precision already lost upstream, nothing to validate
-      cli::cli_abort(c(
-        "`x` contains invalid H3 (e.g. {head(x)})",
-        "i" = "If `x` originated as plain numeric/double, precision may already be lost",
-        "i" = "Recreate `x` as a character h3string, or as int64 using {.code bit64::as.integer64('x')}"
-      ))
-    }
-
-    if (is.character(x)) {
-      all_h3 <- ddbh3_is_h3(x)
-      if (isFALSE(all(all_h3))) {
-        invalid_h3 <- x[!all_h3]
-        cli::cli_abort(c(
-          "`x` contains invalid H3 (e.g. {head(invalid_h3)})",
-          "*" = "If `x` is a table, `conn` cannot be NULL.",
-          "*" = "Check if `x` contain invalid h3strings"
-        ))
-      }
-
-    } else if (bit64::is.integer64(x)) {
-      all_h3 <- ddbh3_is_h3(x)
-      if (isFALSE(all(all_h3))) {
-        invalid_h3 <- x[!all_h3]
-        cli::cli_abort(c(
-          "`x` contains invalid H3 (e.g. {head(invalid_h3)})",
-          "i" = "If `x` originated as plain numeric/double, precision may already be lost",
-          "i" = "Recreate `x` as a character h3string, or as int64 using {.code bit64::as.integer64('x')}"
-        ))
-      }
-    }
+  if (!is.null(validate) && is.numeric(x) && !bit64::is.integer64(x)) {
+    ## plain double: precision already lost upstream, nothing to validate
+    cli::cli_abort(c(
+      "`x` contains invalid H3 (e.g. {head(x)})",
+      "i" = "If `x` originated as plain numeric/double, precision may already be lost",
+      "i" = "Recreate `x` as a character h3string, or as int64 using {.code bit64::as.integer64('x')}"
+    ))
   }
 
-  ## Create a random view name
-  conn      <- duckspatial::ddbs_default_conn()
+  ## Reuse the default connection if it exists: ddbs_default_conn() re-creates
+  ## the duckspatial macros on every call
+  conn <- getOption("duckspatial_conn", NULL)
+  if (is.null(conn) || !DBI::dbIsValid(conn)) conn <- duckspatial::ddbs_default_conn()
   view_name <- duckspatial:::ddbs_temp_view_name()
 
   duckdb::duckdb_register(conn, view_name, data.frame(x = x))
   on.exit(duckdb::duckdb_unregister(conn, view_name))
 
-  res <- dplyr::tbl(conn, view_name) |> 
-    dplyr::mutate(res = dbplyr::sql(glue::glue("{fun}"))) |> 
-    dplyr::pull("res")
+  ## Validate and evaluate in a single query
+  if (is.null(validate)) {
+    query <- glue::glue("SELECT {fun} AS res FROM {view_name}")
+  } else {
+    query <- glue::glue("
+      SELECT
+        {validate}(x) AS ok,
+        CASE WHEN {validate}(x) THEN {fun} END AS res
+      FROM {view_name}
+    ")
+  }
+  out <- DBI::dbGetQuery(conn, query)
+
+  if (!is.null(validate) && isFALSE(all(out$ok))) {
+    invalid_h3 <- x[!out$ok]
+    hints <- if (is.character(x)) {
+      c(
+        "*" = "If `x` is a table, `conn` cannot be NULL.",
+        "*" = "Check if `x` contain invalid h3strings"
+      )
+    } else {
+      c(
+        "i" = "If `x` originated as plain numeric/double, precision may already be lost",
+        "i" = "Recreate `x` as a character h3string, or as int64 using {.code bit64::as.integer64('x')}"
+      )
+    }
+    cli::cli_abort(c("`x` contains invalid H3 (e.g. {head(invalid_h3)})", hints))
+  }
+
+  res <- out$res
 
   if (any(is.na(res))) {
     cli::cli_warn("Some elements of {.arg x} are invalid. Returning NA.")
@@ -310,6 +339,7 @@ build_line_cells_lateral <- function(x_geom, resolution, containment, buffer_sca
 check_installed_h3 <- function(conn = NULL) {
 
     # 1. Resolve and validate inputs
+    if (is_h3_ready_conn(conn)) return(invisible(TRUE))
     duckspatial:::dbConnCheck(conn)
 
     # 2. Query the extension catalog
@@ -340,7 +370,11 @@ check_installed_h3 <- function(conn = NULL) {
              "*" = "Create a default connection with {.run duckh3::ddbh3_default_conn()} to set it up"
          ))
      }
-  
+
+    ## Only cache the default connection (already kept alive by options())
+    if (identical(conn, getOption("duckspatial_conn", NULL))) .ddbh3_env$h3_conn <- conn
+
+    invisible(TRUE)
 
 }
 

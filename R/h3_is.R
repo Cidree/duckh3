@@ -158,7 +158,8 @@ ddbh3_is_h3 <- function(
     overwrite = overwrite,
     quiet = quiet,
     fun = built_fun,
-    base_fun = "h3_is_valid_cell(x)"
+    base_fun = "h3_is_valid_cell(x)",
+    validate = NULL
   ) 
 
 }
@@ -233,7 +234,8 @@ ddbh3_is_vertex <- function(
     overwrite = overwrite,
     quiet = quiet,
     fun = built_fun,
-    base_fun = "h3_is_valid_vertex(x)"
+    base_fun = "h3_is_valid_vertex(x)",
+    validate = NULL
   ) 
 
 }
