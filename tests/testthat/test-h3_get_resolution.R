@@ -225,6 +225,22 @@ describe("errors", {
   
 
 
+## Column names are quoted as identifiers ----------
+
+testthat::describe("ddbh3_get_resolution() quotes column names", {
+
+  testthat::it("accepts an h3 column and new_column with spaces", {
+    h3_tbl <- ddbh3_lonlat_to_h3(points_tbl, resolution = 5, new_column = "h3 cell")
+    res    <- ddbh3_get_resolution(h3_tbl, h3 = "h3 cell", new_column = "the res") |> dplyr::collect()
+    expect_true(all(res[["the res"]] == 5))
+  })
+
+  testthat::it("does not execute SQL injected through h3", {
+    h3_tbl <- ddbh3_lonlat_to_h3(points_tbl, resolution = 5)
+    expect_error(dplyr::collect(ddbh3_get_resolution(h3_tbl, h3 = "h3string) + 100 --")), "not found")
+  })
+})
+
 
 # 2. Overwriting the source table ----------------------------------------
 

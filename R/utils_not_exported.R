@@ -103,8 +103,8 @@ check_nested_column <- function(x, column) {
     col_type <- DBI::dbGetQuery(
       conn,
       glue::glue("SELECT data_type FROM information_schema.columns 
-                  WHERE table_name = '{tbl_name}' 
-                  AND column_name = '{column}'")
+                  WHERE table_name = {DBI::dbQuoteString(conn, tbl_name)} 
+                  AND column_name = {DBI::dbQuoteString(conn, column)}")
     )$data_type
 
     return(grepl("\\[\\]", col_type))
@@ -238,7 +238,7 @@ build_polygon_cells_lateral <- function(x_geom, resolution, containment) {
   glue::glue("
     SELECT DISTINCT pc.h3
     FROM (
-      SELECT (unnest(ST_Dump(src.{x_geom}))).geom AS geom
+      SELECT (unnest(ST_Dump(src.{quote_ident(x_geom)}))).geom AS geom
     ) AS parts,
     LATERAL (
       SELECT unnest(
@@ -276,8 +276,8 @@ build_line_cells_lateral <- function(x_geom, resolution, containment, buffer_sca
                  ST_GeomFromWKB(
                    h3_cell_to_boundary_wkb(
                      h3_latlng_to_cell(
-                       ST_Y(ST_Centroid(src.{x_geom})),
-                       ST_X(ST_Centroid(src.{x_geom})),
+                       ST_Y(ST_Centroid(src.{quote_ident(x_geom)})),
+                       ST_X(ST_Centroid(src.{quote_ident(x_geom)})),
                        {resolution}
                      )
                    )
@@ -286,7 +286,7 @@ build_line_cells_lateral <- function(x_geom, resolution, containment, buffer_sca
       ) AS e
     ) AS r,
     LATERAL (
-      SELECT (unnest(ST_Dump(ST_Buffer(src.{x_geom}, r.buf)))).geom AS geom
+      SELECT (unnest(ST_Dump(ST_Buffer(src.{quote_ident(x_geom)}, r.buf)))).geom AS geom
     ) AS parts,
     LATERAL (
       SELECT unnest(
@@ -296,7 +296,7 @@ build_line_cells_lateral <- function(x_geom, resolution, containment, buffer_sca
       ) AS h3
     ) AS pc
     WHERE ST_Intersects(
-      src.{x_geom},
+      src.{quote_ident(x_geom)},
       ST_GeomFromWKB(h3_cell_to_boundary_wkb(pc.h3))
     )
   ")
@@ -346,6 +346,23 @@ check_installed_h3 <- function(conn = NULL) {
 
 
 
+#' Quote a column name as a SQL identifier
+#'
+#' Wraps `x` in double quotes (escaping embedded ones), so user-supplied column
+#' names with spaces, reserved words or quotes are referenced as columns and
+#' never executed as SQL.
+#'
+#' @param x character vector with column names
+#'
+#' @keywords internal
+#' @noRd
+#' @returns a character vector with the quoted identifiers
+quote_ident <- function(x) {
+  as.character(DBI::dbQuoteIdentifier(DBI::ANSI(), x))
+}
+
+
+
 #' Build the SELECT list that adds (or replaces) `new_column`
 #'
 #' Returns `* [EXCLUDE (...)], <expr> AS new_column` when `new_column` is not a
@@ -375,15 +392,15 @@ build_new_column_select <- function(
   ## Columns of the input (DuckDB identifiers are case-insensitive)
   x_cols <- names(DBI::dbGetQuery(conn, glue::glue("SELECT * FROM {query_name} LIMIT 0")))
   exclude_clause <- if (length(exclude) > 0) {
-    glue::glue(" EXCLUDE ({paste(exclude, collapse = ', ')})")
+    glue::glue(" EXCLUDE ({paste(quote_ident(exclude), collapse = ', ')})")
   } else {
     ""
   }
 
   if (tolower(new_column) %in% tolower(x_cols)) {
-    glue::glue("{star}{exclude_clause} REPLACE ({expr} AS {new_column})")
+    glue::glue("{star}{exclude_clause} REPLACE ({expr} AS {quote_ident(new_column)})")
   } else {
-    glue::glue("{star}{exclude_clause}, {expr} AS {new_column}")
+    glue::glue("{star}{exclude_clause}, {expr} AS {quote_ident(new_column)}")
   }
 }
 

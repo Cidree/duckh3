@@ -151,12 +151,12 @@ ddbh3_points_to_spatial <- function(
       {duckspatial:::build_geom_query(
         sprintf(
           'ST_GeomFromWKB(h3_cell_to_boundary_wkb(h3_latlng_to_cell(ST_Y(%s), ST_X(%s), %s)))', 
-          x_geom, x_geom, resolution
+          quote_ident(x_geom), quote_ident(x_geom), resolution
         ), 
         name, 
         crs_x, 
         mode
-      )} as {x_geom}
+      )} as {quote_ident(x_geom)}
     FROM
       {x_list$query_name};
   ")
@@ -272,14 +272,14 @@ ddbh3_points_to_h3 <- function(
     cli::cli_abort("The {.arg h3_format} is not valid. Valid options: {.val {c('string', 'bigint')}}")
   )
   ## (replaces new_column if x already has it)
-  h3_expr     <- glue::glue("{st_function}(ST_Y({x_geom}), ST_X({x_geom}), {resolution})")
+  h3_expr     <- glue::glue("{st_function}(ST_Y({quote_ident(x_geom)}), ST_X({quote_ident(x_geom)}), {resolution})")
   select_list <- build_new_column_select(
     target_conn, x_list$query_name, new_column, h3_expr, exclude = x_geom
   )
   base.query <- glue::glue("
     SELECT
       {select_list},
-      {duckspatial:::build_geom_query(x_geom, name, crs_x, 'duckspatial')} AS {x_geom}
+      {duckspatial:::build_geom_query(quote_ident(x_geom), name, crs_x, 'duckspatial')} AS {quote_ident(x_geom)}
     FROM
       {x_list$query_name};
   ")

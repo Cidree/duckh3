@@ -495,6 +495,27 @@ describe("errors", {
 })
 
 
+## Column names are quoted as identifiers ----------
+
+testthat::describe("ddbh3_points_to_*() quote the geometry column name", {
+
+  pts_sf <- read.csv(system.file("extdata/example_pts.csv", package = "duckh3")) |>
+    sf::st_as_sf(coords = c("lon", "lat"), crs = 4326) |>
+    sf::st_set_geometry("my geom")
+
+  testthat::it("ddbh3_points_to_h3() works with a geometry column with spaces", {
+    res <- ddbh3_points_to_h3(pts_sf, resolution = 5, new_column = "h3 cell") |> dplyr::collect()
+    expect_in(c("h3 cell", "my geom"), colnames(res))
+    expect_false(anyNA(res[["h3 cell"]]))
+  })
+
+  testthat::it("ddbh3_points_to_spatial() works with a geometry column with spaces", {
+    res <- ddbh3_points_to_spatial(pts_sf, resolution = 5) |> dplyr::collect()
+    expect_in("my geom", colnames(res))
+    expect_equal(nrow(res), nrow(pts_sf))
+  })
+})
+
 
 # 3. Replacing an existing column ----------------------------------------
 

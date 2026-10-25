@@ -3,6 +3,7 @@
 
 ## BUG FIXES
 
+* Column-name arguments (`new_column`, `h3`, `h3vertex`, `lon`, `lat`) and the geometry column name are now quoted as SQL identifiers, so names with spaces or quotes work and SQL expressions passed as column names are no longer executed.
 * When the input already has a column named like `new_column`, the result now replaces that column. Before, the result was added as `<new_column>_1` and the original column kept its old values.
 * Writing the result to the input table itself (`name` equal to the source table and `overwrite = TRUE`) no longer deletes the source table: the result is now built in a staging table and swapped in place.
 

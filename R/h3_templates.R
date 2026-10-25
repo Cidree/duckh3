@@ -94,7 +94,7 @@ template_h3_base <- function(
   geom_clause <- if (length(x_geom) > 0) {
     glue::glue("
       {select_list},
-      {duckspatial:::build_geom_query(x_geom, name, crs_x, 'duckspatial')} AS {x_geom}"
+      {duckspatial:::build_geom_query(quote_ident(x_geom), name, crs_x, 'duckspatial')} AS {quote_ident(x_geom)}"
     )
   } else {
     select_list
@@ -200,7 +200,7 @@ template_h3_to_spatial <- function(
     x_geom <- "geometry"
     cols_clause <- glue::glue("*, {duckspatial:::build_geom_query(fun, name, 'EPSG:4326', mode)} AS geometry")
   } else {
-    cols_clause <- glue::glue("* REPLACE ({duckspatial:::build_geom_query(fun, name, crs_x, mode)} AS {x_geom})")
+    cols_clause <- glue::glue("* REPLACE ({duckspatial:::build_geom_query(fun, name, crs_x, mode)} AS {quote_ident(x_geom)})")
   }
 
   ## 3.3. Build the base query
@@ -328,7 +328,7 @@ template_h3_geom_to_spatial <- function(
   base.query <- glue::glue("
     SELECT
       {x_rest}
-      ST_GeomFromWKB(h3_cell_to_boundary_wkb(cells.h3)) AS {x_geom}
+      ST_GeomFromWKB(h3_cell_to_boundary_wkb(cells.h3)) AS {quote_ident(x_geom)}
     FROM
       {x_list$query_name} AS src,
     LATERAL (
@@ -455,7 +455,7 @@ template_h3_geom_to_h3 <- function(
   base.query <- glue::glue("
     SELECT
       {select_list},
-      {duckspatial:::build_geom_query(x_geom, name, crs_x, 'duckspatial')} AS {x_geom}
+      {duckspatial:::build_geom_query(quote_ident(x_geom), name, crs_x, 'duckspatial')} AS {quote_ident(x_geom)}
     FROM
       {x_list$query_name} AS src;
   ")

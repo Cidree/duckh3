@@ -123,7 +123,7 @@ ddbh3_h3_to_vertex <- function(
 
 
   # 1. Build parameters string
-  built_fun <- glue::glue("h3_cell_to_vertex({h3}, {n})")
+  built_fun <- glue::glue("h3_cell_to_vertex({quote_ident(h3)}, {n})")
 
 
   # 2. Pass to template
@@ -160,7 +160,7 @@ ddbh3_vertex_to_lon <- function(
   duckspatial:::assert_character_scalar(h3vertex, "h3vertex")
 
   # 1. Build parameters string
-  built_fun <- glue::glue("h3_vertex_to_lng({h3vertex})")
+  built_fun <- glue::glue("h3_vertex_to_lng({quote_ident(h3vertex)})")
 
   # 2. Pass to template
   template_h3_base(
@@ -198,7 +198,7 @@ ddbh3_vertex_to_lat <- function(
   duckspatial:::assert_character_scalar(h3vertex, "h3vertex")
 
   # 1. Build parameters string
-  built_fun <- glue::glue("h3_vertex_to_lat({h3vertex})")
+  built_fun <- glue::glue("h3_vertex_to_lat({quote_ident(h3vertex)})")
 
   # 2. Pass to template
   template_h3_base(
@@ -239,9 +239,9 @@ ddbh3_h3_to_vertexes <- function(
 
   # 1. Build parameters string
   if (isTRUE(nested)) {
-    built_fun <- glue::glue("h3_cell_to_vertexes({h3})")
+    built_fun <- glue::glue("h3_cell_to_vertexes({quote_ident(h3)})")
   } else {
-    built_fun <- glue::glue("UNNEST(h3_cell_to_vertexes({h3}))")
+    built_fun <- glue::glue("UNNEST(h3_cell_to_vertexes({quote_ident(h3)}))")
   }
 
   # 2. Pass to template
@@ -287,15 +287,15 @@ ddbh3_vertex_to_spatial <- function(
   if (is_nested) {
   built_fun <- glue::glue("
     ST_POINT(
-      h3_vertex_to_lng(UNNEST({h3vertex})),
-      h3_vertex_to_lat(UNNEST({h3vertex}))
+      h3_vertex_to_lng(UNNEST({quote_ident(h3vertex)})),
+      h3_vertex_to_lat(UNNEST({quote_ident(h3vertex)}))
     )  
   ")
   } else {
   built_fun <- glue::glue("
     ST_POINT(
-      h3_vertex_to_lng({h3vertex}),
-      h3_vertex_to_lat({h3vertex})
+      h3_vertex_to_lng({quote_ident(h3vertex)}),
+      h3_vertex_to_lat({quote_ident(h3vertex)})
     )  
   ")
   }
