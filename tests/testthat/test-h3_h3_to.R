@@ -1060,6 +1060,37 @@ describe("errors", {
 })
 
 
+## Default connection reused from duckspatial ----------
+
+testthat::describe("ddbh3_default_conn() replaces a bigint = 'numeric' default connection", {
+
+  testthat::it("warns and keeps UBIGINT H3 indexes exact", {
+    ## Simulate a default connection created by duckspatial (bigint = "numeric")
+    old_conn     <- getOption("duckspatial_conn")
+    numeric_conn <- duckspatial::ddbs_create_conn(dbdir = "memory")
+    options(duckspatial_conn = numeric_conn)
+    on.exit({
+      new_conn <- getOption("duckspatial_conn")
+      options(duckspatial_conn = old_conn)
+      DBI::dbDisconnect(numeric_conn)
+      if (!identical(new_conn, numeric_conn)) DBI::dbDisconnect(new_conn)
+    }, add = TRUE)
+
+    expect_warning(conn <- ddbh3_default_conn(), "rounds H3 indexes")
+    expect_identical(conn@bigint, "integer64")
+    expect_identical(getOption("duckspatial_conn"), conn)
+
+    ## Known value: 8f2830828052d25 is 644721767721807141 as UBIGINT
+    res <- ddbh3_strings_to_bigint("8f2830828052d25")
+    expect_s3_class(res, "integer64")
+    expect_identical(as.character(res), "644721767721807141")
+    expect_identical(ddbh3_bigint_to_strings(res), "8f2830828052d25")
+  })
+
+  testthat::it("does not warn when the default connection already uses integer64", {
+    expect_no_warning(ddbh3_default_conn())
+  })
+})
 
 # 6. Replacing an existing column ----------------------------------------
 
