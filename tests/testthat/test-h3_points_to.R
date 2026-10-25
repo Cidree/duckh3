@@ -493,3 +493,83 @@ describe("errors", {
   })
 
 })
+
+
+## Column names are quoted as identifiers ----------
+
+testthat::describe("ddbh3_points_to_*() quote the geometry column name", {
+
+  pts_sf <- read.csv(system.file("extdata/example_pts.csv", package = "duckh3")) |>
+    sf::st_as_sf(coords = c("lon", "lat"), crs = 4326) |>
+    sf::st_set_geometry("my geom")
+
+  testthat::it("ddbh3_points_to_h3() works with a geometry column with spaces", {
+    res <- ddbh3_points_to_h3(pts_sf, resolution = 5, new_column = "h3 cell") |> dplyr::collect()
+    expect_in(c("h3 cell", "my geom"), colnames(res))
+    expect_false(anyNA(res[["h3 cell"]]))
+  })
+
+  testthat::it("ddbh3_points_to_spatial() works with a geometry column with spaces", {
+    res <- ddbh3_points_to_spatial(pts_sf, resolution = 5) |> dplyr::collect()
+    expect_in("my geom", colnames(res))
+    expect_equal(nrow(res), nrow(pts_sf))
+  })
+})
+
+
+# 3. Replacing an existing column ----------------------------------------
+
+testthat::describe("ddbh3_points_to_h3() replaces an existing new_column", {
+
+  ## Points that already have an `h3string` column at resolution 10
+  test_data_sf <- test_data |>
+    ddbh3_points_to_h3(resolution = 10) |>
+    dplyr::collect() |>
+    sf::st_as_sf()
+
+  testthat::it("overwrites the column instead of adding <name>_1", {
+    res <- dplyr::collect(ddbh3_points_to_h3(test_data_sf, resolution = 5))
+    expect_false("h3string_1" %in% names(res))
+    expect_all_equal(ddbh3_get_resolution(res$h3string), 5)
+  })
+})
+
+# 4. Overwriting the source table ----------------------------------------
+
+testthat::describe("points functions can overwrite their own source table", {
+
+  test_data_sf <- sf::st_as_sf(dplyr::collect(test_data))
+
+  testthat::it("ddbh3_points_to_h3() keeps the data", {
+    conn_src <- ddbh3_create_conn(threads = 1)
+    duckspatial::ddbs_write_table(conn_src, test_data_sf, "pts_tbl", quiet = TRUE)
+
+    expect_true(ddbh3_points_to_h3(
+      "pts_tbl", resolution = 6,
+      conn = conn_src, name = "pts_tbl", overwrite = TRUE, quiet = TRUE
+    ))
+    expect_equal(
+      as.integer(DBI::dbGetQuery(conn_src, "SELECT COUNT(*) AS n FROM pts_tbl")$n),
+      nrow(test_data_sf)
+    )
+    expect_true("h3string" %in% DBI::dbListFields(conn_src, "pts_tbl"))
+
+    DBI::dbDisconnect(conn_src, shutdown = TRUE)
+  })
+
+  testthat::it("ddbh3_points_to_spatial() keeps the data", {
+    conn_src <- ddbh3_create_conn(threads = 1)
+    duckspatial::ddbs_write_table(conn_src, test_data_sf, "pts_tbl", quiet = TRUE)
+
+    expect_true(ddbh3_points_to_spatial(
+      "pts_tbl", resolution = 6,
+      conn = conn_src, name = "pts_tbl", overwrite = TRUE, quiet = TRUE
+    ))
+    expect_equal(
+      as.integer(DBI::dbGetQuery(conn_src, "SELECT COUNT(*) AS n FROM pts_tbl")$n),
+      nrow(test_data_sf)
+    )
+
+    DBI::dbDisconnect(conn_src, shutdown = TRUE)
+  })
+})

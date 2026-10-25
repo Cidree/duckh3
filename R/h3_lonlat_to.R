@@ -12,6 +12,7 @@
 #' `bigint`
 #' @template conn_null
 #' @template name
+#' @template mode
 #' @template overwrite
 #' @template quiet
 #' 
@@ -125,6 +126,7 @@ ddbh3_lonlat_to_spatial <- function(
     resolution = 8,
     conn = NULL,
     name = NULL,
+    mode = NULL,
     overwrite = FALSE,
     quiet = FALSE
 ) {
@@ -140,7 +142,7 @@ ddbh3_lonlat_to_spatial <- function(
   built_fun <- glue::glue("
     ST_GeomFromWKB(
       h3_cell_to_boundary_wkb(
-        h3_latlng_to_cell_string({lat}, {lon}, {resolution})
+        h3_latlng_to_cell_string({quote_ident(lat)}, {quote_ident(lon)}, {resolution})
       )
     )"
   )
@@ -150,6 +152,7 @@ ddbh3_lonlat_to_spatial <- function(
     x = x,
     conn = conn,
     name = name,
+    mode = mode,
     overwrite = overwrite,
     quiet = quiet,
     fun = built_fun
@@ -171,6 +174,7 @@ ddbh3_lonlat_to_h3 <- function(
     h3_format = "string",
     conn = NULL,
     name = NULL,
+    mode = NULL,
     overwrite = FALSE,
     quiet = FALSE
 ) {
@@ -185,8 +189,8 @@ ddbh3_lonlat_to_h3 <- function(
   # 1. Build parameters string
   built_fun <- switch(
     h3_format,
-    "string" = glue::glue("h3_latlng_to_cell_string({lat}, {lon}, {resolution})"),
-    "bigint" = glue::glue("h3_latlng_to_cell({lat}, {lon}, {resolution})"),
+    "string" = glue::glue("h3_latlng_to_cell_string({quote_ident(lat)}, {quote_ident(lon)}, {resolution})"),
+    "bigint" = glue::glue("h3_latlng_to_cell({quote_ident(lat)}, {quote_ident(lon)}, {resolution})"),
     cli::cli_abort("The {.arg h3_format} is not valid. Valid options: {.val {c('string', 'bigint')}}")
   )
 
@@ -195,6 +199,7 @@ ddbh3_lonlat_to_h3 <- function(
     x = x,
     conn = conn,
     name = name,
+    mode = mode,
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,

@@ -4,10 +4,29 @@
 ## BUG FIXES
 
 * `ddbh3_default_conn()` no longer reuses a default connection created by `duckspatial` with `bigint = "numeric"`, which silently rounded UBIGINT H3 indexes. It now warns and replaces it with an `integer64` connection.
+* Column-name arguments (`new_column`, `h3`, `h3vertex`, `lon`, `lat`) and the geometry column name are now quoted as SQL identifiers, so names with spaces or quotes work and SQL expressions passed as column names are no longer executed.
+* When the input already has a column named like `new_column`, the result now replaces that column. Before, the result was added as `<new_column>_1` and the original column kept its old values.
+* Writing the result to the input table itself (`name` equal to the source table and `overwrite = TRUE`) no longer deletes the source table: the result is now built in a staging table and swapped in place.
 
 ## ENHANCEMENTS
 
 * Remove arrow lambda syntax for compatibility with DuckDB v2.0 (#6).
+
+## NEW FEATURES
+
+* All functions gain a `mode` argument that can be set to "sf" or "duckspatial" to return the output in that format. Alternatively, the user can use `duckspatial::ddbs_options()` to set the mode globally.
+
+* `ddbh3_grid_path_cells()`: find a grid path connecting two H3 cells.
+
+* `ddbh3_grid_distance()`: get the grid distance between two H3 cells.
+
+* `ddbh3_grid_disk()`, `dbh3_grid_disk_distances()`, `ddbh3_grid_ring()`: get H3 grid neighborhoods (disks, rings, and distances).
+
+* `ddbh3_max_grid_disk_size()`: get the maximum grid disk size for a given distance k.
+
+* `ddbh3_child_pos_to_cell()`: get an H3 child cell from a parent and child position.
+
+* `ddbh3_get_base_cell_number()`: get the base cell number of an H3 cell.
 
 
 # duckh3 0.2.0

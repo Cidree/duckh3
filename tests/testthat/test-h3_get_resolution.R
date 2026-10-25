@@ -223,3 +223,64 @@ describe("errors", {
   })
 })
   
+
+
+## Column names are quoted as identifiers ----------
+
+testthat::describe("ddbh3_get_resolution() quotes column names", {
+
+  testthat::it("accepts an h3 column and new_column with spaces", {
+    h3_tbl <- ddbh3_lonlat_to_h3(points_tbl, resolution = 5, new_column = "h3 cell")
+    res    <- ddbh3_get_resolution(h3_tbl, h3 = "h3 cell", new_column = "the res") |> dplyr::collect()
+    expect_true(all(res[["the res"]] == 5))
+  })
+
+  testthat::it("does not execute SQL injected through h3", {
+    h3_tbl <- ddbh3_lonlat_to_h3(points_tbl, resolution = 5)
+    expect_error(dplyr::collect(ddbh3_get_resolution(h3_tbl, h3 = "h3string) + 100 --")), "not found")
+  })
+})
+
+
+# 2. Overwriting the source table ----------------------------------------
+
+testthat::describe("ddbh3_get_resolution() can overwrite its own source table", {
+
+  conn_src <- ddbh3_create_conn(threads = 1)
+  src_data <- dplyr::collect(ddbh3_lonlat_to_h3(points_tbl, resolution = 8))
+  duckdb::dbWriteTable(conn_src, "src_tbl", src_data)
+
+  testthat::it("keeps the data when name is the input table", {
+    expect_true(ddbh3_get_resolution(
+      "src_tbl", conn = conn_src, name = "src_tbl", overwrite = TRUE, quiet = TRUE
+    ))
+    res <- DBI::dbReadTable(conn_src, "src_tbl")
+    expect_equal(nrow(res), nrow(src_data))
+    expect_all_equal(res$h3resolution, 8)
+  })
+
+  testthat::it("keeps the data when the input is a lazy query on the table", {
+    expect_true(ddbh3_get_resolution(
+      dplyr::tbl(conn_src, "src_tbl"),
+      new_column = "res2",
+      conn = conn_src, name = "src_tbl", overwrite = TRUE, quiet = TRUE
+    ))
+    res <- DBI::dbReadTable(conn_src, "src_tbl")
+    expect_equal(nrow(res), nrow(src_data))
+    expect_all_equal(res$res2, 8)
+  })
+
+  testthat::it("leaves the table intact when the query fails", {
+    expect_error(ddbh3_get_resolution(
+      "src_tbl", h3 = "not_a_column",
+      conn = conn_src, name = "src_tbl", overwrite = TRUE, quiet = TRUE
+    ))
+    expect_equal(nrow(DBI::dbReadTable(conn_src, "src_tbl")), nrow(src_data))
+  })
+
+  testthat::it("doesn't leave staging tables behind", {
+    expect_false(any(grepl("_ddbh3_staging_", DBI::dbListTables(conn_src))))
+  })
+
+  DBI::dbDisconnect(conn_src, shutdown = TRUE)
+})

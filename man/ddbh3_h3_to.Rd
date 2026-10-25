@@ -16,6 +16,7 @@ ddbh3_h3_to_lon(
   new_column = "lon",
   conn = NULL,
   name = NULL,
+  mode = NULL,
   overwrite = FALSE,
   quiet = FALSE
 )
@@ -26,6 +27,7 @@ ddbh3_h3_to_lat(
   new_column = "lat",
   conn = NULL,
   name = NULL,
+  mode = NULL,
   overwrite = FALSE,
   quiet = FALSE
 )
@@ -35,6 +37,7 @@ ddbh3_h3_to_spatial(
   h3 = "h3string",
   conn = NULL,
   name = NULL,
+  mode = NULL,
   overwrite = FALSE,
   quiet = FALSE
 )
@@ -45,6 +48,7 @@ ddbh3_strings_to_bigint(
   new_column = "h3bigint",
   conn = NULL,
   name = NULL,
+  mode = NULL,
   overwrite = FALSE,
   quiet = FALSE
 )
@@ -55,6 +59,7 @@ ddbh3_bigint_to_strings(
   new_column = "h3string",
   conn = NULL,
   name = NULL,
+  mode = NULL,
   overwrite = FALSE,
   quiet = FALSE
 )
@@ -64,6 +69,7 @@ ddbh3_h3_to_points(
   h3 = "h3string",
   conn = NULL,
   name = NULL,
+  mode = NULL,
   overwrite = FALSE,
   quiet = FALSE
 )
@@ -83,7 +89,8 @@ ddbh3_h3_to_points(
 H3 unsigned 64-bit integers (\code{UBIGINT})}
 
 \item{new_column}{Name of the new column to create on the input data. If NULL,
-the function will return a vector with the result}
+the function will return a vector with the result. If the input already has a
+column with this name, it is replaced by the result}
 
 \item{conn}{A connection object to a DuckDB database. If \code{NULL}, the function
 runs on a temporary DuckDB database.}
@@ -92,6 +99,14 @@ runs on a temporary DuckDB database.}
 or a character string of length two specifying the schema and table
 names. If \code{NULL} (the default), the function returns the result as an
 \code{sf} object}
+
+\item{mode}{Character. Controls the return type. Options:
+\itemize{
+\item \code{"duckspatial"} (default): Lazy spatial data frame backed by dbplyr/DuckDB
+\item \code{"sf"}: Eagerly collected sf object (uses memory)
+}
+Can be set globally via \code{\link[duckspatial]{ddbs_options}(mode = "...")} or
+per-function via this argument. Per-function overrides global setting.}
 
 \item{overwrite}{Boolean. whether to overwrite the existing table if it exists. Defaults
 to \code{FALSE}. This argument is ignored when \code{name} is \code{NULL}.}

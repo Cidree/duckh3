@@ -305,3 +305,83 @@ describe("errors", {
   })
 
 })
+
+
+## Column names are quoted as identifiers ----------
+
+testthat::describe("geometry-to-H3 functions quote column names", {
+
+  poly_sp <- sf::st_set_geometry(poly_sf, "my geom")
+  line_sp <- sf::st_set_geometry(line_sf, "my geom")
+
+  testthat::it("ddbh3_polygons_to_h3() works with a geometry column and new_column with spaces", {
+    res <- ddbh3_polygons_to_h3(poly_sp, resolution = 5, new_column = "h3 cells") |> dplyr::collect()
+    expected <- ddbh3_polygons_to_h3(poly_sf, resolution = 5) |> dplyr::pull(h3string)
+    expect_identical(sort(res[["h3 cells"]][[1]]), sort(expected[[1]]))
+  })
+
+  testthat::it("ddbh3_lines_to_spatial() works with a geometry column with spaces", {
+    res <- ddbh3_lines_to_spatial(line_sp, resolution = 5) |> dplyr::collect()
+    expect_equal(nrow(res), nrow(dplyr::collect(ddbh3_lines_to_spatial(line_sf, resolution = 5))))
+  })
+})
+
+
+
+# 5. Replacing an existing column ----------------------------------------
+
+testthat::describe("ddbh3_polygons_to_h3() replaces an existing new_column", {
+
+  testthat::it("overwrites the column instead of adding <name>_1", {
+    poly_attr <- poly_sf
+    poly_attr$h3string <- "old value"
+    res <- sf::st_as_sf(ddbh3_polygons_to_h3(poly_attr, resolution = 3))
+    expect_false("h3string_1" %in% names(res))
+    expect_type(res$h3string, "list")
+    expect_equal(
+      sort(res$h3string[[1]]),
+      sort(sf::st_as_sf(ddbh3_polygons_to_h3(poly_sf, resolution = 3))$h3string[[1]])
+    )
+  })
+})            
+
+# 6. Overwriting the source table ----------------------------------------
+
+testthat::describe("polygon/line functions can overwrite their own source table", {
+
+  testthat::it("ddbh3_polygons_to_h3() keeps one row per feature", {
+    conn_src <- ddbh3_create_conn(threads = 1)
+    duckspatial::ddbs_write_table(conn_src, poly_sf, "poly_tbl", quiet = TRUE)
+
+    expect_true(ddbh3_polygons_to_h3(
+      "poly_tbl", resolution = 3,
+      conn = conn_src, name = "poly_tbl", overwrite = TRUE, quiet = TRUE
+    ))
+    expect_equal(
+      as.integer(DBI::dbGetQuery(conn_src, "SELECT COUNT(*) AS n FROM poly_tbl")$n),
+      nrow(poly_sf)
+    )
+    expect_true("h3string" %in% DBI::dbListFields(conn_src, "poly_tbl"))
+
+    DBI::dbDisconnect(conn_src, shutdown = TRUE)
+  })
+
+  testthat::it("ddbh3_polygons_to_spatial() writes the cells into the source name", {
+    conn_src <- ddbh3_create_conn(threads = 1)
+    duckspatial::ddbs_write_table(conn_src, poly_sf, "poly_tbl", quiet = TRUE)
+    n_cells <- length(
+      sf::st_as_sf(ddbh3_polygons_to_h3(poly_sf, resolution = 3))$h3string[[1]]
+    )
+
+    expect_true(ddbh3_polygons_to_spatial(
+      "poly_tbl", resolution = 3,
+      conn = conn_src, name = "poly_tbl", overwrite = TRUE, quiet = TRUE
+    ))
+    expect_equal(
+      as.integer(DBI::dbGetQuery(conn_src, "SELECT COUNT(*) AS n FROM poly_tbl")$n),
+      n_cells
+    )
+
+    DBI::dbDisconnect(conn_src, shutdown = TRUE)
+  })
+})

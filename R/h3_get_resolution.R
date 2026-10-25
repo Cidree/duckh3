@@ -8,6 +8,7 @@
 #' @template new_column
 #' @template conn_null
 #' @template name
+#' @template mode
 #' @template overwrite
 #' @template quiet
 #'
@@ -48,6 +49,7 @@ ddbh3_get_resolution <- function(
     new_column = "h3resolution",
     conn = NULL,
     name = NULL,
+    mode = NULL,
     overwrite = FALSE,
     quiet = FALSE
 ) {
@@ -59,7 +61,7 @@ ddbh3_get_resolution <- function(
 
 
   # 1. Build parameters string
-  built_fun <- glue::glue("h3_get_resolution({h3})")
+  built_fun <- glue::glue("h3_get_resolution({quote_ident(h3)})")
 
 
   # 2. Pass to template
@@ -67,6 +69,7 @@ ddbh3_get_resolution <- function(
     x = x,
     conn = conn,
     name = name,
+    mode = mode,
     new_column = new_column,
     overwrite = overwrite,
     quiet = quiet,
