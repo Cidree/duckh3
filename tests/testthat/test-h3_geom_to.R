@@ -54,7 +54,7 @@ testthat::describe("ddbh3_polygons_to_h3() works in different formats", {
 
   ## FORMAT 3 - TABLE IN DUCKDB
   testthat::it("returns the correct data for table", {
-    conn_test2 <- ddbh3_create_conn()
+    conn_test2 <- reset_conn_alt()
     duckspatial::ddbs_write_table(conn_test2, poly_sf, "poly_pts")
     res <- ddbh3_polygons_to_h3("poly_pts", resolution = 3, conn = conn_test2)
     expect_s3_class(res, "duckspatial_df")
@@ -116,7 +116,7 @@ testthat::describe("ddbh3_polygons_to_h3() arguments work", {
 
   ## ARGUMENT 3 - DATABASE ARGUMENTS
   testthat::it("database arguments work", {
-    conn_test2 <- ddbh3_create_conn()
+    conn_test2 <- reset_conn_alt()
     expect_message(ddbh3_polygons_to_h3(
       poly_sf,
       resolution = 3,
@@ -384,4 +384,46 @@ testthat::describe("polygon/line functions can overwrite their own source table"
 
     DBI::dbDisconnect(conn_src, shutdown = TRUE)
   })
+
+})
+
+
+# 7. Lambda syntax (DuckDB v2.0) ----------------------------------------------
+
+## The string format builds its list with a lambda, which must keep working
+## when the deprecated single-arrow syntax is disabled
+testthat::describe("works with lambda_syntax = 'DISABLE_SINGLE_ARROW'", {
+
+  conn_lambda <- reset_conn_alt()
+  DBI::dbExecute(conn_lambda, "SET lambda_syntax = 'DISABLE_SINGLE_ARROW'")
+
+  testthat::it("polygons_to_h3() works for sf and table inputs", {
+    res <- ddbh3_polygons_to_h3(poly_sf, resolution = 3, conn = conn_lambda) |>
+      dplyr::collect()
+    expect_type(res$h3string[[1]], "character")
+
+    duckspatial::ddbs_write_table(conn_lambda, poly_sf, "poly_lambda", quiet = TRUE)
+    res <- ddbh3_polygons_to_h3("poly_lambda", resolution = 3, conn = conn_lambda) |>
+      dplyr::collect()
+    expect_type(res$h3string[[1]], "character")
+  })
+
+  testthat::it("polygons_to_h3() works when materializing a table", {
+    expect_true(ddbh3_polygons_to_h3(
+      poly_sf,
+      resolution = 3,
+      conn = conn_lambda,
+      name = "poly_h3_lambda",
+      quiet = TRUE
+    ))
+  })
+
+  testthat::it("lines_to_h3() works", {
+    res <- ddbh3_lines_to_h3(line_sf, resolution = 3, conn = conn_lambda) |>
+      dplyr::collect()
+    expect_type(res$h3string[[1]], "character")
+  })
+
+  DBI::dbExecute(conn_lambda, "RESET lambda_syntax")
+
 })

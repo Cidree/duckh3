@@ -81,7 +81,7 @@ testthat::describe("ddbh3_get_resolution() works in different formats", {
   ## FORMAT 5 - TABLE IN DUCKDB
   testthat::it("returns the correct resolution for table", {
     ## Create connection
-    conn_test <- ddbh3_create_conn()
+    conn_test <- reset_conn_alt()
     ## Convert to duckspatial_df
     test_data_sf <- test_data |> 
       dplyr::collect() |> 
@@ -132,7 +132,7 @@ testthat::describe("ddbh3_get_resolution() arguments work", {
   ## ARGUMENT 3 - DATABASE ARGUMENTS
   testthat::it("database arguments work", {
     ## Create connection
-    conn_test <- ddbh3_create_conn()
+    conn_test <- reset_conn_alt()
     ## Apply operation with connection
     expect_message(ddbh3_get_resolution(
       dplyr::collect(test_data), 
@@ -175,7 +175,7 @@ describe("errors", {
 
   ## Get h3strings
   test_data <- ddbh3_lonlat_to_h3(points_tbl, resolution = 8)
-  conn_test <- ddbh3_create_conn()
+  conn_test <- reset_conn_alt()
   duckdb::dbWriteTable(conn_test, "test_data_tbl", dplyr::collect(test_data))
     
   ## Tests
