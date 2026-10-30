@@ -1,13 +1,15 @@
 
 # Development version
 
+* Updated the `duckdb` dependency to v2.0.0 See <https://r.duckdb.org/news/index.html#duckdb-200>.
+
 ## BUG FIXES
 
 * `ddbh3_default_conn()` no longer reuses a default connection created by `duckspatial` with `bigint = "numeric"`, which silently rounded UBIGINT H3 indexes. It now warns and replaces it with an `integer64` connection.
 * Column-name arguments (`new_column`, `h3`, `h3vertex`, `lon`, `lat`) and the geometry column name are now quoted as SQL identifiers, so names with spaces or quotes work and SQL expressions passed as column names are no longer executed.
 * When the input already has a column named like `new_column`, the result now replaces that column. Before, the result was added as `<new_column>_1` and the original column kept its old values.
 * Writing the result to the input table itself (`name` equal to the source table and `overwrite = TRUE`) no longer deletes the source table: the result is now built in a staging table and swapped in place.
-* `ddbh3_create_conn()` and `ddbh3_default_conn()` set `geometry_always_xy = false`, which DuckDB >= 2.0 requires before spheroid functions such as `duckspatial::ddbs_area()` can run on H3 geometries. This keeps the pre-2.0 axis convention that duckspatial's measure functions are written for.
+* `ddbh3_create_conn()` and `ddbh3_default_conn()` set `geometry_always_xy = true`, which DuckDB >= 2.0 requires before spheroid functions such as `duckspatial::ddbs_area()` can run on H3 geometries. This keeps the pre-2.0 axis convention that duckspatial's measure functions are written for.
 
 ## ENHANCEMENTS
 
