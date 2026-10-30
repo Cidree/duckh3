@@ -73,6 +73,18 @@ create_ddbh3_macros <- function(conn) {
 }
 
 
+#' Pin the pre-v2.0 axis order on a connection
+#'
+#' Since DuckDB v2.0, spheroid functions such as `ST_Area_Spheroid()` error
+#' unless `geometry_always_xy` is set explicitly.
+#' @keywords internal
+#' @noRd
+set_geometry_axis_order <- function(conn) {
+  try(DBI::dbExecute(conn, "SET geometry_always_xy = true"), silent = TRUE)
+  invisible(conn)
+}
+
+
 create_ddbh3_default_macros <- function() {
   create_ddbh3_macros(duckspatial::ddbs_default_conn())
 }
