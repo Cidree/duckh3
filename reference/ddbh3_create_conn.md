@@ -55,21 +55,17 @@ A `duckdb_connection`
 # \donttest{
 # load packages
 library(duckspatial)
-#> duckspatial 1.3.0 attached
-#> * Compatible with DuckDB >= v1.5.6
+#> duckspatial 1.4.0 attached
+#>  Compatible with DuckDB >= v2.0.0
 #> 
-#> Default output has changed on v1.0.0:
-#>   duckspatial now returns lazy `duckspatial_df` (dbplyr) objects
-#>   instead of `sf` objects.
-#> 
-#> To restore the previous behaviour:
-#>   ddbs_options(mode = 'sf')
+#> Default duckdb_storage_version has changed in duckspatial v1.4.0:
+#>   duckdb_storage_version is now v2.0.0
 library(duckh3)
 
 # create a duckdb database in memory
 conn <- ddbh3_create_conn(dbdir = "memory", threads = 1)
 #> duckdb keeps downloaded extensions and secrets in a temporary directory:
-#> ℹ /tmp/RtmpcAOzID/duckdb
+#> ℹ /tmp/RtmpPiBG2M/duckdb
 #> This is removed when the R session ends.
 #> • Extensions are re-downloaded each session.
 #> • Secrets are lost.
@@ -80,7 +76,7 @@ conn <- ddbh3_create_conn(dbdir = "memory", threads = 1)
 # create an in-memory connection with 1 thread and 2GB memory limit
 conn <- ddbh3_create_conn(threads = 1, memory_limit_gb = 2)
 #> duckdb keeps downloaded extensions and secrets in a temporary directory:
-#> ℹ /tmp/RtmpcAOzID/duckdb
+#> ℹ /tmp/RtmpPiBG2M/duckdb
 #> This is removed when the R session ends.
 #> • Extensions are re-downloaded each session.
 #> • Secrets are lost.

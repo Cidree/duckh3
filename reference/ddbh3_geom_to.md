@@ -208,12 +208,12 @@ the original line.
 library(duckh3)
 library(duckspatial)
 library(sf)
-#> Linking to GEOS 3.12.1, GDAL 3.8.4, PROJ 9.4.0; sf_use_s2() is TRUE
+#> Linking to GEOS 3.14.1, GDAL 3.12.2, PROJ 9.7.1; sf_use_s2() is TRUE
 
 ## Setup the default connection with h3 and spatial extensions
 ddbh3_default_conn(threads = 1)
 #> duckdb keeps downloaded extensions and secrets in a temporary directory:
-#> ℹ /tmp/RtmpcAOzID/duckdb
+#> ℹ /tmp/RtmpPiBG2M/duckdb
 #> This is removed when the R session ends.
 #> • Extensions are re-downloaded each session.
 #> • Secrets are lost.
