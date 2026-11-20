@@ -9,7 +9,7 @@ testthat::skip_if_not_installed("duckdb")
 testthat::skip_if_not_installed("duckspatial")
 
 ## create duckdb connection
-conn_test <- duckh3::ddbh3_create_conn()
+conn_test <- reset_conn_alt()
 
 ## Load example data
 test_data <- read.csv(
@@ -54,7 +54,7 @@ testthat::describe("ddbh3_points_to_spatial() works in different formats", {
   ## FORMAT 3 - TABLE IN DUCKDB
   testthat::it("returns the correct data for table", {
     ## Create connection
-    conn_test <- ddbh3_create_conn()
+    conn_test <- reset_conn_alt()
     ## Convert to sf and store
     test_data_sf <- test_data |> duckspatial::ddbs_collect()
     duckspatial::ddbs_write_table(conn_test, test_data_sf, "sf_pts")
@@ -125,7 +125,7 @@ testthat::describe("ddbh3_points_to_spatial() arguments work", {
   testthat::it("database arguments work", {
     test_data_sf <- duckspatial::ddbs_collect(test_data)
     ## Create connection
-    conn_test <- ddbh3_create_conn()
+    conn_test <- reset_conn_alt()
     ## Apply operation with connection
     expect_message(ddbh3_points_to_spatial(
       test_data_sf,
@@ -166,7 +166,7 @@ testthat::describe("ddbh3_points_to_spatial() arguments work", {
 describe("errors", {
 
   ## Prepare sf input and connection
-  conn_test <- ddbh3_create_conn()
+  conn_test <- reset_conn_alt()
   duckspatial::ddbs_write_table(conn_test, dplyr::collect(test_data), "sf_pts")
 
   ## Tests
@@ -271,7 +271,7 @@ testthat::describe("ddbh3_points_to_h3() works in different formats", {
   ## FORMAT 3 - TABLE IN DUCKDB
   testthat::it("returns the correct data for table", {
     ## Create connection
-    conn_test <- ddbh3_create_conn()
+    conn_test <- reset_conn_alt()
     ## Store table in connection
     test_data_sf <- duckspatial::ddbs_collect(test_data)
     duckspatial::ddbs_write_table(conn_test, test_data_sf, "sf_pts")
@@ -378,7 +378,7 @@ testthat::describe("ddbh3_points_to_h3() arguments work", {
   testthat::it("database arguments work", {
     test_data_sf <- duckspatial::ddbs_collect(test_data)
     ## Create connection
-    conn_test <- ddbh3_create_conn()
+    conn_test <- reset_conn_alt()
     ## Apply operation with connection
     expect_message(ddbh3_points_to_h3(
       test_data_sf,
@@ -419,7 +419,7 @@ testthat::describe("ddbh3_points_to_h3() arguments work", {
 describe("errors", {
 
   ## Prepare connection
-  conn_test <- ddbh3_create_conn()
+  conn_test <- reset_conn_alt()
   duckspatial::ddbs_write_table(conn_test, dplyr::collect(test_data), "sf_pts")
 
   ## Tests

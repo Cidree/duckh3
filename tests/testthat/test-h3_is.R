@@ -86,7 +86,7 @@ testthat::describe("ddbh3_is_pentagon() works in different formats", {
   ## FORMAT 5 - TABLE IN DUCKDB
   testthat::it("returns the correct resolution for table", {
     ## Create connection
-    conn_test <- ddbh3_create_conn()
+    conn_test <- reset_conn_alt()
     ## Convert to duckspatial_df
     test_data_sf <- test_data |> 
       dplyr::collect() |> 
@@ -156,7 +156,7 @@ testthat::describe("ddbh3_is_pentagon() arguments work", {
   ## ARGUMENT 3 - DATABASE ARGUMENTS
   testthat::it("database arguments work", {
     ## Create connection
-    conn_test <- ddbh3_create_conn()
+    conn_test <- reset_conn_alt()
     ## Apply operation with connection
     expect_message(ddbh3_is_pentagon(
       dplyr::collect(test_data), 
@@ -198,7 +198,7 @@ testthat::describe("ddbh3_is_pentagon() arguments work", {
 describe("errors", {
 
   ## Get h3strings
-  conn_test <- ddbh3_create_conn()
+  conn_test <- reset_conn_alt()
   duckdb::dbWriteTable(conn_test, "test_data_tbl", dplyr::collect(test_data))
     
   ## Tests
@@ -312,7 +312,7 @@ testthat::describe("ddbh3_is_h3() works in different formats", {
   ## FORMAT 5 - TABLE IN DUCKDB
   testthat::it("returns the correct data for table", {
     ## Create connection
-    conn_test <- ddbh3_create_conn()
+    conn_test <- reset_conn_alt()
     ## Convert to sf
     test_data_sf <- test_data |>
       dplyr::collect() |>
@@ -378,7 +378,7 @@ testthat::describe("ddbh3_is_h3() arguments work", {
   ## ARGUMENT 3 - DATABASE ARGUMENTS
   testthat::it("database arguments work", {
     ## Create connection
-    conn_test <- ddbh3_create_conn()
+    conn_test <- reset_conn_alt()
     ## Apply operation with connection
     expect_message(ddbh3_is_h3(
       dplyr::collect(test_data),
@@ -419,7 +419,7 @@ testthat::describe("ddbh3_is_h3() arguments work", {
 describe("errors", {
 
   ## Get h3strings
-  conn_test <- ddbh3_create_conn()
+  conn_test <- reset_conn_alt()
   duckdb::dbWriteTable(conn_test, "test_data_tbl", dplyr::collect(test_data))
 
   ## Tests
@@ -528,7 +528,7 @@ testthat::describe("ddbh3_is_res_class_iii() works in different formats", {
   ## FORMAT 5 - TABLE IN DUCKDB
   testthat::it("returns the correct data for table", {
     ## Create connection
-    conn_test <- ddbh3_create_conn()
+    conn_test <- reset_conn_alt()
     ## Convert to sf
     test_data_sf <- test_data |>
       dplyr::collect() |>
@@ -596,7 +596,7 @@ testthat::describe("ddbh3_is_res_class_iii() arguments work", {
   ## ARGUMENT 3 - DATABASE ARGUMENTS
   testthat::it("database arguments work", {
     ## Create connection
-    conn_test <- ddbh3_create_conn()
+    conn_test <- reset_conn_alt()
     ## Apply operation with connection
     expect_message(ddbh3_is_res_class_iii(
       dplyr::collect(test_data),
@@ -637,7 +637,7 @@ testthat::describe("ddbh3_is_res_class_iii() arguments work", {
 describe("errors", {
 
   ## Get h3strings
-  conn_test <- ddbh3_create_conn()
+  conn_test <- reset_conn_alt()
   duckdb::dbWriteTable(conn_test, "test_data_tbl", dplyr::collect(test_data))
 
   ## Tests
@@ -753,7 +753,7 @@ testthat::describe("ddbh3_is_vertex() works in different formats", {
   ## FORMAT 5 - TABLE IN DUCKDB
   testthat::it("returns the correct data for table", {
     ## Create connection
-    conn_test <- ddbh3_create_conn()
+    conn_test <- reset_conn_alt()
     ## Convert to sf
     test_data_sf <- test_data_vertex |>
       dplyr::collect() |>
@@ -821,7 +821,7 @@ testthat::describe("ddbh3_is_vertex() arguments work", {
   ## ARGUMENT 3 - DATABASE ARGUMENTS
   testthat::it("database arguments work", {
     ## Create connection
-    conn_test <- ddbh3_create_conn()
+    conn_test <- reset_conn_alt()
     ## Apply operation with connection
     expect_message(ddbh3_is_vertex(
       dplyr::collect(test_data_vertex),
@@ -864,7 +864,7 @@ describe("errors", {
   test_data_vertex <- ddbh3_h3_to_vertex(test_data)
 
   ## Get h3vertex strings
-  conn_test <- ddbh3_create_conn()
+  conn_test <- reset_conn_alt()
   duckdb::dbWriteTable(conn_test, "test_data_tbl", dplyr::collect(test_data_vertex))
 
   ## Tests

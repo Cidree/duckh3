@@ -89,7 +89,7 @@ testthat::describe("ddbh3_get_parent() works in different formats", {
   ## FORMAT 5 - TABLE IN DUCKDB
   testthat::it("returns the correct data for table", {
     ## Create connection
-    conn_test <- ddbh3_create_conn()
+    conn_test <- reset_conn_alt()
     ## Convert to sf
     test_data_sf <- test_data |>
       dplyr::collect() |>
@@ -171,7 +171,7 @@ testthat::describe("ddbh3_get_parent() arguments work", {
   ## ARGUMENT 4 - DATABASE ARGUMENTS
   testthat::it("database arguments work", {
     ## Create connection
-    conn_test <- ddbh3_create_conn()
+    conn_test <- reset_conn_alt()
     ## Apply operation with connection
     expect_message(ddbh3_get_parent(
       dplyr::collect(test_data),
@@ -212,7 +212,7 @@ testthat::describe("ddbh3_get_parent() arguments work", {
 describe("errors", {
 
   ## Get h3strings
-  conn_test <- ddbh3_create_conn()
+  conn_test <- reset_conn_alt()
   duckdb::dbWriteTable(conn_test, "test_data_tbl", dplyr::collect(test_data))
 
   ## Tests
@@ -340,7 +340,7 @@ testthat::describe("ddbh3_get_children() works in different formats", {
   ## FORMAT 5 - TABLE IN DUCKDB
   testthat::it("returns the correct data for table", {
     ## Create connection
-    conn_test <- ddbh3_create_conn()
+    conn_test <- reset_conn_alt()
     ## Convert to sf
     test_data_5_sf <- test_data_5 |>
       dplyr::collect() |>
@@ -449,7 +449,7 @@ testthat::describe("ddbh3_get_children() arguments work", {
   ## ARGUMENT 5 - DATABASE ARGUMENTS
   testthat::it("database arguments work", {
     ## Create connection
-    conn_test <- ddbh3_create_conn()
+    conn_test <- reset_conn_alt()
     ## Apply operation with connection
     expect_message(ddbh3_get_children(
       dplyr::collect(test_data_5),
@@ -490,7 +490,7 @@ testthat::describe("ddbh3_get_children() arguments work", {
 describe("errors", {
 
   ## Get h3strings
-  conn_test <- ddbh3_create_conn()
+  conn_test <- reset_conn_alt()
   duckdb::dbWriteTable(conn_test, "test_data_5_tbl", dplyr::collect(test_data_5))
 
   ## Tests
@@ -617,7 +617,7 @@ testthat::describe("ddbh3_get_n_children() works in different formats", {
   ## FORMAT 5 - TABLE IN DUCKDB
   testthat::it("returns the correct data for table", {
     ## Create connection
-    conn_test <- ddbh3_create_conn()
+    conn_test <- reset_conn_alt()
     ## Convert to sf
     test_data_5_sf <- test_data_5 |>
       dplyr::collect() |>
@@ -703,7 +703,7 @@ testthat::describe("ddbh3_get_n_children() arguments work", {
   ## ARGUMENT 4 - DATABASE ARGUMENTS
   testthat::it("database arguments work", {
     ## Create connection
-    conn_test <- ddbh3_create_conn()
+    conn_test <- reset_conn_alt()
     ## Apply operation with connection
     expect_message(ddbh3_get_n_children(
       dplyr::collect(test_data_5),
@@ -744,7 +744,7 @@ testthat::describe("ddbh3_get_n_children() arguments work", {
 describe("errors", {
 
   ## Get h3strings
-  conn_test <- ddbh3_create_conn()
+  conn_test <- reset_conn_alt()
   duckdb::dbWriteTable(conn_test, "test_data_5_tbl", dplyr::collect(test_data_5))
 
   ## Tests
@@ -872,7 +872,7 @@ testthat::describe("ddbh3_get_center_child() works in different formats", {
   ## FORMAT 5 - TABLE IN DUCKDB
   testthat::it("returns the correct data for table", {
     ## Create connection
-    conn_test <- ddbh3_create_conn()
+    conn_test <- reset_conn_alt()
     ## Convert to sf
     test_data_sf <- test_data |>
       dplyr::collect() |>
@@ -970,7 +970,7 @@ testthat::describe("ddbh3_get_center_child() arguments work", {
   ## ARGUMENT 4 - DATABASE ARGUMENTS
   testthat::it("database arguments work", {
     ## Create connection
-    conn_test <- ddbh3_create_conn()
+    conn_test <- reset_conn_alt()
     ## Apply operation with connection
     expect_message(ddbh3_get_center_child(
       dplyr::collect(test_data),
@@ -1011,7 +1011,7 @@ testthat::describe("ddbh3_get_center_child() arguments work", {
 describe("errors", {
 
   ## Get h3strings
-  conn_test <- ddbh3_create_conn()
+  conn_test <- reset_conn_alt()
   duckdb::dbWriteTable(conn_test, "test_data_tbl", dplyr::collect(test_data))
 
   ## Tests
@@ -1139,7 +1139,7 @@ testthat::describe("ddbh3_get_icosahedron_faces() works in different formats", {
   ## FORMAT 5 - TABLE IN DUCKDB
   testthat::it("returns the correct data for table", {
     ## Create connection
-    conn_test <- ddbh3_create_conn()
+    conn_test <- reset_conn_alt()
     ## Convert to sf
     test_data_sf <- test_data |>
       dplyr::collect() |>
@@ -1226,7 +1226,7 @@ testthat::describe("ddbh3_get_icosahedron_faces() arguments work", {
   ## ARGUMENT 4 - DATABASE ARGUMENTS
   testthat::it("database arguments work", {
     ## Create connection
-    conn_test <- ddbh3_create_conn()
+    conn_test <- reset_conn_alt()
     ## Apply operation with connection
     expect_message(ddbh3_get_icosahedron_faces(
       dplyr::collect(test_data),
@@ -1267,7 +1267,7 @@ testthat::describe("ddbh3_get_icosahedron_faces() arguments work", {
 describe("errors", {
 
   ## Get h3strings
-  conn_test <- ddbh3_create_conn()
+  conn_test <- reset_conn_alt()
   duckdb::dbWriteTable(conn_test, "test_data_tbl", dplyr::collect(test_data))
 
   ## Tests
@@ -1382,7 +1382,7 @@ testthat::describe("ddbh3_get_child_pos() works in different formats", {
   ## FORMAT 5 - TABLE IN DUCKDB
   testthat::it("returns the correct data for table", {
     ## Create connection
-    conn_test <- ddbh3_create_conn()
+    conn_test <- reset_conn_alt()
     ## Convert to sf
     test_data_sf <- test_data |>
       dplyr::collect() |>
@@ -1476,7 +1476,7 @@ testthat::describe("ddbh3_get_child_pos() arguments work", {
   ## ARGUMENT 4 - DATABASE ARGUMENTS
   testthat::it("database arguments work", {
     ## Create connection
-    conn_test <- ddbh3_create_conn()
+    conn_test <- reset_conn_alt()
     ## Apply operation with connection
     expect_message(ddbh3_get_child_pos(
       dplyr::collect(test_data),
@@ -1517,7 +1517,7 @@ testthat::describe("ddbh3_get_child_pos() arguments work", {
 describe("errors", {
 
   ## Get h3strings
-  conn_test <- ddbh3_create_conn()
+  conn_test <- reset_conn_alt()
   duckdb::dbWriteTable(conn_test, "test_data_tbl", dplyr::collect(test_data))
 
   ## Tests
