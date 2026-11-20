@@ -144,7 +144,7 @@ ddbh3_grid_distance(
   h3end = "h3end"
 )
 #> # A query:  ?? x 3
-#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1019-azure:R 4.6.2/:memory:]
+#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
 #>   h3start         h3end           grid_distance
 #>   <chr>           <chr>                 <int64>
 #> 1 883923059bfffff 883923d04dfffff            97
