@@ -196,7 +196,7 @@ points_tbl <- ddbh3_lonlat_to_h3(points_tbl, resolution = 8)
 ## Check if h3 indexes are valid
 ddbh3_is_h3(points_tbl)
 #> # A query:  ?? x 7
-#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
+#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1019-azure:R 4.6.2/:memory:]
 #>        X    id    lat    lon category h3string        ish3 
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <lgl>
 #>  1     1     1 -43.1   16.2  B        88d02dcc19fffff TRUE 
@@ -215,7 +215,7 @@ ddbh3_is_h3(points_tbl)
 points_tbl |>
   mutate(valid = ddbh3_is_h3(h3string))
 #> # A query:  ?? x 7
-#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
+#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1019-azure:R 4.6.2/:memory:]
 #>        X    id    lat    lon category h3string        valid
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <lgl>
 #>  1     1     1 -43.1   16.2  B        88d02dcc19fffff TRUE 
@@ -235,7 +235,7 @@ points_tbl |>
 ## Check if h3 indexes are pentagons
 ddbh3_is_pentagon(points_tbl)
 #> # A query:  ?? x 7
-#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
+#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1019-azure:R 4.6.2/:memory:]
 #>        X    id    lat    lon category h3string        ispentagon
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <lgl>     
 #>  1     1     1 -43.1   16.2  B        88d02dcc19fffff FALSE     
@@ -254,7 +254,7 @@ ddbh3_is_pentagon(points_tbl)
 points_tbl |>
   mutate(is_pent = ddbh3_is_pentagon(h3string))
 #> # A query:  ?? x 7
-#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
+#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1019-azure:R 4.6.2/:memory:]
 #>        X    id    lat    lon category h3string        is_pent
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <lgl>  
 #>  1     1     1 -43.1   16.2  B        88d02dcc19fffff FALSE  
@@ -274,7 +274,7 @@ points_tbl |>
 ## Check if h3 indexes belong to a Class III resolution
 ddbh3_is_res_class_iii(points_tbl)
 #> # A query:  ?? x 7
-#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
+#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1019-azure:R 4.6.2/:memory:]
 #>        X    id    lat    lon category h3string        isclassiii
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <lgl>     
 #>  1     1     1 -43.1   16.2  B        88d02dcc19fffff FALSE     
@@ -293,7 +293,7 @@ ddbh3_is_res_class_iii(points_tbl)
 ddbh3_lonlat_to_h3(points_tbl, resolution = 7) |>
   ddbh3_is_res_class_iii()
 #> # A query:  ?? x 7
-#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
+#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1019-azure:R 4.6.2/:memory:]
 #>        X    id    lat    lon category h3string        isclassiii
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <lgl>     
 #>  1     1     1 -43.1   16.2  B        87d02dcc1ffffff TRUE      
@@ -316,7 +316,7 @@ vertex_tbl <- ddbh3_h3_to_vertex(points_tbl, n = 1)
 ## Check if indexes are valid vertexes
 ddbh3_is_vertex(vertex_tbl, h3 = "h3vertex")
 #> # A query:  ?? x 8
-#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
+#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1019-azure:R 4.6.2/:memory:]
 #>        X    id    lat    lon category h3string        h3vertex         isvertex
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <chr>            <lgl>   
 #>  1     1     1 -43.1   16.2  B        88d02dcc19fffff 218d02dcc19fffff TRUE    
@@ -338,7 +338,7 @@ vertex_tbl |>
     vertex_valid = ddbh3_is_vertex(h3vertex)
   )
 #> # A query:  ?? x 9
-#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
+#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1019-azure:R 4.6.2/:memory:]
 #>        X    id    lat    lon category h3string  h3vertex cell_valid vertex_valid
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>     <chr>    <lgl>      <lgl>       
 #>  1     1     1 -43.1   16.2  B        88d02dcc… 218d02d… TRUE       TRUE        

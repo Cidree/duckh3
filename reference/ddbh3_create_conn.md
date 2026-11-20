@@ -65,7 +65,7 @@ library(duckh3)
 # create a duckdb database in memory
 conn <- ddbh3_create_conn(dbdir = "memory", threads = 1)
 #> duckdb keeps downloaded extensions and secrets in a temporary directory:
-#> ℹ /tmp/RtmpRCYRpY/duckdb
+#> ℹ /tmp/RtmpeB00db/duckdb
 #> This is removed when the R session ends.
 #> • Extensions are re-downloaded each session.
 #> • Secrets are lost.
@@ -76,7 +76,7 @@ conn <- ddbh3_create_conn(dbdir = "memory", threads = 1)
 # create an in-memory connection with 1 thread and 2GB memory limit
 conn <- ddbh3_create_conn(threads = 1, memory_limit_gb = 2)
 #> duckdb keeps downloaded extensions and secrets in a temporary directory:
-#> ℹ /tmp/RtmpRCYRpY/duckdb
+#> ℹ /tmp/RtmpeB00db/duckdb
 #> This is removed when the R session ends.
 #> • Extensions are re-downloaded each session.
 #> • Secrets are lost.
