@@ -76,18 +76,11 @@ create_ddbh3_macros <- function(conn) {
 #' Pin the pre-v2.0 axis order on a connection
 #'
 #' Since DuckDB v2.0, spheroid functions such as `ST_Area_Spheroid()` error
-#' unless `geometry_always_xy` is set explicitly. duckspatial's measure
-#' functions (e.g. `duckspatial::ddbs_area()`) call them as
-#' `ST_Area_Spheroid(ST_FlipCoordinates(geom))`, i.e. they already convert
-#' lon/lat to the pre-v2.0 [LATITUDE, LONGITUDE] convention. Setting `true`
-#' would flip the axes twice and return wrong areas (or NA for |lon| > 90), so
-#' `false` (the pre-v2.0 behaviour) is the value that matches duckspatial.
-#' The setting comes from the spatial extension and already exists in DuckDB
-#' v1.5; `try()` keeps older or unusual setups working.
+#' unless `geometry_always_xy` is set explicitly.
 #' @keywords internal
 #' @noRd
 set_geometry_axis_order <- function(conn) {
-  try(DBI::dbExecute(conn, "SET geometry_always_xy = false"), silent = TRUE)
+  try(DBI::dbExecute(conn, "SET geometry_always_xy = true"), silent = TRUE)
   invisible(conn)
 }
 

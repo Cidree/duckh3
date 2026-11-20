@@ -597,15 +597,15 @@ testthat::describe("ddbh3_lonlat_to_h3() quotes column names", {
 
 testthat::describe("duckh3 connections set the axis order needed by DuckDB v2.0", {
 
-  testthat::it("sets geometry_always_xy = false on the default and on new connections", {
+  testthat::it("sets geometry_always_xy = true on the default and on new connections", {
     get_xy <- function(conn) {
       DBI::dbGetQuery(conn, "SELECT current_setting('geometry_always_xy') AS v")$v
     }
-    expect_false(as.logical(get_xy(ddbh3_default_conn())))
+    expect_true(as.logical(get_xy(ddbh3_default_conn())))
 
     conn <- ddbh3_create_conn(threads = 1)
     on.exit(duckspatial::ddbs_stop_conn(conn), add = TRUE)
-    expect_false(as.logical(get_xy(conn)))
+    expect_true(as.logical(get_xy(conn)))
   })
 
   testthat::it("spheroid areas of H3 cells match the H3 cell size", {
