@@ -51,7 +51,10 @@ ddbh3_create_conn <- function(
   
   # Checks and installs the h3 extension
   duckspatial::ddbs_install(conn, upgrade = FALSE, quiet = TRUE, extension = "h3")
-  duckspatial::ddbs_load(conn, quiet = TRUE, extension = "h3")
+  duckspatial::ddbs_load(conn, quiet = TRUE, extension = "h3", create_macros = FALSE)
+
+  # Create macros so ddbh3_* work inside dplyr verbs on this connection
+  create_ddbh3_macros(conn)
 
   # Required by spheroid functions (e.g. duckspatial::ddbs_area()) on DuckDB >= 2.0
   set_geometry_axis_order(conn)
@@ -114,15 +117,19 @@ ddbh3_default_conn <- function(
     options(duckspatial_conn = conn)
   }
 
+  # Nothing to set up if no connection exists and none was created
+  if (is.null(conn)) return(invisible(NULL))
+
   # Install and load h3 extension
   duckspatial::ddbs_install(conn, upgrade = upgrade_h3, quiet = TRUE, extension = "h3")
-  duckspatial::ddbs_load(conn, quiet = TRUE, extension = "h3")
+  duckspatial::ddbs_load(conn, quiet = TRUE, extension = "h3", create_macros = FALSE)
 
   # Required by spheroid functions (e.g. duckspatial::ddbs_area()) on DuckDB >= 2.0
   set_geometry_axis_order(conn)
 
   # Create macros in the default connection
-  create_ddbh3_default_macros()
+  create_ddbh3_macros(conn)
+  .ddbh3_env$h3_conn <- conn
 
   invisible(conn)
 }

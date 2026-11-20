@@ -1217,3 +1217,22 @@ testthat::describe("vertex functions quote column names", {
   })
 
 })
+
+
+# Vectorized mode with vertexes ----------------------------------------------
+
+testthat::describe("vertex functions work in vectorized mode", {
+
+  vertexes <- vapply(0:2, function(i) ddbh3_h3_to_vertex("8928308280fffff", n = i), character(1))
+
+  testthat::it("ddbh3_vertex_to_lon() and ddbh3_vertex_to_lat() accept valid vertexes", {
+    expect_type(ddbh3_vertex_to_lon(vertexes), "double")
+    expect_type(ddbh3_vertex_to_lat(vertexes), "double")
+    expect_false(anyNA(ddbh3_vertex_to_lat(vertexes)))
+  })
+
+  testthat::it("ddbh3_vertex_to_lat() rejects invalid vertexes", {
+    expect_error(ddbh3_vertex_to_lat(c(vertexes, "zzz")), "invalid")
+  })
+
+})
