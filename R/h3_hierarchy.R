@@ -579,3 +579,235 @@ ddbh3_get_base_cell_number <- function(
   ) 
 
 }
+
+
+
+#' Compact and uncompact sets of H3 cells
+#'
+#' Compact a set of H3 cells into the smallest set of (possibly coarser) cells
+#' covering the same area, or uncompact a set of cells to a single resolution
+#'
+#' @template x
+#' @template h3
+#' @param by Character vector with the names of the columns used to group the
+#'   cells before compacting them (e.g. one compacted set per region). If
+#'   `NULL` (default), all the cells of `x` are compacted together.
+#' @param resolution A number specifying the resolution of the uncompacted
+#'   cells (between 0 and 15). It must be equal to or finer than the
+#'   resolution of every input cell.
+#' @param new_column Name of the new column to create on the input data.
+#'   Defaults to `"h3compact"` for `ddbh3_compact()` and `"h3uncompact"` for
+#'   `ddbh3_uncompact()`.
+#' @param nested Logical. If `TRUE`, the cells are returned as a nested list
+#'   column (one row per group in `ddbh3_compact()`, one row per input row in
+#'   `ddbh3_uncompact()`). If `FALSE` (default), the result is unnested so
+#'   each cell occupies its own row.
+#' @template conn_null
+#' @template name
+#' @template mode
+#' @template overwrite
+#' @template quiet
+#'
+#' @details
+#' * `ddbh3_compact()` is an aggregation: it replaces every complete set of
+#'   children by their parent, recursively. The output only keeps the `by`
+#'   columns and the compacted cells, and it is never spatial (use
+#'   [ddbh3_h3_to_spatial()] to get the hexagons). Duplicated cells are
+#'   removed before compacting. If a group contains invalid cells, its result
+#'   is `NULL` (with `nested = TRUE`) or the group is dropped (with
+#'   `nested = FALSE`). The `h3` column can also be a list column of cells.
+#' * `ddbh3_uncompact()` expands each cell (or each list of cells, if `h3` is
+#'   a list column) to all its descendants at `resolution`. Cells already at
+#'   `resolution` are kept. It keeps the rest of the columns. If a cell is
+#'   finer than `resolution`, the result for that row is `NULL` (with
+#'   `nested = TRUE`) or the row is dropped (with `nested = FALSE`).
+#'
+#' Inside `dplyr`, `ddbh3_compact(h3)` works as an aggregate function in
+#' `summarise()`, and `ddbh3_uncompact(h3, resolution)` works in `mutate()` on
+#' a list column of cells.
+#'
+#' @returns For `ddbh3_compact()`, a `tbl_lazy` (or `TRUE` invisibly if `name`
+#'   is provided). For `ddbh3_uncompact()`, the same outputs as the rest of
+#'   the package:
+#'   \describe{
+#'     \item{`tbl_lazy`}{If `x` is not spatial.}
+#'     \item{`duckspatial_df`}{If `x` is spatial (e.g. an `sf` or `duckspatial_df` object).}
+#'     \item{`TRUE` (invisibly)}{If `name` is provided, a table is created in the connection
+#'       and `TRUE` is returned invisibly.}
+#'   }
+#'   In vectorized mode (`x` is a vector of cells and `conn = NULL`), both
+#'   functions return a vector with the compacted or uncompacted set of cells.
+#'
+#' @name ddbh3_compact
+#' @aliases ddbh3_uncompact
+#'
+#' @examples
+#' ## Load needed packages
+#' library(duckh3)
+#' library(dplyr)
+#'
+#' ## Setup the default connection with h3 and spatial extensions
+#' ## This is a mandatory step to use duckh3 functions
+#' ddbh3_default_conn(threads = 1)
+#'
+#' ## All the children of two cells, plus one extra cell
+#' cells_tbl <- data.frame(
+#'   region   = c("A", "B", "B"),
+#'   h3string = c("87283472bffffff", "872834729ffffff", "88283470a1fffff")
+#' ) |>
+#'   ddbh3_get_children(resolution = 8, h3 = "h3string", new_column = "h3children")
+#'
+#' ## COMPACT ------------------
+#'
+#' ## Compact all the cells together
+#' ddbh3_compact(cells_tbl, h3 = "h3children")
+#'
+#' ## Compact the cells of each region
+#' compact_tbl <- ddbh3_compact(cells_tbl, h3 = "h3children", by = "region")
+#' compact_tbl
+#'
+#' ## One row per region with a list of cells
+#' ddbh3_compact(cells_tbl, h3 = "h3children", by = "region", nested = TRUE)
+#'
+#' ## Inside summarise
+#' cells_tbl |>
+#'   summarise(h3compact = ddbh3_compact(h3children), .by = region)
+#'
+#' ## UNCOMPACT ----------------
+#'
+#' ## Back to resolution 8
+#' ddbh3_uncompact(compact_tbl, h3 = "h3compact", resolution = 8)
+#'
+#' ## Vectorized mode
+#' ddbh3_uncompact("87283472bffffff", resolution = 8) |>
+#'   ddbh3_compact()
+NULL
+
+
+
+
+#' @rdname ddbh3_compact
+#' @export
+ddbh3_compact <- function(
+    x,
+    h3 = "h3string",
+    by = NULL,
+    new_column = "h3compact",
+    nested = FALSE,
+    conn = NULL,
+    name = NULL,
+    overwrite = FALSE,
+    quiet = FALSE
+) {
+
+  # 0. Handle function-specific errors
+  duckspatial:::assert_character_scalar(h3, "h3")
+  duckspatial:::assert_logic(nested, "nested")
+  if (!is.null(by) && (!is.character(by) || length(by) == 0 || anyNA(by))) {
+    cli::cli_abort("{.arg by} must be a character vector with column names.")
+  }
+
+  # 1. Vectorized mode: compact the whole vector
+  if (is.null(conn) && (is.character(x) || is.numeric(x))) {
+    get_vectorized_result(x, "x")
+    res <- get_vectorized_result(
+      x, "h3_compact_cells(list_distinct(list(x)))", validate = NULL
+    )
+    return(res[[1]])
+  }
+
+  # 2. Build the aggregation query
+  is_nested <- check_nested_column(x, h3, conn)
+  cells     <- if (is_nested) {
+    glue::glue("list_distinct(flatten(list({quote_ident(h3)})))")
+  } else {
+    glue::glue("list_distinct(list({quote_ident(h3)}))")
+  }
+  compact_expr <- glue::glue("h3_compact_cells({cells})")
+
+  by_select <- if (is.null(by)) "" else paste0(paste(quote_ident(by), collapse = ", "), ", ")
+  by_group  <- if (is.null(by)) "" else glue::glue("GROUP BY {paste(quote_ident(by), collapse = ', ')}")
+
+  build_query <- function(query_name) {
+    agg_query <- glue::glue("
+      SELECT {by_select}{compact_expr} AS {quote_ident(new_column)}
+      FROM {query_name}
+      {by_group}
+    ")
+    if (isTRUE(nested)) return(agg_query)
+    glue::glue("
+      SELECT * REPLACE (UNNEST({quote_ident(new_column)}) AS {quote_ident(new_column)})
+      FROM ({agg_query})
+    ")
+  }
+
+  # 3. Pass to template
+  template_h3_base(
+    x = x,
+    conn = conn,
+    name = name,
+    new_column = new_column,
+    overwrite = overwrite,
+    quiet = quiet,
+    build_query = build_query
+  )
+
+}
+
+
+
+
+#' @rdname ddbh3_compact
+#' @export
+ddbh3_uncompact <- function(
+    x,
+    h3 = "h3string",
+    resolution = 8,
+    new_column = "h3uncompact",
+    nested = FALSE,
+    conn = NULL,
+    name = NULL,
+    mode = NULL,
+    overwrite = FALSE,
+    quiet = FALSE
+) {
+
+  # 0. Handle function-specific errors
+  duckspatial:::assert_character_scalar(h3, "h3")
+  duckspatial:::assert_logic(nested, "nested")
+  duckspatial:::assert_integer_scalar(resolution, "resolution")
+  duckspatial:::assert_numeric_interval(resolution, 0, 15, "resolution")
+
+  # 1. Vectorized mode: uncompact the whole vector
+  if (is.null(conn) && (is.character(x) || is.numeric(x))) {
+    get_vectorized_result(x, "x")
+    res <- get_vectorized_result(
+      x,
+      glue::glue("h3_uncompact_cells(list_distinct(list(x)), {resolution})"),
+      validate = NULL
+    )
+    return(res[[1]])
+  }
+
+  # 2. Build parameters string (a single cell is wrapped in a list)
+  cells <- if (check_nested_column(x, h3, conn)) {
+    quote_ident(h3)
+  } else {
+    glue::glue("[{quote_ident(h3)}]")
+  }
+  built_fun <- glue::glue("h3_uncompact_cells({cells}, {resolution})")
+  if (!isTRUE(nested)) built_fun <- glue::glue("UNNEST({built_fun})")
+
+  # 3. Pass to template
+  template_h3_base(
+    x = x,
+    conn = conn,
+    name = name,
+    mode = mode,
+    new_column = new_column,
+    overwrite = overwrite,
+    quiet = quiet,
+    fun = built_fun
+  )
+
+}

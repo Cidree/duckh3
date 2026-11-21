@@ -105,7 +105,14 @@ create_ddbh3_macros <- function(conn) {
       h3_get_hexagon_area_avg(resolution::INTEGER, unit)",
 
     "CREATE OR REPLACE MACRO ddbh3_get_hexagon_edge_length_avg(resolution, unit := 'm') AS
-      h3_get_hexagon_edge_length_avg(resolution::INTEGER, unit)"
+      h3_get_hexagon_edge_length_avg(resolution::INTEGER, unit)",
+
+    ## compact (aggregate, for summarise()) and uncompact (list column)
+    "CREATE OR REPLACE MACRO ddbh3_compact(h3) AS
+      h3_compact_cells(list_distinct(list(h3)))",
+
+    "CREATE OR REPLACE MACRO ddbh3_uncompact(h3, resolution) AS
+      h3_uncompact_cells(h3, resolution::INTEGER)"
 
   )
 
@@ -137,13 +144,18 @@ is_h3_ready_conn <- function(conn) {
 
 
 
-check_nested_column <- function(x, column) {
+check_nested_column <- function(x, column, conn = NULL) {
 
-  ## For lazy tables we query the column type. However, the way of
-  ## finding the source conn and table is different depending of the
+  ## For lazy tables (or table names) we query the column type. However, the
+  ## way of finding the source conn and table is different depending of the
   ## object type
-  if (inherits(x, "duckspatial_df") | inherits(x, "tbl_duckdb_connection")) {
-    if (inherits(x, "duckspatial_df")) {
+  if (
+    inherits(x, "duckspatial_df") | inherits(x, "tbl_duckdb_connection") |
+      (is.character(x) && !is.null(conn))
+  ) {
+    if (is.character(x)) {
+      tbl_name <- duckspatial:::get_query_name(x)$table_name
+    } else if (inherits(x, "duckspatial_df")) {
       conn     <- attr(x, "source_conn")
       tbl_name <- attr(x, "source_table")
     } else {
