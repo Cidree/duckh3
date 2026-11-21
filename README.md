@@ -80,7 +80,7 @@ And there are also a set of function to retrieve or check properties of
 the data:
 
 - `ddbh3_get_*()` — retrieve H3 cell properties (resolution, parent,
-  children, vertices…)
+  children, area, edge length…)
 - `ddbh3_is_*()` — check properties of H3 indexes (valid, pentagon,
   Class III…)
 

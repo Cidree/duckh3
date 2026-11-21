@@ -195,6 +195,13 @@ reference:
   - ddbh3_get_hierarchy
   - ddbh3_get_icosahedron_faces
 
+- title: H3 metrics
+  desc: Measure areas, lengths and distances
+  contents:
+  - ddbh3_get_area
+  - ddbh3_get_hexagon_avg
+  - ddbh3_great_circle_distance
+
 - title: H3 neighborhood
   desc: Work with neighbors of H3 cells
   contents:

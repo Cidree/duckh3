@@ -364,12 +364,7 @@ ddbh3_get_edge_length <- function(
 
   # 0. Handle function-specific errors
   duckspatial:::assert_character_scalar(h3edge, "h3edge")
-  duckspatial:::assert_character_scalar(unit, "unit")
-  if (!unit %in% c("m", "km", "rads")) {
-    cli::cli_abort(
-      "The {.arg unit} is not valid. Valid options: {.val {c('m', 'km', 'rads')}}"
-    )
-  }
+  assert_unit(unit, c("m", "km", "rads"))
 
   # 1. Build parameters string
   built_fun <- glue::glue("h3_edge_length({quote_ident(h3edge)}, '{unit}')")

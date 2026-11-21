@@ -92,7 +92,20 @@ create_ddbh3_macros <- function(conn) {
       h3_is_valid_directed_edge(h3edge)",
 
     "CREATE OR REPLACE MACRO ddbh3_is_neighbor(h3start, h3end) AS
-      h3_are_neighbor_cells(h3start, h3end)"
+      h3_are_neighbor_cells(h3start, h3end)",
+
+    ## metrics
+    "CREATE OR REPLACE MACRO ddbh3_get_area(h3, unit := 'm^2') AS
+      h3_cell_area(h3, unit)",
+
+    "CREATE OR REPLACE MACRO ddbh3_great_circle_distance(lon_start, lat_start, lon_end, lat_end, unit := 'm') AS
+      h3_great_circle_distance(lat_start, lon_start, lat_end, lon_end, unit)",
+
+    "CREATE OR REPLACE MACRO ddbh3_get_hexagon_area_avg(resolution, unit := 'm^2') AS
+      h3_get_hexagon_area_avg(resolution::INTEGER, unit)",
+
+    "CREATE OR REPLACE MACRO ddbh3_get_hexagon_edge_length_avg(resolution, unit := 'm') AS
+      h3_get_hexagon_edge_length_avg(resolution::INTEGER, unit)"
 
   )
 
@@ -294,6 +307,49 @@ assert_containment <- function(containment) {
       "The {.arg containment} is not valid. Valid options: {.val {c('overlap', 'full', 'center', 'overlap_bbox')}}"
     )
   )
+}
+
+
+#' Validate a `unit` argument against the units accepted by an h3 function
+#' @keywords internal
+#' @noRd
+assert_unit <- function(unit, valid) {
+  duckspatial:::assert_character_scalar(unit, "unit")
+  if (!unit %in% valid) {
+    cli::cli_abort(
+      "The {.arg unit} is not valid. Valid options: {.val {valid}}"
+    )
+  }
+  invisible(unit)
+}
+
+
+#' Evaluate an h3 function that takes a resolution and a unit
+#'
+#' Used by the per-resolution averages (e.g. `h3_get_hexagon_area_avg`).
+#' Returns one value per element of `resolution`, in the same order.
+#' @keywords internal
+#' @noRd
+get_resolution_constant <- function(resolution, fun, unit, conn = NULL) {
+
+  if (
+    !is.numeric(resolution) || length(resolution) == 0 || anyNA(resolution) ||
+      any(resolution %% 1 != 0) || any(resolution < 0 | resolution > 15)
+  ) {
+    cli::cli_abort(
+      "{.arg resolution} must be a vector of integers between 0 and 15."
+    )
+  }
+
+  if (is.null(conn)) conn <- ddbh3_default_conn(threads = 1)
+  check_installed_h3(conn = conn)
+
+  res_list <- paste(as.integer(resolution), collapse = ", ")
+  query <- glue::glue(
+    "SELECT list_transform([{res_list}], lambda r: {fun}(r::INTEGER, '{unit}')) AS v;"
+  )
+  DBI::dbGetQuery(conn, query)$v[[1]]
+
 }
 
 

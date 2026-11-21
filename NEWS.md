@@ -27,6 +27,8 @@
 
 * H3 directed edges: `ddbh3_h3_to_edge()`, `ddbh3_h3_to_edges()`, `ddbh3_edge_to_origin()`, `ddbh3_edge_to_destination()`, `ddbh3_edge_to_h3()`, `ddbh3_reverse_edge()`, `ddbh3_get_edge_length()` and `ddbh3_edge_to_spatial()` create directed edges from H3 cells and convert them to cells, lengths and lines. They also work inside `dplyr::mutate()` on lazy tables (except `ddbh3_edge_to_spatial()`).
 
+* H3 metrics: `ddbh3_get_area()` gets the area of H3 cells, `ddbh3_great_circle_distance()` gets the great circle distance between two points, and `ddbh3_get_hexagon_area_avg()` and `ddbh3_get_hexagon_edge_length_avg()` get the average hexagon area and edge length at one or more resolutions. They also work inside `dplyr::mutate()` on lazy tables.
+
 * `ddbh3_is_edge()`: check if an index is a valid H3 directed edge.
 
 * `ddbh3_is_neighbor()`: check if two H3 cells are neighbors.
