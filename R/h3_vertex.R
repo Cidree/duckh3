@@ -172,7 +172,8 @@ ddbh3_vertex_to_lon <- function(
     overwrite = overwrite,
     quiet = quiet,
     fun = built_fun,
-    base_fun = "h3_vertex_to_lng(x)"
+    base_fun = "h3_vertex_to_lng(x)",
+    validate = "h3_is_valid_vertex"
   )
 
 }
@@ -210,7 +211,8 @@ ddbh3_vertex_to_lat <- function(
     overwrite = overwrite,
     quiet = quiet,
     fun = built_fun,
-    base_fun = "h3_vertex_to_lat(x)"
+    base_fun = "h3_vertex_to_lat(x)",
+    validate = "h3_is_valid_vertex"
   ) 
 
 }

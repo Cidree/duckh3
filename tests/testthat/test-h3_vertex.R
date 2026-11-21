@@ -87,7 +87,7 @@ testthat::describe("ddbh3_h3_to_vertex() works in different formats", {
   ## FORMAT 5 - TABLE IN DUCKDB
   testthat::it("returns the correct data for table", {
     ## Create connection
-    conn_test <- ddbh3_create_conn()
+    conn_test <- reset_conn_alt()
     ## Convert to sf
     test_data_sf <- test_data |>
       dplyr::collect() |>
@@ -164,7 +164,7 @@ testthat::describe("ddbh3_h3_to_vertex() arguments work", {
   ## ARGUMENT 4 - DATABASE ARGUMENTS
   testthat::it("database arguments work", {
     ## Create connection
-    conn_test <- ddbh3_create_conn()
+    conn_test <- reset_conn_alt()
     ## Apply operation with connection
     expect_message(ddbh3_h3_to_vertex(
       dplyr::collect(test_data),
@@ -205,7 +205,7 @@ testthat::describe("ddbh3_h3_to_vertex() arguments work", {
 describe("errors", {
 
   ## Get h3strings
-  conn_test <- ddbh3_create_conn()
+  conn_test <- reset_conn_alt()
   duckdb::dbWriteTable(conn_test, "test_data_tbl", dplyr::collect(test_data))
 
   ## Tests
@@ -332,7 +332,7 @@ testthat::describe("ddbh3_vertex_to_lon() works in different formats", {
   ## FORMAT 5 - TABLE IN DUCKDB
   testthat::it("returns the correct data for table", {
     ## Create connection
-    conn_test <- ddbh3_create_conn()
+    conn_test <- reset_conn_alt()
     ## Convert to sf
     test_data_sf <- test_data_vertex |>
       dplyr::collect() |>
@@ -392,7 +392,7 @@ testthat::describe("ddbh3_vertex_to_lon() arguments work", {
   ## ARGUMENT 3 - DATABASE ARGUMENTS
   testthat::it("database arguments work", {
     ## Create connection
-    conn_test <- ddbh3_create_conn()
+    conn_test <- reset_conn_alt()
     ## Apply operation with connection
     expect_message(ddbh3_vertex_to_lon(
       dplyr::collect(test_data_vertex),
@@ -433,7 +433,7 @@ testthat::describe("ddbh3_vertex_to_lon() arguments work", {
 describe("errors", {
 
   ## Get h3vertex strings
-  conn_test <- ddbh3_create_conn()
+  conn_test <- reset_conn_alt()
   duckdb::dbWriteTable(conn_test, "test_data_tbl", dplyr::collect(test_data_vertex))
 
   ## Tests
@@ -548,7 +548,7 @@ testthat::describe("ddbh3_vertex_to_lat() works in different formats", {
   ## FORMAT 5 - TABLE IN DUCKDB
   testthat::it("returns the correct data for table", {
     ## Create connection
-    conn_test <- ddbh3_create_conn()
+    conn_test <- reset_conn_alt()
     ## Convert to sf
     test_data_sf <- test_data_vertex |>
       dplyr::collect() |>
@@ -608,7 +608,7 @@ testthat::describe("ddbh3_vertex_to_lat() arguments work", {
   ## ARGUMENT 3 - DATABASE ARGUMENTS
   testthat::it("database arguments work", {
     ## Create connection
-    conn_test <- ddbh3_create_conn()
+    conn_test <- reset_conn_alt()
     ## Apply operation with connection
     expect_message(ddbh3_vertex_to_lat(
       dplyr::collect(test_data_vertex),
@@ -649,7 +649,7 @@ testthat::describe("ddbh3_vertex_to_lat() arguments work", {
 describe("errors", {
 
   ## Get h3vertex strings
-  conn_test <- ddbh3_create_conn()
+  conn_test <- reset_conn_alt()
   duckdb::dbWriteTable(conn_test, "test_data_tbl", dplyr::collect(test_data_vertex))
 
   ## Tests
@@ -764,7 +764,7 @@ testthat::describe("ddbh3_h3_to_vertexes() works in different formats", {
   ## FORMAT 5 - TABLE IN DUCKDB
   testthat::it("returns the correct data for table", {
     ## Create connection
-    conn_test <- ddbh3_create_conn()
+    conn_test <- reset_conn_alt()
     ## Convert to sf
     test_data_sf <- test_data |>
       dplyr::collect() |>
@@ -844,7 +844,7 @@ testthat::describe("ddbh3_h3_to_vertexes() arguments work", {
   ## ARGUMENT 4 - DATABASE ARGUMENTS
   testthat::it("database arguments work", {
     ## Create connection
-    conn_test <- ddbh3_create_conn()
+    conn_test <- reset_conn_alt()
     ## Apply operation with connection
     expect_message(ddbh3_h3_to_vertexes(
       dplyr::collect(test_data),
@@ -885,7 +885,7 @@ testthat::describe("ddbh3_h3_to_vertexes() arguments work", {
 describe("errors", {
 
   ## Get h3strings
-  conn_test <- ddbh3_create_conn()
+  conn_test <- reset_conn_alt()
   duckdb::dbWriteTable(conn_test, "test_data_tbl", dplyr::collect(test_data))
 
   ## Tests
@@ -1057,7 +1057,7 @@ testthat::describe("ddbh3_vertex_to_spatial() works in different formats", {
   ## FORMAT 5 - TABLE IN DUCKDB
   testthat::it("returns the correct data for table", {
     ## Create connection
-    conn_test <- ddbh3_create_conn()
+    conn_test <- reset_conn_alt()
     ## Convert to sf
     test_data_sf <- test_data_vertex |>
       dplyr::collect() |>
@@ -1122,7 +1122,7 @@ testthat::describe("ddbh3_vertex_to_spatial() arguments work", {
   ## ARGUMENT 2 - DATABASE ARGUMENTS
   testthat::it("database arguments work", {
     ## Create connection
-    conn_test <- ddbh3_create_conn()
+    conn_test <- reset_conn_alt()
     ## Apply operation with connection
     expect_message(ddbh3_vertex_to_spatial(
       dplyr::collect(test_data_vertex),
@@ -1159,7 +1159,7 @@ testthat::describe("ddbh3_vertex_to_spatial() arguments work", {
 describe("errors", {
 
   ## Get h3vertex strings
-  conn_test <- ddbh3_create_conn()
+  conn_test <- reset_conn_alt()
   duckdb::dbWriteTable(conn_test, "test_data_tbl", dplyr::collect(test_data_vertex))
 
   ## Tests
@@ -1214,6 +1214,25 @@ testthat::describe("vertex functions quote column names", {
     vtx <- ddbh3_h3_to_vertex(test_data, new_column = "my vertex")
     res <- ddbh3_vertex_to_lat(vtx, h3vertex = "my vertex", new_column = "v lat") |> dplyr::collect()
     expect_type(res[["v lat"]], "double")
+  })
+
+})
+
+
+# Vectorized mode with vertexes ----------------------------------------------
+
+testthat::describe("vertex functions work in vectorized mode", {
+
+  vertexes <- vapply(0:2, function(i) ddbh3_h3_to_vertex("8928308280fffff", n = i), character(1))
+
+  testthat::it("ddbh3_vertex_to_lon() and ddbh3_vertex_to_lat() accept valid vertexes", {
+    expect_type(ddbh3_vertex_to_lon(vertexes), "double")
+    expect_type(ddbh3_vertex_to_lat(vertexes), "double")
+    expect_false(anyNA(ddbh3_vertex_to_lat(vertexes)))
+  })
+
+  testthat::it("ddbh3_vertex_to_lat() rejects invalid vertexes", {
+    expect_error(ddbh3_vertex_to_lat(c(vertexes, "zzz")), "invalid")
   })
 
 })

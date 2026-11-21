@@ -8,7 +8,7 @@ testthat::skip_if_not_installed("duckdb")
 testthat::skip_if_not_installed("duckspatial")
 
 ## create duckdb connection
-conn_test <- duckh3::ddbh3_create_conn()
+conn_test <- reset_conn_alt()
 
 ## Load example data
 test_data <- read.csv(
@@ -82,7 +82,7 @@ testthat::describe("ddbh3_lonlat_to_h3() works in different formats", {
   ## FORMAT 5 - TABLE IN DUCKDB
   testthat::it("returns the correct data for table", {
     ## Create connection
-    conn_test <- ddbh3_create_conn()
+    conn_test <- reset_conn_alt()
     ## Convert to sf
     test_data_sf <- test_data |>
       dplyr::collect() |>
@@ -210,7 +210,7 @@ testthat::describe("ddbh3_lonlat_to_h3() arguments work", {
   ## ARGUMENT 6 - DATABASE ARGUMENTS
   testthat::it("database arguments work", {
     ## Create connection
-    conn_test <- ddbh3_create_conn()
+    conn_test <- reset_conn_alt()
     ## Apply operation with connection
     expect_message(ddbh3_lonlat_to_h3(
       dplyr::collect(test_data),
@@ -251,7 +251,7 @@ testthat::describe("ddbh3_lonlat_to_h3() arguments work", {
 describe("errors", {
 
   ## Get h3strings
-  conn_test <- ddbh3_create_conn()
+  conn_test <- reset_conn_alt()
   duckdb::dbWriteTable(conn_test, "test_data_tbl", dplyr::collect(test_data))
 
   ## Tests
@@ -380,7 +380,7 @@ testthat::describe("ddbh3_lonlat_to_spatial() works in different formats", {
   ## FORMAT 5 - TABLE IN DUCKDB
   testthat::it("returns the correct data for table", {
     ## Create connection
-    conn_test <- ddbh3_create_conn()
+    conn_test <- reset_conn_alt()
     ## Convert to sf
     test_data_sf <- test_data |>
       dplyr::collect() |>
@@ -477,7 +477,7 @@ testthat::describe("ddbh3_lonlat_to_spatial() arguments work", {
   ## ARGUMENT 4 - DATABASE ARGUMENTS
   testthat::it("database arguments work", {
     ## Create connection
-    conn_test <- ddbh3_create_conn()
+    conn_test <- reset_conn_alt()
     ## Apply operation with connection
     expect_message(ddbh3_lonlat_to_spatial(
       dplyr::collect(test_data),
@@ -514,7 +514,7 @@ testthat::describe("ddbh3_lonlat_to_spatial() arguments work", {
 describe("errors", {
 
   ## Get h3strings
-  conn_test <- ddbh3_create_conn()
+  conn_test <- reset_conn_alt()
   duckdb::dbWriteTable(conn_test, "test_data_tbl", dplyr::collect(test_data))
 
   ## Tests
@@ -597,15 +597,15 @@ testthat::describe("ddbh3_lonlat_to_h3() quotes column names", {
 
 testthat::describe("duckh3 connections set the axis order needed by DuckDB v2.0", {
 
-  testthat::it("sets geometry_always_xy = false on the default and on new connections", {
+  testthat::it("sets geometry_always_xy = true on the default and on new connections", {
     get_xy <- function(conn) {
       DBI::dbGetQuery(conn, "SELECT current_setting('geometry_always_xy') AS v")$v
     }
-    expect_false(as.logical(get_xy(ddbh3_default_conn())))
+    expect_true(as.logical(get_xy(ddbh3_default_conn())))
 
     conn <- ddbh3_create_conn(threads = 1)
     on.exit(duckspatial::ddbs_stop_conn(conn), add = TRUE)
-    expect_false(as.logical(get_xy(conn)))
+    expect_true(as.logical(get_xy(conn)))
   })
 
   testthat::it("spheroid areas of H3 cells match the H3 cell size", {

@@ -1,6 +1,8 @@
 
 # Development version
 
+* Updated the `duckdb` dependency to v2.0.0 See <https://r.duckdb.org/news/index.html#duckdb-200>.
+
 ## BUG FIXES
 
 * `ddbh3_default_conn()` no longer reuses a default connection created by `duckspatial` with `bigint = "numeric"`, which silently rounded UBIGINT H3 indexes. It now warns and replaces it with an `integer64` connection.
@@ -8,12 +10,17 @@
 * When the input already has a column named like `new_column`, the result now replaces that column. Before, the result was added as `<new_column>_1` and the original column kept its old values.
 * Writing the result to the input table itself (`name` equal to the source table and `overwrite = TRUE`) no longer deletes the source table: the result is now built in a staging table and swapped in place.
 * `ddbh3_create_conn()` and `ddbh3_default_conn()` set `geometry_always_xy = false`, which DuckDB >= 2.0 requires before spheroid functions such as `duckspatial::ddbs_area()` can run on H3 geometries. This keeps the pre-2.0 axis convention that duckspatial's measure functions are written for.
+* `ddbh3_create_conn()` now registers the `ddbh3_*` macros, so they work inside `dplyr::mutate()` on user-created connections.
+* `ddbh3_default_conn(create = FALSE)` no longer errors when no default connection exists.
+* `ddbh3_vertex_to_lon()`, `ddbh3_vertex_to_lat()` and `ddbh3_is_vertex()` no longer reject valid H3 vertexes in vectorized mode, and `ddbh3_is_vertex()` returns `FALSE` for invalid input instead of erroring.
+* `ddbh3_create_conn()` and `ddbh3_default_conn()` set `geometry_always_xy = true`, which DuckDB >= 2.0 requires before spheroid functions such as `duckspatial::ddbs_area()` can run on H3 geometries. This keeps the pre-2.0 axis convention that duckspatial's measure functions are written for.
 
 ## ENHANCEMENTS
 
 * Remove arrow lambda syntax for compatibility with DuckDB v2.0 (#6).
 
 * Faster polygon/line to H3 conversion: polyfill reads WKB instead of WKT, the geometry type is validated on the already-prepared input instead of preparing it twice, and the cell list is no longer de-duplicated twice.
+* Vectorized mode is up to ~40x faster: input validation and evaluation now run in a single query, and the default connection is no longer re-initialised on every call. The h3 extension check is cached for the default connection.
 
 ## NEW FEATURES
 
