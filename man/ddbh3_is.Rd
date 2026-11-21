@@ -189,7 +189,7 @@ ddbh3_lonlat_to_h3(points_tbl, resolution = 7) |>
 vertex_tbl <- ddbh3_h3_to_vertex(points_tbl, n = 1)
 
 ## Check if indexes are valid vertexes
-ddbh3_is_vertex(vertex_tbl, h3 = "h3vertex")
+ddbh3_is_vertex(vertex_tbl)
 
 ## Check in mutate (mix of h3 cells and vertexes)
 vertex_tbl |>
