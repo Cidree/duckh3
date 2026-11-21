@@ -19,6 +19,7 @@
 
 * Remove arrow lambda syntax for compatibility with DuckDB v2.0 (#6).
 
+* Faster polygon/line to H3 conversion: polyfill reads WKB instead of WKT, the geometry type is validated on the already-prepared input instead of preparing it twice, and the cell list is no longer de-duplicated twice.
 * Vectorized mode is up to ~40x faster: input validation and evaluation now run in a single query, and the default connection is no longer re-initialised on every call. The h3 extension check is cached for the default connection.
 
 ## NEW FEATURES

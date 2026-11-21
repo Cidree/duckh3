@@ -142,7 +142,7 @@ ddbh3_lonlat_to_spatial <- function(
   built_fun <- glue::glue("
     ST_GeomFromWKB(
       h3_cell_to_boundary_wkb(
-        h3_latlng_to_cell_string({quote_ident(lat)}, {quote_ident(lon)}, {resolution})
+        h3_latlng_to_cell({quote_ident(lat)}, {quote_ident(lon)}, {resolution})
       )
     )"
   )
