@@ -201,6 +201,7 @@ reference:
   - ddbh3_grid_disk
   - ddbh3_grid_distance
   - ddbh3_grid_path_cells
+  - ddbh3_is_neighbor
   - ddbh3_max_grid_disk_size
 
 - title: H3 properties
@@ -212,6 +213,11 @@ reference:
   desc: Extract and convert H3 cell vertices to spatial representations
   contents:
   - ddbh3_vertex
+
+- title: H3 directed edges
+  desc: Create H3 directed edges and convert them to cells, lengths and lines
+  contents:
+  - ddbh3_edge
 
 # ── Navbar ──────────────────────────────────────────────────────────────────────
 navbar:

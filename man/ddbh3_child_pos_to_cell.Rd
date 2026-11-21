@@ -36,7 +36,8 @@ ddbh3_child_pos_to_cell(
 string (between 0 and 15)}
 
 \item{new_column}{Name of the new column to create on the input data. If NULL,
-the function will return a vector with the result}
+the function will return a vector with the result. If the input already has a
+column with this name, it is replaced by the result}
 
 \item{conn}{A connection object to a DuckDB database. If \code{NULL}, the function
 runs on a temporary DuckDB database.}

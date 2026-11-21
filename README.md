@@ -65,6 +65,7 @@ around the expected input data, and what they will be converted to:
   representations
 - `ddbh3_h3_to_*()` — convert H3 cells to other representations
 - `ddbh3_vertex_to_*()` — convert H3 vertexes to other representations
+- `ddbh3_edge_to_*()` — convert H3 directed edges to other representations
 
 With the following available transformations:
 

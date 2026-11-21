@@ -64,7 +64,35 @@ create_ddbh3_macros <- function(conn) {
       h3_vertex_to_lat(h3vertex)",
 
     "CREATE OR REPLACE MACRO ddbh3_vertex_to_lon(h3vertex) AS
-      h3_vertex_to_lng(h3vertex)"
+      h3_vertex_to_lng(h3vertex)",
+
+    # ── H3 directed edges -------------------------------------------------------
+    "CREATE OR REPLACE MACRO ddbh3_h3_to_edge(h3start, h3end) AS
+      h3_cells_to_directed_edge(h3start, h3end)",
+
+    "CREATE OR REPLACE MACRO ddbh3_h3_to_edges(h3) AS
+      h3_origin_to_directed_edges(h3)",
+
+    "CREATE OR REPLACE MACRO ddbh3_edge_to_origin(h3edge) AS
+      h3_get_directed_edge_origin(h3edge)",
+
+    "CREATE OR REPLACE MACRO ddbh3_edge_to_destination(h3edge) AS
+      h3_get_directed_edge_destination(h3edge)",
+
+    "CREATE OR REPLACE MACRO ddbh3_edge_to_h3(h3edge) AS
+      h3_directed_edge_to_cells(h3edge)",
+
+    "CREATE OR REPLACE MACRO ddbh3_reverse_edge(h3edge) AS
+      h3_reverse_directed_edge(h3edge)",
+
+    "CREATE OR REPLACE MACRO ddbh3_get_edge_length(h3edge, unit := 'm') AS
+      h3_edge_length(h3edge, unit)",
+
+    "CREATE OR REPLACE MACRO ddbh3_is_edge(h3edge) AS
+      h3_is_valid_directed_edge(h3edge)",
+
+    "CREATE OR REPLACE MACRO ddbh3_is_neighbor(h3start, h3end) AS
+      h3_are_neighbor_cells(h3start, h3end)"
 
   )
 
@@ -226,6 +254,29 @@ get_vectorized_result <- function(x, fun, validate = "h3_is_valid_cell") {
   return(res)
 }
 
+
+
+
+#' Build the LINESTRING of an H3 directed edge
+#'
+#' `h3_directed_edge_to_boundary_wkb()` returns a closed line (A -> B -> A),
+#' so the closing point is dropped to keep only the edge itself.
+#'
+#' @param h3edge SQL expression (e.g. a quoted column) with the directed edge
+#' @keywords internal
+#' @noRd
+build_edge_line <- function(h3edge) {
+  geom <- glue::glue("ST_GeomFromWKB(h3_directed_edge_to_boundary_wkb({h3edge}))")
+  glue::glue("
+    CASE WHEN ST_IsClosed({geom}) AND ST_NPoints({geom}) > 2
+      THEN ST_MakeLine(list_transform(
+        range(1, ST_NPoints({geom})),
+        lambda i: ST_PointN({geom}, i::INTEGER)
+      ))
+      ELSE {geom}
+    END
+  ")
+}
 
 
 

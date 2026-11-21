@@ -25,6 +25,12 @@
 
 * All functions gain a `mode` argument that can be set to "sf" or "duckspatial" to return the output in that format. Alternatively, the user can use `duckspatial::ddbs_options()` to set the mode globally.
 
+* H3 directed edges: `ddbh3_h3_to_edge()`, `ddbh3_h3_to_edges()`, `ddbh3_edge_to_origin()`, `ddbh3_edge_to_destination()`, `ddbh3_edge_to_h3()`, `ddbh3_reverse_edge()`, `ddbh3_get_edge_length()` and `ddbh3_edge_to_spatial()` create directed edges from H3 cells and convert them to cells, lengths and lines. They also work inside `dplyr::mutate()` on lazy tables (except `ddbh3_edge_to_spatial()`).
+
+* `ddbh3_is_edge()`: check if an index is a valid H3 directed edge.
+
+* `ddbh3_is_neighbor()`: check if two H3 cells are neighbors.
+
 * `ddbh3_grid_path_cells()`: find a grid path connecting two H3 cells.
 
 * `ddbh3_grid_distance()`: get the grid distance between two H3 cells.

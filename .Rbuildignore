@@ -17,3 +17,5 @@ internal/*
 ^doc$
 ^docs$
 ^Meta$
+^test_feat\.R$
+^CLAUDE\.md$

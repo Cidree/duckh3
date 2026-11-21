@@ -38,6 +38,7 @@ All functions follow the `ddbh3_*()` prefix (*DuckDB H3*), structured around the
 - `ddbh3_points_to_*()` — from spatial point geometries to H3 representations
 - `ddbh3_h3_to_*()` — convert H3 cells to other representations
 - `ddbh3_vertex_to_*()` — convert H3 vertexes to other representations
+- `ddbh3_edge_to_*()` — convert H3 directed edges to other representations
 
 With the following available transformations:
 
