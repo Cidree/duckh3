@@ -5,6 +5,7 @@
 \alias{ddbh3_is_pentagon}
 \alias{ddbh3_is_valid}
 \alias{ddbh3_is_res_class_iii}
+\alias{ddbh3_is_edge}
 \alias{ddbh3_is_h3}
 \alias{ddbh3_is_vertex}
 \title{Check properties of H3 cell indexes}
@@ -46,6 +47,17 @@ ddbh3_is_vertex(
   x,
   h3vertex = "h3vertex",
   new_column = "isvertex",
+  conn = NULL,
+  name = NULL,
+  mode = NULL,
+  overwrite = FALSE,
+  quiet = FALSE
+)
+
+ddbh3_is_edge(
+  x,
+  h3edge = "h3edge",
+  new_column = "isedge",
   conn = NULL,
   name = NULL,
   mode = NULL,
@@ -95,6 +107,9 @@ Defaults to \code{FALSE}.}
 
 \item{h3vertex}{Name of the column containing H3 vertex strings. Defaults
 to \code{"h3vertex"}}
+
+\item{h3edge}{Name of the column containing H3 directed edge indexes, as
+strings or unsigned 64-bit integers (\code{UBIGINT}). Defaults to \code{"h3edge"}}
 }
 \value{
 One of the following, depending on the inputs:
@@ -121,6 +136,7 @@ pentagonal cells that exist at each H3 resolution
 \item \code{ddbh3_is_res_class_iii()}: returns \code{TRUE} if the H3 cell belongs to a
 Class III resolution (odd resolutions: 1, 3, 5, 7, 9, 11, 13, 15)
 \item \code{ddbh3_is_vertex()}: returns \code{TRUE} if the index is a valid H3 vertex
+\item \code{ddbh3_is_edge()}: returns \code{TRUE} if the index is a valid H3 directed edge
 }
 }
 \examples{
@@ -173,7 +189,7 @@ ddbh3_lonlat_to_h3(points_tbl, resolution = 7) |>
 vertex_tbl <- ddbh3_h3_to_vertex(points_tbl, n = 1)
 
 ## Check if indexes are valid vertexes
-ddbh3_is_vertex(vertex_tbl, h3 = "h3vertex")
+ddbh3_is_vertex(vertex_tbl)
 
 ## Check in mutate (mix of h3 cells and vertexes)
 vertex_tbl |>
@@ -181,4 +197,16 @@ vertex_tbl |>
     cell_valid  = ddbh3_is_h3(h3string),
     vertex_valid = ddbh3_is_vertex(h3vertex)
   )
+
+## IS EDGE -----------------
+
+## Get directed edges first
+edges_tbl <- ddbh3_h3_to_edges(points_tbl)
+
+## Check if indexes are valid directed edges
+ddbh3_is_edge(edges_tbl)
+
+## Check in mutate
+edges_tbl |>
+  mutate(edge_valid = ddbh3_is_edge(h3edge))
 }

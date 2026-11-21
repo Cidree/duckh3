@@ -64,7 +64,55 @@ create_ddbh3_macros <- function(conn) {
       h3_vertex_to_lat(h3vertex)",
 
     "CREATE OR REPLACE MACRO ddbh3_vertex_to_lon(h3vertex) AS
-      h3_vertex_to_lng(h3vertex)"
+      h3_vertex_to_lng(h3vertex)",
+
+    # ── H3 directed edges -------------------------------------------------------
+    "CREATE OR REPLACE MACRO ddbh3_h3_to_edge(h3start, h3end) AS
+      h3_cells_to_directed_edge(h3start, h3end)",
+
+    "CREATE OR REPLACE MACRO ddbh3_h3_to_edges(h3) AS
+      h3_origin_to_directed_edges(h3)",
+
+    "CREATE OR REPLACE MACRO ddbh3_edge_to_origin(h3edge) AS
+      h3_get_directed_edge_origin(h3edge)",
+
+    "CREATE OR REPLACE MACRO ddbh3_edge_to_destination(h3edge) AS
+      h3_get_directed_edge_destination(h3edge)",
+
+    "CREATE OR REPLACE MACRO ddbh3_edge_to_h3(h3edge) AS
+      h3_directed_edge_to_cells(h3edge)",
+
+    "CREATE OR REPLACE MACRO ddbh3_reverse_edge(h3edge) AS
+      h3_reverse_directed_edge(h3edge)",
+
+    "CREATE OR REPLACE MACRO ddbh3_get_edge_length(h3edge, unit := 'm') AS
+      h3_edge_length(h3edge, unit)",
+
+    "CREATE OR REPLACE MACRO ddbh3_is_edge(h3edge) AS
+      h3_is_valid_directed_edge(h3edge)",
+
+    "CREATE OR REPLACE MACRO ddbh3_is_neighbor(h3start, h3end) AS
+      h3_are_neighbor_cells(h3start, h3end)",
+
+    ## metrics
+    "CREATE OR REPLACE MACRO ddbh3_get_area(h3, unit := 'm^2') AS
+      h3_cell_area(h3, unit)",
+
+    "CREATE OR REPLACE MACRO ddbh3_great_circle_distance(lon_start, lat_start, lon_end, lat_end, unit := 'm') AS
+      h3_great_circle_distance(lat_start, lon_start, lat_end, lon_end, unit)",
+
+    "CREATE OR REPLACE MACRO ddbh3_get_hexagon_area_avg(resolution, unit := 'm^2') AS
+      h3_get_hexagon_area_avg(resolution::INTEGER, unit)",
+
+    "CREATE OR REPLACE MACRO ddbh3_get_hexagon_edge_length_avg(resolution, unit := 'm') AS
+      h3_get_hexagon_edge_length_avg(resolution::INTEGER, unit)",
+
+    ## compact (aggregate, for summarise()) and uncompact (list column)
+    "CREATE OR REPLACE MACRO ddbh3_compact(h3) AS
+      h3_compact_cells(list_distinct(list(h3)))",
+
+    "CREATE OR REPLACE MACRO ddbh3_uncompact(h3, resolution) AS
+      h3_uncompact_cells(h3, resolution::INTEGER)"
 
   )
 
@@ -96,13 +144,18 @@ is_h3_ready_conn <- function(conn) {
 
 
 
-check_nested_column <- function(x, column) {
+check_nested_column <- function(x, column, conn = NULL) {
 
-  ## For lazy tables we query the column type. However, the way of
-  ## finding the source conn and table is different depending of the
+  ## For lazy tables (or table names) we query the column type. However, the
+  ## way of finding the source conn and table is different depending of the
   ## object type
-  if (inherits(x, "duckspatial_df") | inherits(x, "tbl_duckdb_connection")) {
-    if (inherits(x, "duckspatial_df")) {
+  if (
+    inherits(x, "duckspatial_df") | inherits(x, "tbl_duckdb_connection") |
+      (is.character(x) && !is.null(conn))
+  ) {
+    if (is.character(x)) {
+      tbl_name <- duckspatial:::get_query_name(x)$table_name
+    } else if (inherits(x, "duckspatial_df")) {
       conn     <- attr(x, "source_conn")
       tbl_name <- attr(x, "source_table")
     } else {
@@ -229,6 +282,29 @@ get_vectorized_result <- function(x, fun, validate = "h3_is_valid_cell") {
 
 
 
+#' Build the LINESTRING of an H3 directed edge
+#'
+#' `h3_directed_edge_to_boundary_wkb()` returns a closed line (A -> B -> A),
+#' so the closing point is dropped to keep only the edge itself.
+#'
+#' @param h3edge SQL expression (e.g. a quoted column) with the directed edge
+#' @keywords internal
+#' @noRd
+build_edge_line <- function(h3edge) {
+  geom <- glue::glue("ST_GeomFromWKB(h3_directed_edge_to_boundary_wkb({h3edge}))")
+  glue::glue("
+    CASE WHEN ST_IsClosed({geom}) AND ST_NPoints({geom}) > 2
+      THEN ST_MakeLine(list_transform(
+        range(1, ST_NPoints({geom})),
+        lambda i: ST_PointN({geom}, i::INTEGER)
+      ))
+      ELSE {geom}
+    END
+  ")
+}
+
+
+
 #' Validate the `containment` argument shared by the geometry-to-H3 functions
 #' @keywords internal
 #' @noRd
@@ -243,6 +319,49 @@ assert_containment <- function(containment) {
       "The {.arg containment} is not valid. Valid options: {.val {c('overlap', 'full', 'center', 'overlap_bbox')}}"
     )
   )
+}
+
+
+#' Validate a `unit` argument against the units accepted by an h3 function
+#' @keywords internal
+#' @noRd
+assert_unit <- function(unit, valid) {
+  duckspatial:::assert_character_scalar(unit, "unit")
+  if (!unit %in% valid) {
+    cli::cli_abort(
+      "The {.arg unit} is not valid. Valid options: {.val {valid}}"
+    )
+  }
+  invisible(unit)
+}
+
+
+#' Evaluate an h3 function that takes a resolution and a unit
+#'
+#' Used by the per-resolution averages (e.g. `h3_get_hexagon_area_avg`).
+#' Returns one value per element of `resolution`, in the same order.
+#' @keywords internal
+#' @noRd
+get_resolution_constant <- function(resolution, fun, unit, conn = NULL) {
+
+  if (
+    !is.numeric(resolution) || length(resolution) == 0 || anyNA(resolution) ||
+      any(resolution %% 1 != 0) || any(resolution < 0 | resolution > 15)
+  ) {
+    cli::cli_abort(
+      "{.arg resolution} must be a vector of integers between 0 and 15."
+    )
+  }
+
+  if (is.null(conn)) conn <- ddbh3_default_conn(threads = 1)
+  check_installed_h3(conn = conn)
+
+  res_list <- paste(as.integer(resolution), collapse = ", ")
+  query <- glue::glue(
+    "SELECT list_transform([{res_list}], lambda r: {fun}(r::INTEGER, '{unit}')) AS v;"
+  )
+  DBI::dbGetQuery(conn, query)$v[[1]]
+
 }
 
 
