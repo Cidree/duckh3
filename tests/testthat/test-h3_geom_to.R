@@ -388,6 +388,24 @@ testthat::describe("polygon/line functions can overwrite their own source table"
 })
 
 
+# Geometry type validation ---------------------------------------------------
+
+testthat::describe("geometry type is validated on the prepared input", {
+
+  testthat::it("rejects the wrong geometry family with an informative error", {
+    expect_error(ddbh3_polygons_to_h3(line_sf, resolution = 3), "Invalid geometry type")
+    expect_error(ddbh3_polygons_to_spatial(line_sf, resolution = 3), "Invalid geometry type")
+    expect_error(ddbh3_lines_to_h3(poly_sf, resolution = 3), "Invalid geometry type")
+    expect_error(ddbh3_points_to_h3(poly_sf, resolution = 3), "Invalid geometry type")
+  })
+
+  testthat::it("accepts MULTI geometries", {
+    multi_sf <- sf::st_cast(poly_sf, "MULTIPOLYGON")
+    res <- dplyr::collect(ddbh3_polygons_to_h3(multi_sf, resolution = 3))
+    expect_gt(length(res$h3string[[1]]), 0)
+  })
+})
+
 # 7. Lambda syntax (DuckDB v2.0) ----------------------------------------------
 
 ## The string format builds its list with a lambda, which must keep working

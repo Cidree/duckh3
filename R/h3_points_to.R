@@ -89,7 +89,6 @@ ddbh3_points_to_spatial <- function(
   duckspatial:::assert_logic(quiet, "quiet")
   duckspatial:::assert_integer_scalar(resolution, "resolution")
   duckspatial:::assert_numeric_interval(resolution, 0, 15, "resolution")
-  duckspatial:::assert_geom_type(x = x, conn = conn, geom = "POINT", multi = TRUE)
   duckspatial:::assert_name(mode, "mode")
 
   # 1. Manage connection to DB
@@ -133,7 +132,8 @@ ddbh3_points_to_spatial <- function(
 
   ## 3.1. Get names of geometry columns (use saved sf_col_x from before transformation)
   x_geom <- sf_col_x %||% duckspatial:::get_geom_name(target_conn, x_list$query_name)
-  if (length(x_geom != 0)) duckspatial:::assert_geometry_column(x_geom, x_list)
+  duckspatial:::assert_geometry_column(x_geom, x_list)
+  assert_geom_type_query(target_conn, x_list$query_name, x_geom, "POINT")
 
   ## 3.2. Get names of the rest of the columns
   x_rest <- duckspatial:::get_geom_name(
@@ -212,7 +212,6 @@ ddbh3_points_to_h3 <- function(
   duckspatial:::assert_logic(quiet, "quiet")
   duckspatial:::assert_integer_scalar(resolution, "resolution")
   duckspatial:::assert_numeric_interval(resolution, 0, 15, "resolution")
-  duckspatial:::assert_geom_type(x = x, conn = conn, geom = "POINT", multi = TRUE)
   duckspatial:::assert_name(mode, "mode")
 
 
@@ -255,6 +254,7 @@ ddbh3_points_to_h3 <- function(
   ## 2.1. Get names of geometry columns (use saved sf_col_x from before transformation)
   x_geom <- sf_col_x %||% duckspatial:::get_geom_name(target_conn, x_list$query_name)
   duckspatial:::assert_geometry_column(x_geom, x_list)
+  assert_geom_type_query(target_conn, x_list$query_name, x_geom, "POINT")
 
   ## 2.2. Get names of the rest of the columns
   x_rest <- duckspatial:::get_geom_name(
