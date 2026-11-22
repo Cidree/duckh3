@@ -188,12 +188,21 @@ reference:
   desc: Work with H3 resolutions and hierarchy levels
   contents:
   - ddbh3_get_base_cell_number
+  - ddbh3_digits_to_h3
   - ddbh3_get_resolution
   - ddbh3_get_child_pos
   - ddbh3_child_pos_to_cell
   - ddbh3_get_n_children
   - ddbh3_get_hierarchy
   - ddbh3_get_icosahedron_faces
+  - ddbh3_compact
+
+- title: H3 metrics
+  desc: Measure areas, lengths and distances
+  contents:
+  - ddbh3_get_area
+  - ddbh3_get_hexagon_avg
+  - ddbh3_great_circle_distance
 
 - title: H3 neighborhood
   desc: Work with neighbors of H3 cells
@@ -201,6 +210,8 @@ reference:
   - ddbh3_grid_disk
   - ddbh3_grid_distance
   - ddbh3_grid_path_cells
+  - ddbh3_is_neighbor
+  - ddbh3_local_ij
   - ddbh3_max_grid_disk_size
 
 - title: H3 properties
@@ -212,6 +223,11 @@ reference:
   desc: Extract and convert H3 cell vertices to spatial representations
   contents:
   - ddbh3_vertex
+
+- title: H3 directed edges
+  desc: Create H3 directed edges and convert them to cells, lengths and lines
+  contents:
+  - ddbh3_edge
 
 # ── Navbar ──────────────────────────────────────────────────────────────────────
 navbar:

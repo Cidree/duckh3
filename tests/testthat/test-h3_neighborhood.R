@@ -1053,3 +1053,130 @@ testthat::describe("neighborhood functions work inside dplyr::mutate()", {
   })
 
 })
+
+
+
+# 8. is_neighbor() -------------------------------------------------------
+
+h3_neighbor <- "8839230599fffff"
+
+## 8.1. Input data in different formats ----------
+
+testthat::describe("ddbh3_is_neighbor() works in different formats", {
+
+  testthat::it("returns the correct data for tbl_duckdb_connection", {
+    res <- ddbh3_grid_ring(test_data, k = 1) |>
+      ddbh3_is_neighbor(h3end = "h3neighbors")
+    expect_s3_class(res, "tbl_duckdb_connection")
+    res_col <- dplyr::collect(res)
+    expect_type(res_col$isneighbor, "logical")
+    expect_true(all(res_col$isneighbor))
+  })
+
+  testthat::it("returns the correct data for data.frame", {
+    res <- ddbh3_is_neighbor(pair_tbl, h3start = "h3start", h3end = "h3end")
+    expect_s3_class(res, "tbl_duckdb_connection")
+    expect_false(dplyr::collect(res)$isneighbor)
+  })
+
+  testthat::it("returns the correct data for sf", {
+    res <- ddbh3_is_neighbor(test_data_sf, h3end = "h3string")
+    expect_s3_class(res, "duckspatial_df")
+    expect_in("isneighbor", colnames(dplyr::collect(res)))
+  })
+
+  testthat::it("returns the correct data for duckspatial_df", {
+    res <- ddbh3_is_neighbor(test_data_ddbs, h3end = "h3string")
+    expect_s3_class(res, "duckspatial_df")
+  })
+
+  testthat::it("returns the correct data for table", {
+    conn_test <- reset_conn_alt()
+    DBI::dbWriteTable(conn_test, "pairs", pair_tbl)
+    res <- ddbh3_is_neighbor("pairs", h3start = "h3start", h3end = "h3end", conn = conn_test)
+    expect_in("isneighbor", colnames(dplyr::collect(res)))
+  })
+
+})
+
+
+## 8.2. Correctness ------------
+
+testthat::describe("ddbh3_is_neighbor() returns correct values", {
+
+  testthat::it("only cells at grid distance 1 are neighbors", {
+    res <- ddbh3_grid_disk(test_data, k = 2) |>
+      ddbh3_is_neighbor(h3end = "h3neighbors") |>
+      ddbh3_grid_distance(h3end = "h3neighbors") |>
+      dplyr::collect()
+    expect_equal(res$isneighbor, res$grid_distance == 1)
+  })
+
+  testthat::it("a cell is not its own neighbor", {
+    res <- ddbh3_is_neighbor(test_data, h3end = "h3string") |> dplyr::collect()
+    expect_false(any(res$isneighbor))
+  })
+
+  testthat::it("works with UBIGINT columns", {
+    res <- data.frame(h3start = h3_origin, h3end = h3_neighbor) |>
+      ddbh3_strings_to_bigint(h3 = "h3start", new_column = "s") |>
+      ddbh3_strings_to_bigint(h3 = "h3end", new_column = "e") |>
+      ddbh3_is_neighbor(h3start = "s", h3end = "e") |>
+      dplyr::collect()
+    expect_true(res$isneighbor)
+  })
+
+})
+
+
+## 8.3. Arguments and errors ------------
+
+testthat::describe("ddbh3_is_neighbor() arguments work", {
+
+  testthat::it("new_column argument works", {
+    res <- ddbh3_is_neighbor(pair_tbl, h3start = "h3start", h3end = "h3end", new_column = "nb")
+    expect_true("nb" %in% colnames(res))
+  })
+
+  testthat::it("database arguments work", {
+    conn_test <- reset_conn_alt()
+    expect_message(ddbh3_is_neighbor(
+      pair_tbl, h3start = "h3start", h3end = "h3end",
+      conn = conn_test, name = "test_data_tbl"
+    ))
+    expect_no_message(ddbh3_is_neighbor(
+      pair_tbl, h3start = "h3start", h3end = "h3end",
+      conn = conn_test, name = "test_data_tbl2", quiet = TRUE
+    ))
+    expect_error(ddbh3_is_neighbor(
+      pair_tbl, h3start = "h3start", h3end = "h3end",
+      conn = conn_test, name = "test_data_tbl"
+    ))
+    expect_true(ddbh3_is_neighbor(
+      pair_tbl, h3start = "h3start", h3end = "h3end",
+      conn = conn_test, name = "test_data_tbl", overwrite = TRUE
+    ))
+  })
+
+})
+
+describe("ddbh3_is_neighbor() errors", {
+
+  it("requires h3end", {
+    expect_error(ddbh3_is_neighbor(pair_tbl, h3start = "h3start"))
+  })
+
+  it("requires h3start and h3end as character", {
+    expect_error(ddbh3_is_neighbor(pair_tbl, h3start = 1, h3end = "h3end"))
+    expect_error(ddbh3_is_neighbor(pair_tbl, h3start = "h3start", h3end = TRUE))
+  })
+
+  it("fails on a missing column", {
+    expect_error(ddbh3_is_neighbor(pair_tbl, h3start = "h3start", h3end = "not_a_column"))
+  })
+
+  it("requires a table (no vectorized mode)", {
+    expect_error(ddbh3_is_neighbor(h3_origin, h3end = h3_neighbor))
+  })
+
+})

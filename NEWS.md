@@ -26,6 +26,20 @@
 
 * All functions gain a `mode` argument that can be set to "sf" or "duckspatial" to return the output in that format. Alternatively, the user can use `duckspatial::ddbs_options()` to set the mode globally.
 
+* H3 directed edges: `ddbh3_h3_to_edge()`, `ddbh3_h3_to_edges()`, `ddbh3_edge_to_origin()`, `ddbh3_edge_to_destination()`, `ddbh3_edge_to_h3()`, `ddbh3_reverse_edge()`, `ddbh3_get_edge_length()` and `ddbh3_edge_to_spatial()` create directed edges from H3 cells and convert them to cells, lengths and lines. They also work inside `dplyr::mutate()` on lazy tables (except `ddbh3_edge_to_spatial()`).
+
+* `ddbh3_compact()` and `ddbh3_uncompact()`: compact a set of H3 cells into the smallest set of cells covering the same area (optionally per group with `by`), and uncompact cells back to a single resolution. `ddbh3_compact()` also works inside `dplyr::summarise()`, and `ddbh3_uncompact()` inside `dplyr::mutate()` on list columns.
+
+* `ddbh3_h3_to_local_ij()` and `ddbh3_local_ij_to_h3()` convert H3 cells to local IJ coordinates relative to an origin cell, and back. They also work inside `dplyr::mutate()` on lazy tables.
+
+* `ddbh3_is_index()` checks if an index is any valid H3 index (cell, directed edge or vertex), and `ddbh3_digits_to_h3()` builds H3 cells from a base cell and a list of digits. They also work inside `dplyr::mutate()` on lazy tables.
+
+* H3 metrics: `ddbh3_get_area()` gets the area of H3 cells, `ddbh3_great_circle_distance()` gets the great circle distance between two points, and `ddbh3_get_hexagon_area_avg()` and `ddbh3_get_hexagon_edge_length_avg()` get the average hexagon area and edge length at one or more resolutions. They also work inside `dplyr::mutate()` on lazy tables.
+
+* `ddbh3_is_edge()`: check if an index is a valid H3 directed edge.
+
+* `ddbh3_is_neighbor()`: check if two H3 cells are neighbors.
+
 * `ddbh3_grid_path_cells()`: find a grid path connecting two H3 cells.
 
 * `ddbh3_grid_distance()`: get the grid distance between two H3 cells.
