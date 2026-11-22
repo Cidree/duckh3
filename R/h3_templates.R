@@ -39,7 +39,17 @@ template_h3_base <- function(
   }
 
   # 0. Validate inputs
-  duckspatial:::assert_character_scalar(new_column, "new_column")
+  ## `new_column` can have several names when `fun` has one expression each
+  if (length(new_column) == 1L) {
+    duckspatial:::assert_character_scalar(new_column, "new_column")
+  } else if (
+    !is.character(new_column) || anyNA(new_column) || anyDuplicated(tolower(new_column)) > 0 ||
+      (is.null(build_query) && length(fun) != length(new_column))
+  ) {
+    cli::cli_abort(
+      "{.arg new_column} must be a character vector of {length(fun)} unique name{?s}."
+    )
+  }
   duckspatial:::assert_conn_character(conn, x)
   duckspatial:::assert_name(name)
   duckspatial:::assert_logic(overwrite, "overwrite")

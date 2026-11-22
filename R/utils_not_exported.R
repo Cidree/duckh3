@@ -112,7 +112,14 @@ create_ddbh3_macros <- function(conn) {
       h3_compact_cells(list_distinct(list(h3)))",
 
     "CREATE OR REPLACE MACRO ddbh3_uncompact(h3, resolution) AS
-      h3_uncompact_cells(h3, resolution::INTEGER)"
+      h3_uncompact_cells(h3, resolution::INTEGER)",
+
+    ## local IJ coordinates
+    "CREATE OR REPLACE MACRO ddbh3_h3_to_local_ij(origin, h3) AS
+      h3_cell_to_local_ij(origin, h3)",
+
+    "CREATE OR REPLACE MACRO ddbh3_local_ij_to_h3(origin, i, j) AS
+      h3_local_ij_to_cell(origin, i::INTEGER, j::INTEGER)"
 
   )
 
@@ -514,7 +521,8 @@ quote_ident <- function(x) {
 #' Returns `* [EXCLUDE (...)], <expr> AS new_column` when `new_column` is not a
 #' column of the input, and `* [EXCLUDE (...)] REPLACE (<expr> AS new_column)`
 #' when it is, so an existing column is overwritten in place instead of DuckDB
-#' adding a duplicate with a `_1` suffix.
+#' adding a duplicate with a `_1` suffix. `new_column` and `expr` can be
+#' equal-length vectors to add several columns at once.
 #'
 #' @template conn_null
 #' @param query_name name of the table/view with the input data
@@ -543,11 +551,23 @@ build_new_column_select <- function(
     ""
   }
 
-  if (tolower(new_column) %in% tolower(x_cols)) {
-    glue::glue("{star}{exclude_clause} REPLACE ({expr} AS {quote_ident(new_column)})")
+  ## `new_column` and `expr` can be equal-length vectors (several new columns):
+  ## existing columns are replaced in place, the rest are appended
+  items    <- paste(expr, "AS", quote_ident(new_column))
+  existing <- tolower(new_column) %in% tolower(x_cols)
+
+  replace_clause <- if (any(existing)) {
+    paste0(" REPLACE (", paste(items[existing], collapse = ", "), ")")
   } else {
-    glue::glue("{star}{exclude_clause}, {expr} AS {quote_ident(new_column)}")
+    ""
   }
+  append_clause <- if (any(!existing)) {
+    paste0(", ", paste(items[!existing], collapse = ", "))
+  } else {
+    ""
+  }
+
+  glue::glue("{star}{exclude_clause}{replace_clause}{append_clause}")
 }
 
 

@@ -210,6 +210,7 @@ reference:
   - ddbh3_grid_distance
   - ddbh3_grid_path_cells
   - ddbh3_is_neighbor
+  - ddbh3_local_ij
   - ddbh3_max_grid_disk_size
 
 - title: H3 properties
