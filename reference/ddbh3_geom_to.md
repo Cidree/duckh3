@@ -212,14 +212,6 @@ library(sf)
 
 ## Setup the default connection with h3 and spatial extensions
 ddbh3_default_conn(threads = 1)
-#> duckdb keeps downloaded extensions and secrets in a temporary directory:
-#> ℹ /tmp/RtmpeB00db/duckdb
-#> This is removed when the R session ends.
-#> • Extensions are re-downloaded each session.
-#> • Secrets are lost.
-#> ℹ Run duckdb(shared_home = TRUE) (or create ~/.duckdb) to keep them (suitable for most users).
-#> ℹ Run duckdb(shared_home = FALSE) to accept the temporary directory (and silence this message).
-#> ℹ See ?duckdb_storage for details and alternatives.
 
 ## Build a small polygon and a small line in EPSG:4326
 poly_sf <- st_as_sf(

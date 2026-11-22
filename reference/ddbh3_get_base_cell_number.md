@@ -58,7 +58,8 @@ ddbh3_get_base_cell_number(
 - new_column:
 
   Name of the new column to create on the input data. If NULL, the
-  function will return a vector with the result
+  function will return a vector with the result. If the input already
+  has a column with this name, it is replaced by the result
 
 - conn:
 
@@ -124,14 +125,6 @@ One of the following, depending on the inputs:
 ## Load needed packages
 library(duckh3)
 library(dplyr)
-#> 
-#> Attaching package: ‘dplyr’
-#> The following objects are masked from ‘package:stats’:
-#> 
-#>     filter, lag
-#> The following objects are masked from ‘package:base’:
-#> 
-#>     intersect, setdiff, setequal, union
 
 ## Setup the default connection with h3 and spatial extensions
 ## This is a mandatory step to use duckh3 functions
@@ -148,7 +141,7 @@ points_tbl <- ddbh3_lonlat_to_h3(points_tbl, resolution = 6)
 ## Get the base cell number
 ddbh3_get_base_cell_number(points_tbl)
 #> # A query:  ?? x 7
-#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1019-azure:R 4.6.2/:memory:]
+#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
 #>        X    id    lat    lon category h3string        base_cell
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>               <int>
 #>  1     1     1 -43.1   16.2  B        86d02dcc7ffffff       104

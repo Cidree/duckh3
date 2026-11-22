@@ -49,6 +49,28 @@ ddbh3_is_vertex(
   overwrite = FALSE,
   quiet = FALSE
 )
+
+ddbh3_is_edge(
+  x,
+  h3edge = "h3edge",
+  new_column = "isedge",
+  conn = NULL,
+  name = NULL,
+  mode = NULL,
+  overwrite = FALSE,
+  quiet = FALSE
+)
+
+ddbh3_is_index(
+  x,
+  h3 = "h3string",
+  new_column = "isindex",
+  conn = NULL,
+  name = NULL,
+  mode = NULL,
+  overwrite = FALSE,
+  quiet = FALSE
+)
 ```
 
 ## Arguments
@@ -134,6 +156,11 @@ ddbh3_is_vertex(
   Name of the column containing H3 vertex strings. Defaults to
   `"h3vertex"`
 
+- h3edge:
+
+  Name of the column containing H3 directed edge indexes, as strings or
+  unsigned 64-bit integers (`UBIGINT`). Defaults to `"h3edge"`
+
 ## Value
 
 One of the following, depending on the inputs:
@@ -172,6 +199,12 @@ returning a logical column:
 
 - `ddbh3_is_vertex()`: returns `TRUE` if the index is a valid H3 vertex
 
+- `ddbh3_is_edge()`: returns `TRUE` if the index is a valid H3 directed
+  edge
+
+- `ddbh3_is_index()`: returns `TRUE` if the index is any valid H3 index
+  (cell, directed edge or vertex)
+
 ## Examples
 
 ``` r
@@ -196,7 +229,7 @@ points_tbl <- ddbh3_lonlat_to_h3(points_tbl, resolution = 8)
 ## Check if h3 indexes are valid
 ddbh3_is_h3(points_tbl)
 #> # A query:  ?? x 7
-#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1019-azure:R 4.6.2/:memory:]
+#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
 #>        X    id    lat    lon category h3string        ish3 
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <lgl>
 #>  1     1     1 -43.1   16.2  B        88d02dcc19fffff TRUE 
@@ -215,7 +248,7 @@ ddbh3_is_h3(points_tbl)
 points_tbl |>
   mutate(valid = ddbh3_is_h3(h3string))
 #> # A query:  ?? x 7
-#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1019-azure:R 4.6.2/:memory:]
+#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
 #>        X    id    lat    lon category h3string        valid
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <lgl>
 #>  1     1     1 -43.1   16.2  B        88d02dcc19fffff TRUE 
@@ -235,7 +268,7 @@ points_tbl |>
 ## Check if h3 indexes are pentagons
 ddbh3_is_pentagon(points_tbl)
 #> # A query:  ?? x 7
-#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1019-azure:R 4.6.2/:memory:]
+#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
 #>        X    id    lat    lon category h3string        ispentagon
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <lgl>     
 #>  1     1     1 -43.1   16.2  B        88d02dcc19fffff FALSE     
@@ -254,7 +287,7 @@ ddbh3_is_pentagon(points_tbl)
 points_tbl |>
   mutate(is_pent = ddbh3_is_pentagon(h3string))
 #> # A query:  ?? x 7
-#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1019-azure:R 4.6.2/:memory:]
+#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
 #>        X    id    lat    lon category h3string        is_pent
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <lgl>  
 #>  1     1     1 -43.1   16.2  B        88d02dcc19fffff FALSE  
@@ -274,7 +307,7 @@ points_tbl |>
 ## Check if h3 indexes belong to a Class III resolution
 ddbh3_is_res_class_iii(points_tbl)
 #> # A query:  ?? x 7
-#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1019-azure:R 4.6.2/:memory:]
+#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
 #>        X    id    lat    lon category h3string        isclassiii
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <lgl>     
 #>  1     1     1 -43.1   16.2  B        88d02dcc19fffff FALSE     
@@ -293,7 +326,7 @@ ddbh3_is_res_class_iii(points_tbl)
 ddbh3_lonlat_to_h3(points_tbl, resolution = 7) |>
   ddbh3_is_res_class_iii()
 #> # A query:  ?? x 7
-#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1019-azure:R 4.6.2/:memory:]
+#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
 #>        X    id    lat    lon category h3string        isclassiii
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <lgl>     
 #>  1     1     1 -43.1   16.2  B        87d02dcc1ffffff TRUE      
@@ -314,9 +347,9 @@ ddbh3_lonlat_to_h3(points_tbl, resolution = 7) |>
 vertex_tbl <- ddbh3_h3_to_vertex(points_tbl, n = 1)
 
 ## Check if indexes are valid vertexes
-ddbh3_is_vertex(vertex_tbl, h3 = "h3vertex")
+ddbh3_is_vertex(vertex_tbl)
 #> # A query:  ?? x 8
-#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1019-azure:R 4.6.2/:memory:]
+#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
 #>        X    id    lat    lon category h3string        h3vertex         isvertex
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <chr>            <lgl>   
 #>  1     1     1 -43.1   16.2  B        88d02dcc19fffff 218d02dcc19fffff TRUE    
@@ -338,7 +371,7 @@ vertex_tbl |>
     vertex_valid = ddbh3_is_vertex(h3vertex)
   )
 #> # A query:  ?? x 9
-#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1019-azure:R 4.6.2/:memory:]
+#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
 #>        X    id    lat    lon category h3string  h3vertex cell_valid vertex_valid
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>     <chr>    <lgl>      <lgl>       
 #>  1     1     1 -43.1   16.2  B        88d02dcc… 218d02d… TRUE       TRUE        
@@ -351,5 +384,88 @@ vertex_tbl |>
 #>  8     8     8 -32.7  -31.9  A        88c52b36… 238c52b… TRUE       TRUE        
 #>  9     9     9  -7.39  39.0  C        887b6b57… 2187b6b… TRUE       TRUE        
 #> 10    10    10  10.0  -89.9  A        886d424a… 2186d42… TRUE       TRUE        
+#> # ℹ more rows
+
+## IS EDGE -----------------
+
+## Get directed edges first
+edges_tbl <- ddbh3_h3_to_edges(points_tbl)
+
+## Check if indexes are valid directed edges
+ddbh3_is_edge(edges_tbl)
+#> # A query:  ?? x 8
+#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
+#>        X    id   lat   lon category h3string        h3edge           isedge
+#>    <int> <int> <dbl> <dbl> <chr>    <chr>           <chr>            <lgl> 
+#>  1     1     1 -43.1  16.2 B        88d02dcc19fffff 118d02dcc19fffff TRUE  
+#>  2     1     1 -43.1  16.2 B        88d02dcc19fffff 128d02dcc19fffff TRUE  
+#>  3     1     1 -43.1  16.2 B        88d02dcc19fffff 138d02dcc19fffff TRUE  
+#>  4     1     1 -43.1  16.2 B        88d02dcc19fffff 148d02dcc19fffff TRUE  
+#>  5     1     1 -43.1  16.2 B        88d02dcc19fffff 158d02dcc19fffff TRUE  
+#>  6     1     1 -43.1  16.2 B        88d02dcc19fffff 168d02dcc19fffff TRUE  
+#>  7     2     2  29.2  61.9 C        884221ac65fffff 1184221ac65fffff TRUE  
+#>  8     2     2  29.2  61.9 C        884221ac65fffff 1284221ac65fffff TRUE  
+#>  9     2     2  29.2  61.9 C        884221ac65fffff 1384221ac65fffff TRUE  
+#> 10     2     2  29.2  61.9 C        884221ac65fffff 1484221ac65fffff TRUE  
+#> # ℹ more rows
+
+## Check in mutate
+edges_tbl |>
+  mutate(edge_valid = ddbh3_is_edge(h3edge))
+#> # A query:  ?? x 8
+#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
+#>        X    id   lat   lon category h3string        h3edge           edge_valid
+#>    <int> <int> <dbl> <dbl> <chr>    <chr>           <chr>            <lgl>     
+#>  1     1     1 -43.1  16.2 B        88d02dcc19fffff 118d02dcc19fffff TRUE      
+#>  2     1     1 -43.1  16.2 B        88d02dcc19fffff 128d02dcc19fffff TRUE      
+#>  3     1     1 -43.1  16.2 B        88d02dcc19fffff 138d02dcc19fffff TRUE      
+#>  4     1     1 -43.1  16.2 B        88d02dcc19fffff 148d02dcc19fffff TRUE      
+#>  5     1     1 -43.1  16.2 B        88d02dcc19fffff 158d02dcc19fffff TRUE      
+#>  6     1     1 -43.1  16.2 B        88d02dcc19fffff 168d02dcc19fffff TRUE      
+#>  7     2     2  29.2  61.9 C        884221ac65fffff 1184221ac65fffff TRUE      
+#>  8     2     2  29.2  61.9 C        884221ac65fffff 1284221ac65fffff TRUE      
+#>  9     2     2  29.2  61.9 C        884221ac65fffff 1384221ac65fffff TRUE      
+#> 10     2     2  29.2  61.9 C        884221ac65fffff 1484221ac65fffff TRUE      
+#> # ℹ more rows
+
+## IS INDEX ----------------
+
+## Cells and edges are both valid indexes
+edges_tbl |>
+  ddbh3_is_index(new_column = "cell_index") |>
+  ddbh3_is_index(h3 = "h3edge", new_column = "edge_index")
+#> # A query:  ?? x 9
+#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
+#>        X    id   lat   lon category h3string        h3edge cell_index edge_index
+#>    <int> <int> <dbl> <dbl> <chr>    <chr>           <chr>  <lgl>      <lgl>     
+#>  1     1     1 -43.1  16.2 B        88d02dcc19fffff 118d0… TRUE       TRUE      
+#>  2     1     1 -43.1  16.2 B        88d02dcc19fffff 128d0… TRUE       TRUE      
+#>  3     1     1 -43.1  16.2 B        88d02dcc19fffff 138d0… TRUE       TRUE      
+#>  4     1     1 -43.1  16.2 B        88d02dcc19fffff 148d0… TRUE       TRUE      
+#>  5     1     1 -43.1  16.2 B        88d02dcc19fffff 158d0… TRUE       TRUE      
+#>  6     1     1 -43.1  16.2 B        88d02dcc19fffff 168d0… TRUE       TRUE      
+#>  7     2     2  29.2  61.9 C        884221ac65fffff 11842… TRUE       TRUE      
+#>  8     2     2  29.2  61.9 C        884221ac65fffff 12842… TRUE       TRUE      
+#>  9     2     2  29.2  61.9 C        884221ac65fffff 13842… TRUE       TRUE      
+#> 10     2     2  29.2  61.9 C        884221ac65fffff 14842… TRUE       TRUE      
+#> # ℹ more rows
+
+## Check in mutate
+edges_tbl |>
+  mutate(valid = ddbh3_is_index(h3edge))
+#> # A query:  ?? x 8
+#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
+#>        X    id   lat   lon category h3string        h3edge           valid
+#>    <int> <int> <dbl> <dbl> <chr>    <chr>           <chr>            <lgl>
+#>  1     1     1 -43.1  16.2 B        88d02dcc19fffff 118d02dcc19fffff TRUE 
+#>  2     1     1 -43.1  16.2 B        88d02dcc19fffff 128d02dcc19fffff TRUE 
+#>  3     1     1 -43.1  16.2 B        88d02dcc19fffff 138d02dcc19fffff TRUE 
+#>  4     1     1 -43.1  16.2 B        88d02dcc19fffff 148d02dcc19fffff TRUE 
+#>  5     1     1 -43.1  16.2 B        88d02dcc19fffff 158d02dcc19fffff TRUE 
+#>  6     1     1 -43.1  16.2 B        88d02dcc19fffff 168d02dcc19fffff TRUE 
+#>  7     2     2  29.2  61.9 C        884221ac65fffff 1184221ac65fffff TRUE 
+#>  8     2     2  29.2  61.9 C        884221ac65fffff 1284221ac65fffff TRUE 
+#>  9     2     2  29.2  61.9 C        884221ac65fffff 1384221ac65fffff TRUE 
+#> 10     2     2  29.2  61.9 C        884221ac65fffff 1484221ac65fffff TRUE 
 #> # ℹ more rows
 ```

@@ -42,6 +42,8 @@ around the expected input data, and what they will be converted to:
   representations
 - `ddbh3_h3_to_*()` — convert H3 cells to other representations
 - `ddbh3_vertex_to_*()` — convert H3 vertexes to other representations
+- `ddbh3_edge_to_*()` — convert H3 directed edges to other
+  representations
 
 With the following available transformations:
 
@@ -56,7 +58,7 @@ And there are also a set of function to retrieve or check properties of
 the data:
 
 - `ddbh3_get_*()` — retrieve H3 cell properties (resolution, parent,
-  children, vertices…)
+  children, area, edge length…)
 - `ddbh3_is_*()` — check properties of H3 indexes (valid, pentagon,
   Class III…)
 
