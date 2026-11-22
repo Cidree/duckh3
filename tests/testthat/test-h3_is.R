@@ -1013,3 +1013,112 @@ describe("errors", {
   })
 
 })
+
+
+
+# 6. is_index() ---------------------------------------------------------
+
+## 6.1. Input data in different formats ----------
+
+testthat::describe("ddbh3_is_index() works in different formats", {
+
+  testthat::it("returns the correct data for tbl_duckdb_connection", {
+    res <- ddbh3_is_index(test_data)
+    expect_s3_class(res, "tbl_duckdb_connection")
+    res_col <- dplyr::collect(res)
+    expect_in("isindex", colnames(res_col))
+    expect_type(res_col$isindex, "logical")
+    expect_true(all(res_col$isindex))
+  })
+
+  testthat::it("returns the correct data for data.frame", {
+    res <- ddbh3_is_index(dplyr::collect(test_data))
+    expect_s3_class(res, "tbl_duckdb_connection")
+    expect_in("isindex", colnames(dplyr::collect(res)))
+  })
+
+  testthat::it("returns the correct data for sf", {
+    test_data_sf <- test_data |>
+      dplyr::collect() |>
+      sf::st_as_sf(coords = c("lon", "lat"), crs = 4326, remove = FALSE)
+    res <- ddbh3_is_index(test_data_sf)
+    expect_s3_class(res, "duckspatial_df")
+    expect_in("isindex", colnames(dplyr::collect(res)))
+  })
+
+  testthat::it("returns the correct data for table", {
+    conn_test <- reset_conn_alt()
+    DBI::dbWriteTable(conn_test, "cells", dplyr::collect(test_data))
+    res <- ddbh3_is_index("cells", conn = conn_test)
+    expect_true(all(dplyr::collect(res)$isindex))
+  })
+
+  testthat::it("works with UBIGINT indexes", {
+    res <- ddbh3_strings_to_bigint(test_data) |>
+      ddbh3_is_index(h3 = "h3bigint") |>
+      dplyr::collect()
+    expect_true(all(res$isindex))
+  })
+
+})
+
+
+## 6.2. Arguments work ------------
+
+testthat::describe("ddbh3_is_index() arguments work", {
+
+  testthat::it("cells, edges and vertexes are valid indexes", {
+    res <- ddbh3_h3_to_edges(test_data) |>
+      ddbh3_is_index(h3 = "h3edge") |>
+      dplyr::collect()
+    expect_true(all(res$isindex))
+    vertex <- ddbh3_h3_to_vertex("8928308280fffff", n = 0)
+    expect_equal(
+      ddbh3_is_index(c("8928308280fffff", "11a1fb46622dffff", vertex)),
+      c(TRUE, TRUE, TRUE)
+    )
+  })
+
+  testthat::it("returns FALSE for invalid input", {
+    expect_equal(ddbh3_is_index(c("8928308280fffff", "zzz")), c(TRUE, FALSE))
+    res <- data.frame(h3string = c("8928308280fffff", "zzz", NA)) |>
+      ddbh3_is_index() |>
+      dplyr::collect()
+    expect_equal(res$isindex, c(TRUE, FALSE, NA))
+  })
+
+  testthat::it("new_column argument works", {
+    res <- ddbh3_is_index(test_data, new_column = "res")
+    expect_true("res" %in% colnames(res))
+  })
+
+  testthat::it("works inside mutate", {
+    res <- test_data |>
+      dplyr::mutate(valid = ddbh3_is_index(h3string)) |>
+      dplyr::collect()
+    expect_true(all(res$valid))
+  })
+
+})
+
+
+## 6.3. Errors on weird inputs -----------
+
+describe("errors", {
+
+  it("requires h3 argument as character", {
+    expect_error(ddbh3_is_index(test_data, h3 = 999))
+  })
+
+  it("requires new_column argument as character", {
+    expect_error(ddbh3_is_index(test_data, new_column = 999))
+  })
+
+  it("validates x, conn, overwrite and quiet", {
+    expect_error(ddbh3_is_index(x = 999))
+    expect_error(ddbh3_is_index(test_data, conn = 999))
+    expect_error(ddbh3_is_index(test_data, overwrite = 999))
+    expect_error(ddbh3_is_index(test_data, quiet = 999))
+  })
+
+})

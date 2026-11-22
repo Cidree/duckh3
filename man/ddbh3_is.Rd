@@ -6,6 +6,7 @@
 \alias{ddbh3_is_valid}
 \alias{ddbh3_is_res_class_iii}
 \alias{ddbh3_is_edge}
+\alias{ddbh3_is_index}
 \alias{ddbh3_is_h3}
 \alias{ddbh3_is_vertex}
 \title{Check properties of H3 cell indexes}
@@ -58,6 +59,17 @@ ddbh3_is_edge(
   x,
   h3edge = "h3edge",
   new_column = "isedge",
+  conn = NULL,
+  name = NULL,
+  mode = NULL,
+  overwrite = FALSE,
+  quiet = FALSE
+)
+
+ddbh3_is_index(
+  x,
+  h3 = "h3string",
+  new_column = "isindex",
   conn = NULL,
   name = NULL,
   mode = NULL,
@@ -137,6 +149,8 @@ pentagonal cells that exist at each H3 resolution
 Class III resolution (odd resolutions: 1, 3, 5, 7, 9, 11, 13, 15)
 \item \code{ddbh3_is_vertex()}: returns \code{TRUE} if the index is a valid H3 vertex
 \item \code{ddbh3_is_edge()}: returns \code{TRUE} if the index is a valid H3 directed edge
+\item \code{ddbh3_is_index()}: returns \code{TRUE} if the index is any valid H3 index
+(cell, directed edge or vertex)
 }
 }
 \examples{
@@ -209,4 +223,15 @@ ddbh3_is_edge(edges_tbl)
 ## Check in mutate
 edges_tbl |>
   mutate(edge_valid = ddbh3_is_edge(h3edge))
+
+## IS INDEX ----------------
+
+## Cells and edges are both valid indexes
+edges_tbl |>
+  ddbh3_is_index(new_column = "cell_index") |>
+  ddbh3_is_index(h3 = "h3edge", new_column = "edge_index")
+
+## Check in mutate
+edges_tbl |>
+  mutate(valid = ddbh3_is_index(h3edge))
 }

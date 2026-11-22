@@ -119,7 +119,14 @@ create_ddbh3_macros <- function(conn) {
       h3_cell_to_local_ij(origin, h3)",
 
     "CREATE OR REPLACE MACRO ddbh3_local_ij_to_h3(origin, i, j) AS
-      h3_local_ij_to_cell(origin, i::INTEGER, j::INTEGER)"
+      h3_local_ij_to_cell(origin, i::INTEGER, j::INTEGER)",
+
+    ## index inspection and digits
+    "CREATE OR REPLACE MACRO ddbh3_is_index(h3) AS
+      h3_is_valid_index(h3)",
+
+    "CREATE OR REPLACE MACRO ddbh3_digits_to_h3(base_cell, digits) AS
+      h3_construct_cell_string(base_cell::INTEGER, digits::INTEGER[])"
 
   )
 

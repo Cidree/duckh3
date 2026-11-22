@@ -188,6 +188,7 @@ reference:
   desc: Work with H3 resolutions and hierarchy levels
   contents:
   - ddbh3_get_base_cell_number
+  - ddbh3_digits_to_h3
   - ddbh3_get_resolution
   - ddbh3_get_child_pos
   - ddbh3_child_pos_to_cell

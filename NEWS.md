@@ -31,6 +31,8 @@
 
 * `ddbh3_h3_to_local_ij()` and `ddbh3_local_ij_to_h3()` convert H3 cells to local IJ coordinates relative to an origin cell, and back. They also work inside `dplyr::mutate()` on lazy tables.
 
+* `ddbh3_is_index()` checks if an index is any valid H3 index (cell, directed edge or vertex), and `ddbh3_digits_to_h3()` builds H3 cells from a base cell and a list of digits. They also work inside `dplyr::mutate()` on lazy tables.
+
 * H3 metrics: `ddbh3_get_area()` gets the area of H3 cells, `ddbh3_great_circle_distance()` gets the great circle distance between two points, and `ddbh3_get_hexagon_area_avg()` and `ddbh3_get_hexagon_edge_length_avg()` get the average hexagon area and edge length at one or more resolutions. They also work inside `dplyr::mutate()` on lazy tables.
 
 * `ddbh3_is_edge()`: check if an index is a valid H3 directed edge.
