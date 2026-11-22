@@ -12,6 +12,9 @@
 #' @param base_fun The duckdb function applied to `x` in vectorized mode
 #' @param validate SQL predicate used to validate `x` in vectorized mode
 #'   (NULL to skip validation)
+#' @param build_query Optional function `function(query_name)` returning the
+#'   full SELECT query, used instead of adding `fun` as a new column (e.g. for
+#'   aggregations). The result is never spatial.
 #' 
 #' @keywords internal
 #' @noRd
@@ -25,7 +28,8 @@ template_h3_base <- function(
     quiet = FALSE,
     fun = NULL,
     base_fun = NULL,
-    validate = "h3_is_valid_cell"
+    validate = "h3_is_valid_cell",
+    build_query = NULL
 ) {
 
   ## First, try vectorized option
@@ -35,7 +39,17 @@ template_h3_base <- function(
   }
 
   # 0. Validate inputs
-  duckspatial:::assert_character_scalar(new_column, "new_column")
+  ## `new_column` can have several names when `fun` has one expression each
+  if (length(new_column) == 1L) {
+    duckspatial:::assert_character_scalar(new_column, "new_column")
+  } else if (
+    !is.character(new_column) || anyNA(new_column) || anyDuplicated(tolower(new_column)) > 0 ||
+      (is.null(build_query) && length(fun) != length(new_column))
+  ) {
+    cli::cli_abort(
+      "{.arg new_column} must be a character vector of {length(fun)} unique name{?s}."
+    )
+  }
   duckspatial:::assert_conn_character(conn, x)
   duckspatial:::assert_name(name)
   duckspatial:::assert_logic(overwrite, "overwrite")
@@ -90,24 +104,31 @@ template_h3_base <- function(
   if (length(x_geom != 0)) duckspatial:::assert_geometry_column(x_geom, x_list)
 
   ## 2.2. Build the base query
-  ## (replaces new_column if x already has it)
-  select_list <- build_new_column_select(
-    target_conn, x_list$query_name, new_column, fun, exclude = x_geom
-  )
-  geom_clause <- if (length(x_geom) > 0) {
-    glue::glue("
-      {select_list},
-      {duckspatial:::build_geom_query(quote_ident(x_geom), name, crs_x, 'duckspatial')} AS {quote_ident(x_geom)}"
-    )
+  if (!is.null(build_query)) {
+    ## custom query (e.g. aggregations): the output has no geometry
+    base.query <- build_query(x_list$query_name)
+    x_geom     <- character(0)
+    crs_x      <- NULL
   } else {
-    select_list
+    ## (replaces new_column if x already has it)
+    select_list <- build_new_column_select(
+      target_conn, x_list$query_name, new_column, fun, exclude = x_geom
+    )
+    geom_clause <- if (length(x_geom) > 0) {
+      glue::glue("
+        {select_list},
+        {duckspatial:::build_geom_query(quote_ident(x_geom), name, crs_x, 'duckspatial')} AS {quote_ident(x_geom)}"
+      )
+    } else {
+      select_list
+    }
+    base.query <- glue::glue("
+      SELECT
+        {geom_clause}
+      FROM
+        {x_list$query_name};
+    ")
   }
-  base.query <- glue::glue("
-    SELECT
-      {geom_clause}
-    FROM
-      {x_list$query_name};
-  ")
 
   # 3. Table creation if name is provided, or 
   # create duckspatial_df or sf object if name is NULL

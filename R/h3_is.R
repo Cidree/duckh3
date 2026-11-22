@@ -6,6 +6,7 @@
 #' @template x
 #' @template h3
 #' @template h3vertex
+#' @template h3edge
 #' @template new_column
 #' @template conn_null
 #' @template name
@@ -22,11 +23,14 @@
 #' * `ddbh3_is_res_class_iii()`: returns `TRUE` if the H3 cell belongs to a
 #'   Class III resolution (odd resolutions: 1, 3, 5, 7, 9, 11, 13, 15)
 #' * `ddbh3_is_vertex()`: returns `TRUE` if the index is a valid H3 vertex
+#' * `ddbh3_is_edge()`: returns `TRUE` if the index is a valid H3 directed edge
+#' * `ddbh3_is_index()`: returns `TRUE` if the index is any valid H3 index
+#'   (cell, directed edge or vertex)
 #'
 #' @template returns_tbl
 #'
 #' @name ddbh3_is
-#' @aliases ddbh3_is_pentagon ddbh3_is_valid ddbh3_is_res_class_iii
+#' @aliases ddbh3_is_pentagon ddbh3_is_valid ddbh3_is_res_class_iii ddbh3_is_edge ddbh3_is_index
 #'
 #' @examples
 #' ## Load needed packages
@@ -78,7 +82,7 @@
 #' vertex_tbl <- ddbh3_h3_to_vertex(points_tbl, n = 1)
 #' 
 #' ## Check if indexes are valid vertexes
-#' ddbh3_is_vertex(vertex_tbl, h3 = "h3vertex")
+#' ddbh3_is_vertex(vertex_tbl)
 #' 
 #' ## Check in mutate (mix of h3 cells and vertexes)
 #' vertex_tbl |>
@@ -86,6 +90,29 @@
 #'     cell_valid  = ddbh3_is_h3(h3string),
 #'     vertex_valid = ddbh3_is_vertex(h3vertex)
 #'   )
+#'
+#' ## IS EDGE -----------------
+#'
+#' ## Get directed edges first
+#' edges_tbl <- ddbh3_h3_to_edges(points_tbl)
+#'
+#' ## Check if indexes are valid directed edges
+#' ddbh3_is_edge(edges_tbl)
+#'
+#' ## Check in mutate
+#' edges_tbl |>
+#'   mutate(edge_valid = ddbh3_is_edge(h3edge))
+#'
+#' ## IS INDEX ----------------
+#'
+#' ## Cells and edges are both valid indexes
+#' edges_tbl |>
+#'   ddbh3_is_index(new_column = "cell_index") |>
+#'   ddbh3_is_index(h3 = "h3edge", new_column = "edge_index")
+#'
+#' ## Check in mutate
+#' edges_tbl |>
+#'   mutate(valid = ddbh3_is_index(h3edge))
 NULL
 
 
@@ -237,5 +264,83 @@ ddbh3_is_vertex <- function(
     base_fun = "h3_is_valid_vertex(x)",
     validate = NULL
   ) 
+
+}
+
+
+
+
+
+#' @rdname ddbh3_is
+#' @export
+ddbh3_is_edge <- function(
+    x,
+    h3edge = "h3edge",
+    new_column = "isedge",
+    conn = NULL,
+    name = NULL,
+    mode = NULL,
+    overwrite = FALSE,
+    quiet = FALSE
+) {
+
+  # 0. Handle function-specific errors
+  duckspatial:::assert_character_scalar(h3edge, "h3edge")
+
+  # 1. Build parameters string
+  built_fun <- glue::glue("h3_is_valid_directed_edge({quote_ident(h3edge)})")
+
+  # 2. Pass to template
+  template_h3_base(
+    x = x,
+    conn = conn,
+    name = name,
+    mode = mode,
+    new_column = new_column,
+    overwrite = overwrite,
+    quiet = quiet,
+    fun = built_fun,
+    base_fun = "h3_is_valid_directed_edge(x)",
+    validate = NULL
+  )
+
+}
+
+
+
+
+
+#' @rdname ddbh3_is
+#' @export
+ddbh3_is_index <- function(
+    x,
+    h3 = "h3string",
+    new_column = "isindex",
+    conn = NULL,
+    name = NULL,
+    mode = NULL,
+    overwrite = FALSE,
+    quiet = FALSE
+) {
+
+  # 0. Handle function-specific errors
+  duckspatial:::assert_character_scalar(h3, "h3")
+
+  # 1. Build parameters string
+  built_fun <- glue::glue("h3_is_valid_index({quote_ident(h3)})")
+
+  # 2. Pass to template
+  template_h3_base(
+    x = x,
+    conn = conn,
+    name = name,
+    mode = mode,
+    new_column = new_column,
+    overwrite = overwrite,
+    quiet = quiet,
+    fun = built_fun,
+    base_fun = "h3_is_valid_index(x)",
+    validate = NULL
+  )
 
 }

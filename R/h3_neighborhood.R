@@ -396,3 +396,78 @@ ddbh3_grid_distance <- function(
 }
 
 
+
+
+
+
+#' Check if two H3 cells are neighbors
+#'
+#' Checks whether two H3 cells share an edge (i.e. they are directly
+#' adjacent). Cells at different resolutions are never neighbors.
+#'
+#' @template x
+#' @template h3start
+#' @template h3end
+#' @param new_column Character. Name of the new column to be created.
+#'   Defaults to `"isneighbor"`.
+#' @template conn_null
+#' @template name
+#' @template mode
+#' @template overwrite
+#' @template quiet
+#'
+#' @template returns_tbl
+#' @export
+#'
+#' @examples
+#' ## Load packages
+#' library(duckh3)
+#' library(dplyr)
+#' ddbh3_default_conn(threads = 1)
+#'
+#' ## Create a data frame with pairs of cells
+#' h3_tbl <- data.frame(
+#'   h3start = c("8a1fb46622dffff", "883923059bfffff"),
+#'   h3end   = c("8a1fb46622d7fff", "883923d04dfffff")
+#' )
+#'
+#' ## Check if they are neighbors
+#' ddbh3_is_neighbor(h3_tbl, h3start = "h3start", h3end = "h3end")
+#'
+#' ## Check in mutate
+#' h3_tbl |>
+#'   ddbh3_is_neighbor(h3start = "h3start", h3end = "h3end") |>
+#'   mutate(edge = ddbh3_h3_to_edge(h3start, h3end))
+ddbh3_is_neighbor <- function(
+    x,
+    h3start = "h3string",
+    h3end,
+    new_column = "isneighbor",
+    conn = NULL,
+    name = NULL,
+    mode = NULL,
+    overwrite = FALSE,
+    quiet = FALSE
+) {
+
+  # 0. Handle function-specific errors
+  duckspatial:::assert_character_scalar(h3start, "h3start")
+  duckspatial:::assert_character_scalar(h3end, "h3end")
+
+  # 1. Build parameters string
+  built_fun <- glue::glue(
+    "h3_are_neighbor_cells({quote_ident(h3start)}, {quote_ident(h3end)})"
+  )
+
+  # 2. Pass to template
+  template_h3_base(
+    x = x,
+    conn = conn,
+    name = name,
+    mode = mode,
+    new_column = new_column,
+    overwrite = overwrite,
+    quiet = quiet,
+    fun = built_fun
+  )
+}
