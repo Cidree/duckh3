@@ -128,7 +128,8 @@ ddbh3_uncompact(
   Can be set globally via
   [`ddbs_options`](https://cidree.github.io/duckspatial/reference/ddbs_options.html)`(mode = "...")`
   or per-function via this argument. Per-function overrides global
-  setting.
+  setting. It only applies when the output has a geometry column, and is
+  ignored otherwise.
 
 ## Value
 
@@ -138,11 +139,16 @@ package:
 
 - `tbl_lazy`:
 
-  If `x` is not spatial.
+  If `x` is not spatial. `mode` is ignored in this case.
 
 - `duckspatial_df`:
 
-  If `x` is spatial (e.g. an `sf` or `duckspatial_df` object).
+  If `x` is spatial (e.g. an `sf` or `duckspatial_df` object) and
+  `mode = "duckspatial"` (default).
+
+- `sf`:
+
+  If `x` is spatial and `mode = "sf"`.
 
 - `TRUE` (invisibly):
 
@@ -195,7 +201,7 @@ library(dplyr)
 ## This is a mandatory step to use duckh3 functions
 ddbh3_default_conn(threads = 1)
 #> duckdb keeps downloaded extensions and secrets in a temporary directory:
-#> ℹ /tmp/RtmpRwqTSA/duckdb
+#> ℹ /tmp/RtmpEwo61p/duckdb
 #> This is removed when the R session ends.
 #> • Extensions are re-downloaded each session.
 #> • Secrets are lost.
@@ -215,7 +221,7 @@ cells_tbl <- data.frame(
 ## Compact all the cells together
 ddbh3_compact(cells_tbl, h3 = "h3children")
 #> # A query:  ?? x 1
-#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
+#> # Database: DuckDB 2.0.1 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
 #>   h3compact      
 #>   <chr>          
 #> 1 88283470a1fffff
@@ -226,7 +232,7 @@ ddbh3_compact(cells_tbl, h3 = "h3children")
 compact_tbl <- ddbh3_compact(cells_tbl, h3 = "h3children", by = "region")
 compact_tbl
 #> # A query:  ?? x 2
-#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
+#> # Database: DuckDB 2.0.1 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
 #>   region h3compact      
 #>   <chr>  <chr>          
 #> 1 A      87283472bffffff
@@ -236,7 +242,7 @@ compact_tbl
 ## One row per region with a list of cells
 ddbh3_compact(cells_tbl, h3 = "h3children", by = "region", nested = TRUE)
 #> # A query:  ?? x 2
-#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
+#> # Database: DuckDB 2.0.1 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
 #>   region h3compact
 #>   <chr>  <list>   
 #> 1 A      <chr [1]>
@@ -246,7 +252,7 @@ ddbh3_compact(cells_tbl, h3 = "h3children", by = "region", nested = TRUE)
 cells_tbl |>
   summarise(h3compact = ddbh3_compact(h3children), .by = region)
 #> # A query:  ?? x 2
-#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
+#> # Database: DuckDB 2.0.1 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
 #>   region h3compact
 #>   <chr>  <list>   
 #> 1 A      <chr [1]>
@@ -257,7 +263,7 @@ cells_tbl |>
 ## Back to resolution 8
 ddbh3_uncompact(compact_tbl, h3 = "h3compact", resolution = 8)
 #> # A query:  ?? x 3
-#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
+#> # Database: DuckDB 2.0.1 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
 #>    region h3compact       h3uncompact    
 #>    <chr>  <chr>           <chr>          
 #>  1 A      87283472bffffff 88283472b1fffff

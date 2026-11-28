@@ -264,7 +264,9 @@ resolution of every input cell.</p></dd>
 <dd><p>Character. Controls the return type. Options:</p><ul><li><p><code>"duckspatial"</code> (default): Lazy spatial data frame backed by dbplyr/DuckDB</p></li>
 <li><p><code>"sf"</code>: Eagerly collected sf object (uses memory)</p></li>
 </ul><p>Can be set globally via <code><a href="https://cidree.github.io/duckspatial/reference/ddbs_options.html" class="external-link">ddbs_options</a>(mode = "...")</code> or
-per-function via this argument. Per-function overrides global setting.</p></dd>
+per-function via this argument. Per-function overrides global setting.
+It only applies when the output has a geometry column, and is ignored
+otherwise.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -272,10 +274,14 @@ per-function via this argument. Per-function overrides global setting.</p></dd>
     <p>For <code>ddbh3_compact()</code>, a <code>tbl_lazy</code> (or <code>TRUE</code> invisibly if <code>name</code>
 is provided). For <code>ddbh3_uncompact()</code>, the same outputs as the rest of
 the package:</p><dl><dt><code>tbl_lazy</code></dt>
-<dd><p>If <code>x</code> is not spatial.</p></dd>
+<dd><p>If <code>x</code> is not spatial. <code>mode</code> is ignored in this case.</p></dd>
 
 <dt><code>duckspatial_df</code></dt>
-<dd><p>If <code>x</code> is spatial (e.g. an <code>sf</code> or <code>duckspatial_df</code> object).</p></dd>
+<dd><p>If <code>x</code> is spatial (e.g. an <code>sf</code> or <code>duckspatial_df</code>
+object) and <code>mode = "duckspatial"</code> (default).</p></dd>
+
+<dt><code>sf</code></dt>
+<dd><p>If <code>x</code> is spatial and <code>mode = "sf"</code>.</p></dd>
 
 <dt><code>TRUE</code> (invisibly)</dt>
 <dd><p>If <code>name</code> is provided, a table is created in the connection
@@ -323,7 +329,7 @@ a list column of cells.</p>
 <span class="r-in"><span><span class="co">## This is a mandatory step to use duckh3 functions</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="ddbh3_default_conn.html">ddbh3_default_conn</a></span><span class="op">(</span>threads <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> duckdb keeps downloaded extensions and secrets in a temporary directory:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> /tmp/RtmpRwqTSA/duckdb</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #0000BB;">ℹ</span> /tmp/RtmpEwo61p/duckdb</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> This is removed when the R session ends.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Extensions are re-downloaded each session.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">•</span> Secrets are lost.</span>
@@ -343,7 +349,7 @@ a list column of cells.</p>
 <span class="r-in"><span><span class="co">## Compact all the cells together</span></span></span>
 <span class="r-in"><span><span class="fu">ddbh3_compact</span><span class="op">(</span><span class="va">cells_tbl</span>, h3 <span class="op">=</span> <span class="st">"h3children"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A query:  ?? x 1</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 2.0.1 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   h3compact      </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> 88283470a1fffff</span>
@@ -354,7 +360,7 @@ a list column of cells.</p>
 <span class="r-in"><span><span class="va">compact_tbl</span> <span class="op">&lt;-</span> <span class="fu">ddbh3_compact</span><span class="op">(</span><span class="va">cells_tbl</span>, h3 <span class="op">=</span> <span class="st">"h3children"</span>, by <span class="op">=</span> <span class="st">"region"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">compact_tbl</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A query:  ?? x 2</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 2.0.1 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   region h3compact      </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> A      87283472bffffff</span>
@@ -364,7 +370,7 @@ a list column of cells.</p>
 <span class="r-in"><span><span class="co">## One row per region with a list of cells</span></span></span>
 <span class="r-in"><span><span class="fu">ddbh3_compact</span><span class="op">(</span><span class="va">cells_tbl</span>, h3 <span class="op">=</span> <span class="st">"h3children"</span>, by <span class="op">=</span> <span class="st">"region"</span>, nested <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A query:  ?? x 2</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 2.0.1 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   region h3compact</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> A      <span style="color: #949494;">&lt;chr [1]&gt;</span></span>
@@ -374,7 +380,7 @@ a list column of cells.</p>
 <span class="r-in"><span><span class="va">cells_tbl</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>h3compact <span class="op">=</span> <span class="fu">ddbh3_compact</span><span class="op">(</span><span class="va">h3children</span><span class="op">)</span>, .by <span class="op">=</span> <span class="va">region</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A query:  ?? x 2</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 2.0.1 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   region h3compact</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> A      <span style="color: #949494;">&lt;chr [1]&gt;</span></span>
@@ -385,7 +391,7 @@ a list column of cells.</p>
 <span class="r-in"><span><span class="co">## Back to resolution 8</span></span></span>
 <span class="r-in"><span><span class="fu">ddbh3_uncompact</span><span class="op">(</span><span class="va">compact_tbl</span>, h3 <span class="op">=</span> <span class="st">"h3compact"</span>, resolution <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A query:  ?? x 3</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 2.0.1 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    region h3compact       h3uncompact    </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> A      87283472bffffff 88283472b1fffff</span>

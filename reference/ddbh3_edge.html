@@ -310,7 +310,9 @@ names. If <code>NULL</code> (the default), the function returns the result as an
 <dd><p>Character. Controls the return type. Options:</p><ul><li><p><code>"duckspatial"</code> (default): Lazy spatial data frame backed by dbplyr/DuckDB</p></li>
 <li><p><code>"sf"</code>: Eagerly collected sf object (uses memory)</p></li>
 </ul><p>Can be set globally via <code><a href="https://cidree.github.io/duckspatial/reference/ddbs_options.html" class="external-link">ddbs_options</a>(mode = "...")</code> or
-per-function via this argument. Per-function overrides global setting.</p></dd>
+per-function via this argument. Per-function overrides global setting.
+It only applies when the output has a geometry column, and is ignored
+otherwise.</p></dd>
 
 
 <dt id="arg-overwrite">overwrite<a class="anchor" aria-label="anchor" href="#arg-overwrite"></a></dt>
@@ -347,10 +349,17 @@ strings or unsigned 64-bit integers (<code>UBIGINT</code>). Defaults to <code>"h
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>One of the following, depending on the inputs:</p><dl><dt><code>tbl_lazy</code></dt>
-<dd><p>If <code>x</code> is not spatial.</p></dd>
+<dd><p>If the output has no geometry, i.e. <code>x</code> is not spatial
+and the function adds a column. <code>mode</code> is ignored in this case.</p></dd>
 
 <dt><code>duckspatial_df</code></dt>
-<dd><p>If <code>x</code> is spatial (e.g. an <code>sf</code> or <code>duckspatial_df</code> object).</p></dd>
+<dd><p>If the output has geometry (<code>x</code> is spatial, e.g. an
+<code>sf</code> or <code>duckspatial_df</code> object, or the function builds geometries, as
+<code>*_to_spatial()</code> and <code><a href="ddbh3_h3_to.html">ddbh3_h3_to_points()</a></code> do) and <code>mode = "duckspatial"</code>
+(default).</p></dd>
+
+<dt><code>sf</code></dt>
+<dd><p>If the output has geometry and <code>mode = "sf"</code>.</p></dd>
 
 <dt><code>TRUE</code> (invisibly)</dt>
 <dd><p>If <code>name</code> is provided, a table is created in the connection
@@ -411,7 +420,7 @@ for H3 strings and <code>UBIGINT</code> for H3 unsigned 64-bit integers.</p>
 <span class="r-in"><span><span class="co">## All edges going out of each cell (one row per cell)</span></span></span>
 <span class="r-in"><span><span class="fu">ddbh3_h3_to_edges</span><span class="op">(</span><span class="va">points_tbl</span>, nested <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A query:  ?? x 7</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 2.0.1 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        X    id    lat    lon category h3string        h3edge   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1     1 -<span style="color: #BB0000;">43.1</span>   16.2  B        88d02dcc19fffff <span style="color: #949494;">&lt;chr [6]&gt;</span></span>
@@ -433,7 +442,7 @@ for H3 strings and <code>UBIGINT</code> for H3 unsigned 64-bit integers.</p>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">ddbh3_h3_to_edge</span><span class="op">(</span><span class="va">pair_tbl</span>, h3start <span class="op">=</span> <span class="st">"h3start"</span>, h3end <span class="op">=</span> <span class="st">"h3end"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A query:  ?? x 3</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 2.0.1 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   h3start         h3end           h3edge          </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span> 8a1fb46622dffff 8a1fb46622d7fff 16a1fb46622dffff</span>
@@ -445,7 +454,7 @@ for H3 strings and <code>UBIGINT</code> for H3 unsigned 64-bit integers.</p>
 <span class="r-in"><span>  <span class="fu">ddbh3_edge_to_origin</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">ddbh3_edge_to_destination</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A query:  ?? x 9</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 2.0.1 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        X    id   lat   lon category h3string       h3edge h3origin h3destination</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1     1 -<span style="color: #BB0000;">43.1</span>  16.2 B        88d02dcc19fff… 118d0… 88d02dc… 88d02dcc1bff…</span>
@@ -463,7 +472,7 @@ for H3 strings and <code>UBIGINT</code> for H3 unsigned 64-bit integers.</p>
 <span class="r-in"><span><span class="co">## Both cells in a list column</span></span></span>
 <span class="r-in"><span><span class="fu">ddbh3_edge_to_h3</span><span class="op">(</span><span class="va">edges_tbl</span>, nested <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A query:  ?? x 8</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 2.0.1 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        X    id   lat   lon category h3string        h3edge           h3cells  </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1     1 -<span style="color: #BB0000;">43.1</span>  16.2 B        88d02dcc19fffff 118d02dcc19fffff <span style="color: #949494;">&lt;chr [2]&gt;</span></span>
@@ -481,7 +490,7 @@ for H3 strings and <code>UBIGINT</code> for H3 unsigned 64-bit integers.</p>
 <span class="r-in"><span><span class="co">## Reverse the direction of the edges</span></span></span>
 <span class="r-in"><span><span class="fu">ddbh3_reverse_edge</span><span class="op">(</span><span class="va">edges_tbl</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A query:  ?? x 8</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 2.0.1 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        X    id   lat   lon category h3string        h3edge       h3edge_reversed</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>        <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1     1 -<span style="color: #BB0000;">43.1</span>  16.2 B        88d02dcc19fffff 118d02dcc19… 168d02dcc1bfff…</span>
@@ -501,7 +510,7 @@ for H3 strings and <code>UBIGINT</code> for H3 unsigned 64-bit integers.</p>
 <span class="r-in"><span><span class="co">## Length of the edges in kilometers</span></span></span>
 <span class="r-in"><span><span class="fu">ddbh3_get_edge_length</span><span class="op">(</span><span class="va">edges_tbl</span>, unit <span class="op">=</span> <span class="st">"km"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A query:  ?? x 8</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 2.0.1 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        X    id   lat   lon category h3string        h3edge           edge_length</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1     1 -<span style="color: #BB0000;">43.1</span>  16.2 B        88d02dcc19fffff 118d02dcc19fffff       0.540</span>
@@ -523,7 +532,7 @@ for H3 strings and <code>UBIGINT</code> for H3 unsigned 64-bit integers.</p>
 <span class="r-in"><span>    length <span class="op">=</span> <span class="fu">ddbh3_get_edge_length</span><span class="op">(</span><span class="va">h3edge</span>, <span class="st">'m'</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A query:  ?? x 9</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 2.0.1 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        X    id   lat   lon category h3string        h3edge         origin length</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1     1 -<span style="color: #BB0000;">43.1</span>  16.2 B        88d02dcc19fffff 118d02dcc19ff… 88d02…   540.</span>
@@ -551,7 +560,7 @@ for H3 strings and <code>UBIGINT</code> for H3 unsigned 64-bit integers.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BBBBBB;"># Use</span> <span style="color: #00BB00; font-weight: bold;">ddbs_collect()</span> <span style="color: #BBBBBB;">or</span> <span style="color: #00BB00; font-weight: bold;">st_as_sf()</span> <span style="color: #BBBBBB;">to materialize to sf</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BBBBBB;">#</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A query:  ?? x 8</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 2.0.1 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        X    id   lat   lon category h3string        h3edge           geometry   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;wk_wkb&gt;</span>   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1     1 -<span style="color: #BB0000;">43.1</span>  16.2 B        88d02dcc19fffff 118d02dcc19fffff &lt;LINESTRIN…</span>

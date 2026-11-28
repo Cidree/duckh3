@@ -119,7 +119,8 @@ ddbh3_lines_to_h3(
   Can be set globally via
   [`ddbs_options`](https://cidree.github.io/duckspatial/reference/ddbs_options.html)`(mode = "...")`
   or per-function via this argument. Per-function overrides global
-  setting.
+  setting. It only applies when the output has a geometry column, and is
+  ignored otherwise.
 
 - overwrite:
 
@@ -164,11 +165,20 @@ One of the following, depending on the inputs:
 
 - `tbl_lazy`:
 
-  If `x` is not spatial.
+  If the output has no geometry, i.e. `x` is not spatial and the
+  function adds a column. `mode` is ignored in this case.
 
 - `duckspatial_df`:
 
-  If `x` is spatial (e.g. an `sf` or `duckspatial_df` object).
+  If the output has geometry (`x` is spatial, e.g. an `sf` or
+  `duckspatial_df` object, or the function builds geometries, as
+  `*_to_spatial()` and
+  [`ddbh3_h3_to_points()`](https://cidree.github.io/duckh3/reference/ddbh3_h3_to.md)
+  do) and `mode = "duckspatial"` (default).
+
+- `sf`:
+
+  If the output has geometry and `mode = "sf"`.
 
 - `TRUE` (invisibly):
 

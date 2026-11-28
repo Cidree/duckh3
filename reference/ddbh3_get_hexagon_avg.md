@@ -80,7 +80,7 @@ points_tbl |>
     area_avg = ddbh3_get_hexagon_area_avg(ddbh3_get_resolution(h3string))
   )
 #> # A query:  ?? x 8
-#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
+#> # Database: DuckDB 2.0.1 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
 #>        X    id    lat    lon category h3string           area area_avg
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>             <dbl>    <dbl>
 #>  1     1     1 -43.1   16.2  B        88d02dcc19fffff 702318.  737328.

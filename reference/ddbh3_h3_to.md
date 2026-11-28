@@ -137,7 +137,8 @@ ddbh3_h3_to_points(
   Can be set globally via
   [`ddbs_options`](https://cidree.github.io/duckspatial/reference/ddbs_options.html)`(mode = "...")`
   or per-function via this argument. Per-function overrides global
-  setting.
+  setting. It only applies when the output has a geometry column, and is
+  ignored otherwise.
 
 - overwrite:
 
@@ -155,11 +156,19 @@ One of the following, depending on the inputs:
 
 - `tbl_lazy`:
 
-  If `x` is not spatial.
+  If the output has no geometry, i.e. `x` is not spatial and the
+  function adds a column. `mode` is ignored in this case.
 
 - `duckspatial_df`:
 
-  If `x` is spatial (e.g. an `sf` or `duckspatial_df` object).
+  If the output has geometry (`x` is spatial, e.g. an `sf` or
+  `duckspatial_df` object, or the function builds geometries, as
+  `*_to_spatial()` and `ddbh3_h3_to_points()` do) and
+  `mode = "duckspatial"` (default).
+
+- `sf`:
+
+  If the output has geometry and `mode = "sf"`.
 
 - `TRUE` (invisibly):
 
@@ -231,7 +240,7 @@ points_tbl |>
     lat = ddbh3_h3_to_lat(h3string)
   )
 #> # A query:  ?? x 6
-#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
+#> # Database: DuckDB 2.0.1 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
 #>        X    id category h3string           lon    lat
 #>    <int> <int> <chr>    <chr>            <dbl>  <dbl>
 #>  1     1     1 B        86d02dcc7ffffff  16.2  -43.1 
@@ -267,7 +276,7 @@ points_bigint_tbl <- ddbh3_strings_to_bigint(
 points_tbl |> 
   mutate(h3int = ddbh3_strings_to_bigint(h3string))
 #> # A query:  ?? x 5
-#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
+#> # Database: DuckDB 2.0.1 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
 #>        X    id category h3string          h3int
 #>    <int> <int> <chr>    <chr>           <int64>
 #>  1     1     1 B        86d02dcc7ffffff    6e17
@@ -294,7 +303,7 @@ points_strings_tbl <- ddbh3_bigint_to_strings(
 points_bigint_tbl |> 
   mutate(h3string = ddbh3_bigint_to_strings(h3_integers))
 #> # A query:  ?? x 5
-#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
+#> # Database: DuckDB 2.0.1 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
 #>        X    id category h3_integers h3string       
 #>    <int> <int> <chr>        <int64> <chr>          
 #>  1     1     1 B               6e17 86d02dcc7ffffff

@@ -84,7 +84,8 @@ ddbh3_get_resolution(
   Can be set globally via
   [`ddbs_options`](https://cidree.github.io/duckspatial/reference/ddbs_options.html)`(mode = "...")`
   or per-function via this argument. Per-function overrides global
-  setting.
+  setting. It only applies when the output has a geometry column, and is
+  ignored otherwise.
 
 - overwrite:
 
@@ -102,11 +103,20 @@ One of the following, depending on the inputs:
 
 - `tbl_lazy`:
 
-  If `x` is not spatial.
+  If the output has no geometry, i.e. `x` is not spatial and the
+  function adds a column. `mode` is ignored in this case.
 
 - `duckspatial_df`:
 
-  If `x` is spatial (e.g. an `sf` or `duckspatial_df` object).
+  If the output has geometry (`x` is spatial, e.g. an `sf` or
+  `duckspatial_df` object, or the function builds geometries, as
+  `*_to_spatial()` and
+  [`ddbh3_h3_to_points()`](https://cidree.github.io/duckh3/reference/ddbh3_h3_to.md)
+  do) and `mode = "duckspatial"` (default).
+
+- `sf`:
+
+  If the output has geometry and `mode = "sf"`.
 
 - `TRUE` (invisibly):
 
@@ -149,7 +159,7 @@ points_ddbs <- ddbs_as_points(points_tbl)
 ## Get resolution of the h3 strings
 ddbh3_get_resolution(points_tbl)
 #> # A query:  ?? x 7
-#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
+#> # Database: DuckDB 2.0.1 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
 #>        X    id    lat    lon category h3string        h3resolution
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>                  <int>
 #>  1     1     1 -43.1   16.2  B        8ad02dcc1947fff           10
@@ -173,7 +183,7 @@ ddbh3_get_resolution(points_ddbs, new_column = "res")
 #> # Use ddbs_collect() or st_as_sf() to materialize to sf
 #> #
 #> # A query:  ?? x 6
-#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
+#> # Database: DuckDB 2.0.1 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
 #>        X    id category h3string          res geom                         
 #>    <int> <int> <chr>    <chr>           <int> <wk_wkb>                     
 #>  1     1     1 B        8ad02dcc1947fff    10 <POINT (16.19255 -43.06925)> 
@@ -192,7 +202,7 @@ ddbh3_get_resolution(points_ddbs, new_column = "res")
 points_tbl |> 
   mutate(res = ddbh3_get_resolution(h3string))
 #> # A query:  ?? x 7
-#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
+#> # Database: DuckDB 2.0.1 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
 #>        X    id    lat    lon category h3string          res
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <int>
 #>  1     1     1 -43.1   16.2  B        8ad02dcc1947fff    10

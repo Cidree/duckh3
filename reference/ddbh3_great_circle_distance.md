@@ -97,7 +97,8 @@ ddbh3_great_circle_distance(
   Can be set globally via
   [`ddbs_options`](https://cidree.github.io/duckspatial/reference/ddbs_options.html)`(mode = "...")`
   or per-function via this argument. Per-function overrides global
-  setting.
+  setting. It only applies when the output has a geometry column, and is
+  ignored otherwise.
 
 - overwrite:
 
@@ -115,11 +116,20 @@ One of the following, depending on the inputs:
 
 - `tbl_lazy`:
 
-  If `x` is not spatial.
+  If the output has no geometry, i.e. `x` is not spatial and the
+  function adds a column. `mode` is ignored in this case.
 
 - `duckspatial_df`:
 
-  If `x` is spatial (e.g. an `sf` or `duckspatial_df` object).
+  If the output has geometry (`x` is spatial, e.g. an `sf` or
+  `duckspatial_df` object, or the function builds geometries, as
+  `*_to_spatial()` and
+  [`ddbh3_h3_to_points()`](https://cidree.github.io/duckh3/reference/ddbh3_h3_to.md)
+  do) and `mode = "duckspatial"` (default).
+
+- `sf`:
+
+  If the output has geometry and `mode = "sf"`.
 
 - `TRUE` (invisibly):
 
@@ -160,7 +170,7 @@ ddbh3_great_circle_distance(
   unit = "km"
 )
 #> # A query:  ?? x 5
-#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
+#> # Database: DuckDB 2.0.1 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
 #>    lon1  lat1  lon2  lat2 distance
 #>   <dbl> <dbl> <dbl> <dbl>    <dbl>
 #> 1 -3.7   40.4  2.17  41.4    505. 
@@ -171,7 +181,7 @@ pairs_tbl |>
   ddbh3_great_circle_distance("lon1", "lat1", "lon2", "lat2") |>
   mutate(dist_km = ddbh3_great_circle_distance(lon1, lat1, lon2, lat2, 'km'))
 #> # A query:  ?? x 6
-#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
+#> # Database: DuckDB 2.0.1 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
 #>    lon1  lat1  lon2  lat2 distance dist_km
 #>   <dbl> <dbl> <dbl> <dbl>    <dbl>   <dbl>
 #> 1 -3.7   40.4  2.17  41.4  504864.   505. 

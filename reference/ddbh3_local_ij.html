@@ -243,7 +243,9 @@ names. If <code>NULL</code> (the default), the function returns the result as an
 <dd><p>Character. Controls the return type. Options:</p><ul><li><p><code>"duckspatial"</code> (default): Lazy spatial data frame backed by dbplyr/DuckDB</p></li>
 <li><p><code>"sf"</code>: Eagerly collected sf object (uses memory)</p></li>
 </ul><p>Can be set globally via <code><a href="https://cidree.github.io/duckspatial/reference/ddbs_options.html" class="external-link">ddbs_options</a>(mode = "...")</code> or
-per-function via this argument. Per-function overrides global setting.</p></dd>
+per-function via this argument. Per-function overrides global setting.
+It only applies when the output has a geometry column, and is ignored
+otherwise.</p></dd>
 
 
 <dt id="arg-overwrite">overwrite<a class="anchor" aria-label="anchor" href="#arg-overwrite"></a></dt>
@@ -264,10 +266,17 @@ coordinates</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>One of the following, depending on the inputs:</p><dl><dt><code>tbl_lazy</code></dt>
-<dd><p>If <code>x</code> is not spatial.</p></dd>
+<dd><p>If the output has no geometry, i.e. <code>x</code> is not spatial
+and the function adds a column. <code>mode</code> is ignored in this case.</p></dd>
 
 <dt><code>duckspatial_df</code></dt>
-<dd><p>If <code>x</code> is spatial (e.g. an <code>sf</code> or <code>duckspatial_df</code> object).</p></dd>
+<dd><p>If the output has geometry (<code>x</code> is spatial, e.g. an
+<code>sf</code> or <code>duckspatial_df</code> object, or the function builds geometries, as
+<code>*_to_spatial()</code> and <code><a href="ddbh3_h3_to.html">ddbh3_h3_to_points()</a></code> do) and <code>mode = "duckspatial"</code>
+(default).</p></dd>
+
+<dt><code>sf</code></dt>
+<dd><p>If the output has geometry and <code>mode = "sf"</code>.</p></dd>
 
 <dt><code>TRUE</code> (invisibly)</dt>
 <dd><p>If <code>name</code> is provided, a table is created in the connection
@@ -318,7 +327,7 @@ pair; use <code>ij[[1]]</code> and <code>ij[[2]]</code> to extract each coordina
 <span class="r-in"><span><span class="va">ij_tbl</span> <span class="op">&lt;-</span> <span class="fu">ddbh3_h3_to_local_ij</span><span class="op">(</span><span class="va">cells_tbl</span>, origin <span class="op">=</span> <span class="st">"origin"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ij_tbl</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A query:  ?? x 4</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 2.0.1 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    origin          h3string            i     j</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> 88283470a1fffff 88283470a1fffff   454   394</span>
@@ -344,7 +353,7 @@ pair; use <code>ij[[1]]</code> and <code>ij[[2]]</code> to extract each coordina
 <span class="r-in"><span><span class="co">## Custom column names</span></span></span>
 <span class="r-in"><span><span class="fu">ddbh3_h3_to_local_ij</span><span class="op">(</span><span class="va">cells_tbl</span>, origin <span class="op">=</span> <span class="st">"origin"</span>, new_column <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"col"</span>, <span class="st">"row"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A query:  ?? x 4</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 2.0.1 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    origin          h3string          col   row</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> 88283470a1fffff 88283470a1fffff   454   394</span>
@@ -372,7 +381,7 @@ pair; use <code>ij[[1]]</code> and <code>ij[[2]]</code> to extract each coordina
 <span class="r-in"><span><span class="co">## Back to the original cells</span></span></span>
 <span class="r-in"><span><span class="fu">ddbh3_local_ij_to_h3</span><span class="op">(</span><span class="va">ij_tbl</span>, origin <span class="op">=</span> <span class="st">"origin"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A query:  ?? x 5</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 2.0.1 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    origin          h3string            i     j h3cell         </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> 88283470a1fffff 88283470a1fffff   454   394 88283470a1fffff</span>
@@ -400,7 +409,7 @@ pair; use <code>ij[[1]]</code> and <code>ij[[2]]</code> to extract each coordina
 <span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>i <span class="op">=</span> <span class="va">i</span> <span class="op">+</span> <span class="fl">1L</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">ddbh3_local_ij_to_h3</span><span class="op">(</span>origin <span class="op">=</span> <span class="st">"origin"</span>, new_column <span class="op">=</span> <span class="st">"h3shifted"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A query:  ?? x 5</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 2.0.1 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    origin          h3string            i     j h3shifted      </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>          </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> 88283470a1fffff 88283470a1fffff   455   394 88283470a9fffff</span>
@@ -431,7 +440,7 @@ pair; use <code>ij[[1]]</code> and <code>ij[[2]]</code> to extract each coordina
 <span class="r-in"><span>    h3cell <span class="op">=</span> <span class="fu">ddbh3_local_ij_to_h3</span><span class="op">(</span><span class="va">origin</span>, <span class="va">i</span>, <span class="va">j</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A query:  ?? x 7</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 2.0.1 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    origin          h3string            i     j ij        i_mutate h3cell        </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>       <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> 88283470a1fffff 88283470a1fffff   454   394 <span style="color: #949494;">&lt;int [2]&gt;</span>      454 88283470a1fff…</span>

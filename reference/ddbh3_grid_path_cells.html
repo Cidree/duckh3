@@ -234,7 +234,9 @@ names. If <code>NULL</code> (the default), the function returns the result as an
 <dd><p>Character. Controls the return type. Options:</p><ul><li><p><code>"duckspatial"</code> (default): Lazy spatial data frame backed by dbplyr/DuckDB</p></li>
 <li><p><code>"sf"</code>: Eagerly collected sf object (uses memory)</p></li>
 </ul><p>Can be set globally via <code><a href="https://cidree.github.io/duckspatial/reference/ddbs_options.html" class="external-link">ddbs_options</a>(mode = "...")</code> or
-per-function via this argument. Per-function overrides global setting.</p></dd>
+per-function via this argument. Per-function overrides global setting.
+It only applies when the output has a geometry column, and is ignored
+otherwise.</p></dd>
 
 
 <dt id="arg-overwrite">overwrite<a class="anchor" aria-label="anchor" href="#arg-overwrite"></a></dt>
@@ -250,10 +252,17 @@ Defaults to <code>FALSE</code>.</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>One of the following, depending on the inputs:</p><dl><dt><code>tbl_lazy</code></dt>
-<dd><p>If <code>x</code> is not spatial.</p></dd>
+<dd><p>If the output has no geometry, i.e. <code>x</code> is not spatial
+and the function adds a column. <code>mode</code> is ignored in this case.</p></dd>
 
 <dt><code>duckspatial_df</code></dt>
-<dd><p>If <code>x</code> is spatial (e.g. an <code>sf</code> or <code>duckspatial_df</code> object).</p></dd>
+<dd><p>If the output has geometry (<code>x</code> is spatial, e.g. an
+<code>sf</code> or <code>duckspatial_df</code> object, or the function builds geometries, as
+<code>*_to_spatial()</code> and <code><a href="ddbh3_h3_to.html">ddbh3_h3_to_points()</a></code> do) and <code>mode = "duckspatial"</code>
+(default).</p></dd>
+
+<dt><code>sf</code></dt>
+<dd><p>If the output has geometry and <code>mode = "sf"</code>.</p></dd>
 
 <dt><code>TRUE</code> (invisibly)</dt>
 <dd><p>If <code>name</code> is provided, a table is created in the connection

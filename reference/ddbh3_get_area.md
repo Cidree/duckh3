@@ -89,7 +89,8 @@ ddbh3_get_area(
   Can be set globally via
   [`ddbs_options`](https://cidree.github.io/duckspatial/reference/ddbs_options.html)`(mode = "...")`
   or per-function via this argument. Per-function overrides global
-  setting.
+  setting. It only applies when the output has a geometry column, and is
+  ignored otherwise.
 
 - overwrite:
 
@@ -107,11 +108,20 @@ One of the following, depending on the inputs:
 
 - `tbl_lazy`:
 
-  If `x` is not spatial.
+  If the output has no geometry, i.e. `x` is not spatial and the
+  function adds a column. `mode` is ignored in this case.
 
 - `duckspatial_df`:
 
-  If `x` is spatial (e.g. an `sf` or `duckspatial_df` object).
+  If the output has geometry (`x` is spatial, e.g. an `sf` or
+  `duckspatial_df` object, or the function builds geometries, as
+  `*_to_spatial()` and
+  [`ddbh3_h3_to_points()`](https://cidree.github.io/duckh3/reference/ddbh3_h3_to.md)
+  do) and `mode = "duckspatial"` (default).
+
+- `sf`:
+
+  If the output has geometry and `mode = "sf"`.
 
 - `TRUE` (invisibly):
 
@@ -158,7 +168,7 @@ points_tbl <- ddbh3_lonlat_to_h3(points_tbl, resolution = 8)
 ## Area of the cells in square meters
 ddbh3_get_area(points_tbl)
 #> # A query:  ?? x 7
-#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
+#> # Database: DuckDB 2.0.1 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
 #>        X    id    lat    lon category h3string         h3area
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>             <dbl>
 #>  1     1     1 -43.1   16.2  B        88d02dcc19fffff 702318.
@@ -176,7 +186,7 @@ ddbh3_get_area(points_tbl)
 ## Area in square kilometers
 ddbh3_get_area(points_tbl, unit = "km^2")
 #> # A query:  ?? x 7
-#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
+#> # Database: DuckDB 2.0.1 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
 #>        X    id    lat    lon category h3string        h3area
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>            <dbl>
 #>  1     1     1 -43.1   16.2  B        88d02dcc19fffff  0.702
@@ -195,7 +205,7 @@ ddbh3_get_area(points_tbl, unit = "km^2")
 points_tbl |>
   mutate(area = ddbh3_get_area(h3string, 'km^2'))
 #> # A query:  ?? x 7
-#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
+#> # Database: DuckDB 2.0.1 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
 #>        X    id    lat    lon category h3string         area
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <dbl>
 #>  1     1     1 -43.1   16.2  B        88d02dcc19fffff 0.702

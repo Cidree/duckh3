@@ -170,7 +170,8 @@ ddbh3_edge_to_spatial(
   Can be set globally via
   [`ddbs_options`](https://cidree.github.io/duckspatial/reference/ddbs_options.html)`(mode = "...")`
   or per-function via this argument. Per-function overrides global
-  setting.
+  setting. It only applies when the output has a geometry column, and is
+  ignored otherwise.
 
 - overwrite:
 
@@ -209,11 +210,20 @@ One of the following, depending on the inputs:
 
 - `tbl_lazy`:
 
-  If `x` is not spatial.
+  If the output has no geometry, i.e. `x` is not spatial and the
+  function adds a column. `mode` is ignored in this case.
 
 - `duckspatial_df`:
 
-  If `x` is spatial (e.g. an `sf` or `duckspatial_df` object).
+  If the output has geometry (`x` is spatial, e.g. an `sf` or
+  `duckspatial_df` object, or the function builds geometries, as
+  `*_to_spatial()` and
+  [`ddbh3_h3_to_points()`](https://cidree.github.io/duckh3/reference/ddbh3_h3_to.md)
+  do) and `mode = "duckspatial"` (default).
+
+- `sf`:
+
+  If the output has geometry and `mode = "sf"`.
 
 - `TRUE` (invisibly):
 
@@ -285,7 +295,7 @@ edges_tbl <- ddbh3_h3_to_edges(points_tbl)
 ## All edges going out of each cell (one row per cell)
 ddbh3_h3_to_edges(points_tbl, nested = TRUE)
 #> # A query:  ?? x 7
-#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
+#> # Database: DuckDB 2.0.1 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
 #>        X    id    lat    lon category h3string        h3edge   
 #>    <int> <int>  <dbl>  <dbl> <chr>    <chr>           <list>   
 #>  1     1     1 -43.1   16.2  B        88d02dcc19fffff <chr [6]>
@@ -307,7 +317,7 @@ pair_tbl <- data.frame(
 )
 ddbh3_h3_to_edge(pair_tbl, h3start = "h3start", h3end = "h3end")
 #> # A query:  ?? x 3
-#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
+#> # Database: DuckDB 2.0.1 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
 #>   h3start         h3end           h3edge          
 #>   <chr>           <chr>           <chr>           
 #> 1 8a1fb46622dffff 8a1fb46622d7fff 16a1fb46622dffff
@@ -319,7 +329,7 @@ edges_tbl |>
   ddbh3_edge_to_origin() |>
   ddbh3_edge_to_destination()
 #> # A query:  ?? x 9
-#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
+#> # Database: DuckDB 2.0.1 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
 #>        X    id   lat   lon category h3string       h3edge h3origin h3destination
 #>    <int> <int> <dbl> <dbl> <chr>    <chr>          <chr>  <chr>    <chr>        
 #>  1     1     1 -43.1  16.2 B        88d02dcc19fff… 118d0… 88d02dc… 88d02dcc1bff…
@@ -337,7 +347,7 @@ edges_tbl |>
 ## Both cells in a list column
 ddbh3_edge_to_h3(edges_tbl, nested = TRUE)
 #> # A query:  ?? x 8
-#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
+#> # Database: DuckDB 2.0.1 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
 #>        X    id   lat   lon category h3string        h3edge           h3cells  
 #>    <int> <int> <dbl> <dbl> <chr>    <chr>           <chr>            <list>   
 #>  1     1     1 -43.1  16.2 B        88d02dcc19fffff 118d02dcc19fffff <chr [2]>
@@ -355,7 +365,7 @@ ddbh3_edge_to_h3(edges_tbl, nested = TRUE)
 ## Reverse the direction of the edges
 ddbh3_reverse_edge(edges_tbl)
 #> # A query:  ?? x 8
-#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
+#> # Database: DuckDB 2.0.1 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
 #>        X    id   lat   lon category h3string        h3edge       h3edge_reversed
 #>    <int> <int> <dbl> <dbl> <chr>    <chr>           <chr>        <chr>          
 #>  1     1     1 -43.1  16.2 B        88d02dcc19fffff 118d02dcc19… 168d02dcc1bfff…
@@ -375,7 +385,7 @@ ddbh3_reverse_edge(edges_tbl)
 ## Length of the edges in kilometers
 ddbh3_get_edge_length(edges_tbl, unit = "km")
 #> # A query:  ?? x 8
-#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
+#> # Database: DuckDB 2.0.1 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
 #>        X    id   lat   lon category h3string        h3edge           edge_length
 #>    <int> <int> <dbl> <dbl> <chr>    <chr>           <chr>                  <dbl>
 #>  1     1     1 -43.1  16.2 B        88d02dcc19fffff 118d02dcc19fffff       0.540
@@ -397,7 +407,7 @@ edges_tbl |>
     length = ddbh3_get_edge_length(h3edge, 'm')
   )
 #> # A query:  ?? x 9
-#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
+#> # Database: DuckDB 2.0.1 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
 #>        X    id   lat   lon category h3string        h3edge         origin length
 #>    <int> <int> <dbl> <dbl> <chr>    <chr>           <chr>          <chr>   <dbl>
 #>  1     1     1 -43.1  16.2 B        88d02dcc19fffff 118d02dcc19ff… 88d02…   540.
@@ -425,7 +435,7 @@ ddbh3_edge_to_spatial(edges_tbl)
 #> # Use ddbs_collect() or st_as_sf() to materialize to sf
 #> #
 #> # A query:  ?? x 8
-#> # Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
+#> # Database: DuckDB 2.0.1 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]
 #>        X    id   lat   lon category h3string        h3edge           geometry   
 #>    <int> <int> <dbl> <dbl> <chr>    <chr>           <chr>            <wk_wkb>   
 #>  1     1     1 -43.1  16.2 B        88d02dcc19fffff 118d02dcc19fffff <LINESTRIN…

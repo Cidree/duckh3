@@ -224,7 +224,9 @@ names. If <code>NULL</code> (the default), the function returns the result as an
 <dd><p>Character. Controls the return type. Options:</p><ul><li><p><code>"duckspatial"</code> (default): Lazy spatial data frame backed by dbplyr/DuckDB</p></li>
 <li><p><code>"sf"</code>: Eagerly collected sf object (uses memory)</p></li>
 </ul><p>Can be set globally via <code><a href="https://cidree.github.io/duckspatial/reference/ddbs_options.html" class="external-link">ddbs_options</a>(mode = "...")</code> or
-per-function via this argument. Per-function overrides global setting.</p></dd>
+per-function via this argument. Per-function overrides global setting.
+It only applies when the output has a geometry column, and is ignored
+otherwise.</p></dd>
 
 
 <dt id="arg-overwrite">overwrite<a class="anchor" aria-label="anchor" href="#arg-overwrite"></a></dt>
@@ -240,10 +242,17 @@ Defaults to <code>FALSE</code>.</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>One of the following, depending on the inputs:</p><dl><dt><code>tbl_lazy</code></dt>
-<dd><p>If <code>x</code> is not spatial.</p></dd>
+<dd><p>If the output has no geometry, i.e. <code>x</code> is not spatial
+and the function adds a column. <code>mode</code> is ignored in this case.</p></dd>
 
 <dt><code>duckspatial_df</code></dt>
-<dd><p>If <code>x</code> is spatial (e.g. an <code>sf</code> or <code>duckspatial_df</code> object).</p></dd>
+<dd><p>If the output has geometry (<code>x</code> is spatial, e.g. an
+<code>sf</code> or <code>duckspatial_df</code> object, or the function builds geometries, as
+<code>*_to_spatial()</code> and <code><a href="ddbh3_h3_to.html">ddbh3_h3_to_points()</a></code> do) and <code>mode = "duckspatial"</code>
+(default).</p></dd>
+
+<dt><code>sf</code></dt>
+<dd><p>If the output has geometry and <code>mode = "sf"</code>.</p></dd>
 
 <dt><code>TRUE</code> (invisibly)</dt>
 <dd><p>If <code>name</code> is provided, a table is created in the connection
@@ -277,7 +286,7 @@ in vectorized mode, returning a vector of the same length as <code>x</code>.</p>
 <span class="r-in"><span><span class="co">## Get the base cell number</span></span></span>
 <span class="r-in"><span><span class="fu">ddbh3_get_base_cell_number</span><span class="op">(</span><span class="va">points_tbl</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A query:  ?? x 7</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 2.0.0 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Database: DuckDB 2.0.1 [unknown@Linux 7.0.0-1020-azure:R 4.6.2/:memory:]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        X    id    lat    lon category h3string        base_cell</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>               <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1     1 -<span style="color: #BB0000;">43.1</span>   16.2  B        86d02dcc7ffffff       104</span>
