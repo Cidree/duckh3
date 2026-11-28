@@ -486,7 +486,14 @@ ddbh3_child_pos_to_cell <- function(
 
 
   # 1. Build parameters string
-  built_fun <- glue::glue("h3_child_pos_to_cell({child_pos}, {parent}, {resolution})")
+  ## cast doubles (R's default numeric) to BIGINT, but error on fractional
+  ## positions instead of silently rounding them
+  child_pos_q <- quote_ident(child_pos)
+  child_pos_int <- glue::glue(
+    "CAST(CASE WHEN {child_pos_q} = TRUNC({child_pos_q}) THEN {child_pos_q} ",
+    "ELSE error('child_pos must be a whole number') END AS BIGINT)"
+  )
+  built_fun <- glue::glue("h3_child_pos_to_cell({child_pos_int}, {quote_ident(parent)}, {resolution})")
 
 
   # 2. Pass to template
@@ -630,8 +637,10 @@ ddbh3_get_base_cell_number <- function(
 #'   is provided). For `ddbh3_uncompact()`, the same outputs as the rest of
 #'   the package:
 #'   \describe{
-#'     \item{`tbl_lazy`}{If `x` is not spatial.}
-#'     \item{`duckspatial_df`}{If `x` is spatial (e.g. an `sf` or `duckspatial_df` object).}
+#'     \item{`tbl_lazy`}{If `x` is not spatial. `mode` is ignored in this case.}
+#'     \item{`duckspatial_df`}{If `x` is spatial (e.g. an `sf` or `duckspatial_df`
+#'       object) and `mode = "duckspatial"` (default).}
+#'     \item{`sf`}{If `x` is spatial and `mode = "sf"`.}
 #'     \item{`TRUE` (invisibly)}{If `name` is provided, a table is created in the connection
 #'       and `TRUE` is returned invisibly.}
 #'   }

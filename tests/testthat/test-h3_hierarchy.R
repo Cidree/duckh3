@@ -108,6 +108,23 @@ testthat::describe("ddbh3_get_parent() works in different formats", {
     expect_type(res_col$h3parent, "character")
   })
 
+  ## OUTPUT MODES
+  testthat::it("returns different output formats (duckspatial_df, sf)", {
+    ## Same data in other formats
+    test_data_df   <- dplyr::collect(test_data)
+    test_data_sf   <- sf::st_as_sf(test_data_df, coords = c("lon", "lat"), crs = 4326, remove = FALSE)
+    test_data_ddbs <- duckspatial::as_duckspatial_df(test_data_sf)
+    ## Non-spatial input: always lazy, mode is ignored
+    expect_s3_class(ddbh3_get_parent(test_data_df, mode = "sf"), "tbl_duckdb_connection")
+    ## Spatial input
+    output_ddbs <- ddbh3_get_parent(test_data_sf, mode = "duckspatial")
+    output_sf   <- ddbh3_get_parent(test_data_sf, mode = "sf")
+    expect_s3_class(output_ddbs, "duckspatial_df")
+    expect_s3_class(output_sf, "sf")
+    expect_equal(duckspatial::ddbs_collect(output_ddbs), output_sf, ignore_attr = "class")
+    expect_s3_class(ddbh3_get_parent(test_data_ddbs, mode = "sf"), "sf")
+  })
+
 })
 
 
@@ -357,6 +374,23 @@ testthat::describe("ddbh3_get_children() works in different formats", {
     res_col <- dplyr::collect(res)
     expect_in("h3children", colnames(res_col))
     expect_type(res_col$h3children, "character")
+  })
+
+  ## OUTPUT MODES
+  testthat::it("returns different output formats (duckspatial_df, sf)", {
+    ## Same data in other formats
+    test_data_df   <- dplyr::collect(test_data_5)
+    test_data_sf   <- sf::st_as_sf(test_data_df, coords = c("lon", "lat"), crs = 4326, remove = FALSE)
+    test_data_ddbs <- duckspatial::as_duckspatial_df(test_data_sf)
+    ## Non-spatial input: always lazy, mode is ignored
+    expect_s3_class(ddbh3_get_children(test_data_df, mode = "sf"), "tbl_duckdb_connection")
+    ## Spatial input
+    output_ddbs <- ddbh3_get_children(test_data_sf, mode = "duckspatial")
+    output_sf   <- ddbh3_get_children(test_data_sf, mode = "sf")
+    expect_s3_class(output_ddbs, "duckspatial_df")
+    expect_s3_class(output_sf, "sf")
+    expect_equal(duckspatial::ddbs_collect(output_ddbs), output_sf, ignore_attr = "class")
+    expect_s3_class(ddbh3_get_children(test_data_ddbs, mode = "sf"), "sf")
   })
 
 })
@@ -636,6 +670,23 @@ testthat::describe("ddbh3_get_n_children() works in different formats", {
     expect_type(res_col$h3n_children, "double")
   })
 
+  ## OUTPUT MODES
+  testthat::it("returns different output formats (duckspatial_df, sf)", {
+    ## Same data in other formats
+    test_data_df   <- dplyr::collect(test_data_5)
+    test_data_sf   <- sf::st_as_sf(test_data_df, coords = c("lon", "lat"), crs = 4326, remove = FALSE)
+    test_data_ddbs <- duckspatial::as_duckspatial_df(test_data_sf)
+    ## Non-spatial input: always lazy, mode is ignored
+    expect_s3_class(ddbh3_get_n_children(test_data_df, mode = "sf"), "tbl_duckdb_connection")
+    ## Spatial input
+    output_ddbs <- ddbh3_get_n_children(test_data_sf, mode = "duckspatial")
+    output_sf   <- ddbh3_get_n_children(test_data_sf, mode = "sf")
+    expect_s3_class(output_ddbs, "duckspatial_df")
+    expect_s3_class(output_sf, "sf")
+    expect_equal(duckspatial::ddbs_collect(output_ddbs), output_sf, ignore_attr = "class")
+    expect_s3_class(ddbh3_get_n_children(test_data_ddbs, mode = "sf"), "sf")
+  })
+
 })
 
 
@@ -889,6 +940,23 @@ testthat::describe("ddbh3_get_center_child() works in different formats", {
     res_col <- dplyr::collect(res)
     expect_in("h3center_child", colnames(res_col))
     expect_type(res_col$h3center_child, "character")
+  })
+
+  ## OUTPUT MODES
+  testthat::it("returns different output formats (duckspatial_df, sf)", {
+    ## Same data in other formats
+    test_data_df   <- dplyr::collect(test_data)
+    test_data_sf   <- sf::st_as_sf(test_data_df, coords = c("lon", "lat"), crs = 4326, remove = FALSE)
+    test_data_ddbs <- duckspatial::as_duckspatial_df(test_data_sf)
+    ## Non-spatial input: always lazy, mode is ignored
+    expect_s3_class(ddbh3_get_center_child(test_data_df, mode = "sf"), "tbl_duckdb_connection")
+    ## Spatial input
+    output_ddbs <- ddbh3_get_center_child(test_data_sf, mode = "duckspatial")
+    output_sf   <- ddbh3_get_center_child(test_data_sf, mode = "sf")
+    expect_s3_class(output_ddbs, "duckspatial_df")
+    expect_s3_class(output_sf, "sf")
+    expect_equal(duckspatial::ddbs_collect(output_ddbs), output_sf, ignore_attr = "class")
+    expect_s3_class(ddbh3_get_center_child(test_data_ddbs, mode = "sf"), "sf")
   })
 
 })
@@ -1158,6 +1226,23 @@ testthat::describe("ddbh3_get_icosahedron_faces() works in different formats", {
     expect_type(res_col$h3faces, "integer")
   })
 
+  ## OUTPUT MODES
+  testthat::it("returns different output formats (duckspatial_df, sf)", {
+    ## Same data in other formats
+    test_data_df   <- dplyr::collect(test_data)
+    test_data_sf   <- sf::st_as_sf(test_data_df, coords = c("lon", "lat"), crs = 4326, remove = FALSE)
+    test_data_ddbs <- duckspatial::as_duckspatial_df(test_data_sf)
+    ## Non-spatial input: always lazy, mode is ignored
+    expect_s3_class(ddbh3_get_icosahedron_faces(test_data_df, mode = "sf"), "tbl_duckdb_connection")
+    ## Spatial input
+    output_ddbs <- ddbh3_get_icosahedron_faces(test_data_sf, mode = "duckspatial")
+    output_sf   <- ddbh3_get_icosahedron_faces(test_data_sf, mode = "sf")
+    expect_s3_class(output_ddbs, "duckspatial_df")
+    expect_s3_class(output_sf, "sf")
+    expect_equal(duckspatial::ddbs_collect(output_ddbs), output_sf, ignore_attr = "class")
+    expect_s3_class(ddbh3_get_icosahedron_faces(test_data_ddbs, mode = "sf"), "sf")
+  })
+
 })
 
 
@@ -1399,6 +1484,23 @@ testthat::describe("ddbh3_get_child_pos() works in different formats", {
     res_col <- dplyr::collect(res)
     expect_in("h3child_pos", colnames(res_col))
     expect_type(res_col$h3child_pos, "double")
+  })
+
+  ## OUTPUT MODES
+  testthat::it("returns different output formats (duckspatial_df, sf)", {
+    ## Same data in other formats
+    test_data_df   <- dplyr::collect(test_data)
+    test_data_sf   <- sf::st_as_sf(test_data_df, coords = c("lon", "lat"), crs = 4326, remove = FALSE)
+    test_data_ddbs <- duckspatial::as_duckspatial_df(test_data_sf)
+    ## Non-spatial input: always lazy, mode is ignored
+    expect_s3_class(ddbh3_get_child_pos(test_data_df, mode = "sf"), "tbl_duckdb_connection")
+    ## Spatial input
+    output_ddbs <- ddbh3_get_child_pos(test_data_sf, mode = "duckspatial")
+    output_sf   <- ddbh3_get_child_pos(test_data_sf, mode = "sf")
+    expect_s3_class(output_ddbs, "duckspatial_df")
+    expect_s3_class(output_sf, "sf")
+    expect_equal(duckspatial::ddbs_collect(output_ddbs), output_sf, ignore_attr = "class")
+    expect_s3_class(ddbh3_get_child_pos(test_data_ddbs, mode = "sf"), "sf")
   })
 
 })
@@ -1664,6 +1766,23 @@ testthat::describe("ddbh3_get_base_cell_number() works in different formats", {
     expect_type(res_col$base_cell, "integer")
   })
 
+  ## OUTPUT MODES
+  testthat::it("returns different output formats (duckspatial_df, sf)", {
+    ## Same data in other formats
+    test_data_df   <- dplyr::collect(test_data)
+    test_data_sf   <- sf::st_as_sf(test_data_df, coords = c("lon", "lat"), crs = 4326, remove = FALSE)
+    test_data_ddbs <- duckspatial::as_duckspatial_df(test_data_sf)
+    ## Non-spatial input: always lazy, mode is ignored
+    expect_s3_class(ddbh3_get_base_cell_number(test_data_df, mode = "sf"), "tbl_duckdb_connection")
+    ## Spatial input
+    output_ddbs <- ddbh3_get_base_cell_number(test_data_sf, mode = "duckspatial")
+    output_sf   <- ddbh3_get_base_cell_number(test_data_sf, mode = "sf")
+    expect_s3_class(output_ddbs, "duckspatial_df")
+    expect_s3_class(output_sf, "sf")
+    expect_equal(duckspatial::ddbs_collect(output_ddbs), output_sf, ignore_attr = "class")
+    expect_s3_class(ddbh3_get_base_cell_number(test_data_ddbs, mode = "sf"), "sf")
+  })
+
 })
 
 testthat::test_that("result has same number of rows as input", {
@@ -1829,14 +1948,6 @@ testthat::describe("ddbh3_get_base_cell_number() returns correct values", {
     expect_equal(res$bc_child, res$bc_parent)
   })
 
-  testthat::it("mode argument works", {
-    test_data_sf <- test_data |>
-      dplyr::collect() |>
-      sf::st_as_sf(coords = c("lon", "lat"), crs = 4326, remove = FALSE)
-    expect_s3_class(ddbh3_get_base_cell_number(test_data_sf, mode = "sf"), "sf")
-    expect_s3_class(ddbh3_get_base_cell_number(test_data_sf, mode = "duckspatial"), "duckspatial_df")
-  })
-
 })
 
 
@@ -1915,6 +2026,23 @@ testthat::describe("ddbh3_child_pos_to_cell() works in different formats", {
     )
   })
 
+  ## OUTPUT MODES
+  testthat::it("returns different output formats (duckspatial_df, sf)", {
+    ## Same data in other formats
+    test_data_df   <- dplyr::collect(test_data_cp)
+    test_data_sf   <- sf::st_as_sf(test_data_df, coords = c("lon", "lat"), crs = 4326, remove = FALSE)
+    test_data_ddbs <- duckspatial::as_duckspatial_df(test_data_sf)
+    ## Non-spatial input: always lazy, mode is ignored
+    expect_s3_class(ddbh3_child_pos_to_cell(test_data_df, parent = "h3parent", resolution = 10, mode = "sf"), "tbl_duckdb_connection")
+    ## Spatial input
+    output_ddbs <- ddbh3_child_pos_to_cell(test_data_sf, parent = "h3parent", resolution = 10, mode = "duckspatial")
+    output_sf   <- ddbh3_child_pos_to_cell(test_data_sf, parent = "h3parent", resolution = 10, mode = "sf")
+    expect_s3_class(output_ddbs, "duckspatial_df")
+    expect_s3_class(output_sf, "sf")
+    expect_equal(duckspatial::ddbs_collect(output_ddbs), output_sf, ignore_attr = "class")
+    expect_s3_class(ddbh3_child_pos_to_cell(test_data_ddbs, parent = "h3parent", resolution = 10, mode = "sf"), "sf")
+  })
+
 })
 
 
@@ -1936,11 +2064,19 @@ testthat::describe("ddbh3_child_pos_to_cell() returns correct cells", {
   })
 
   testthat::it("accepts child positions stored as double", {
-    testthat::skip("bug (#8): h3_child_pos_to_cell() has no DOUBLE signature and child_pos is not cast to BIGINT")
     res <- data.frame(h3child_pos = 0, h3string = "873923059ffffff") |>
       ddbh3_child_pos_to_cell(resolution = 8) |>
       dplyr::collect()
     expect_equal(res$h3children, "8839230591fffff")
+  })
+
+  testthat::it("errors on fractional child positions", {
+    expect_error(
+      data.frame(h3child_pos = 2.6, h3string = "873923059ffffff") |>
+        ddbh3_child_pos_to_cell(resolution = 8) |>
+        dplyr::collect(),
+      "whole number"
+    )
   })
 
   testthat::it("position 0 is the center child", {
@@ -1987,16 +2123,6 @@ testthat::describe("ddbh3_child_pos_to_cell() arguments work", {
   testthat::it("new_column argument works", {
     res <- ddbh3_child_pos_to_cell(test_data_cp, parent = "h3parent", resolution = 10, new_column = "my_child")
     expect_true("my_child" %in% colnames(res))
-  })
-
-  ## ARGUMENT 3 - MODE
-  testthat::it("mode argument works", {
-    test_data_sf <- test_data_cp_df |>
-      sf::st_as_sf(coords = c("lon", "lat"), crs = 4326, remove = FALSE)
-    expect_s3_class(
-      ddbh3_child_pos_to_cell(test_data_sf, parent = "h3parent", resolution = 10, mode = "sf"),
-      "sf"
-    )
   })
 
   ## ARGUMENT 4 - DATABASE ARGUMENTS

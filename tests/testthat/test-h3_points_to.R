@@ -67,6 +67,16 @@ testthat::describe("ddbh3_points_to_spatial() works in different formats", {
     expect_in("geom", colnames(res_col))
   })
 
+  ## OUTPUT MODES
+  testthat::it("returns different output formats (duckspatial_df, sf)", {
+    output_ddbs <- ddbh3_points_to_spatial(duckspatial::ddbs_collect(test_data), resolution = 8, mode = "duckspatial")
+    output_sf   <- ddbh3_points_to_spatial(duckspatial::ddbs_collect(test_data), resolution = 8, mode = "sf")
+    expect_s3_class(output_ddbs, "duckspatial_df")
+    expect_s3_class(output_sf, "sf")
+    expect_equal(duckspatial::ddbs_collect(output_ddbs), output_sf, ignore_attr = "class")
+    expect_s3_class(ddbh3_points_to_spatial(test_data, resolution = 8, mode = "sf"), "sf")
+  })
+
 })
 
 
@@ -283,6 +293,16 @@ testthat::describe("ddbh3_points_to_h3() works in different formats", {
     res_col <- dplyr::collect(res)
     expect_in("h3string", colnames(res_col))
     expect_type(res_col$h3string, "character")
+  })
+
+  ## OUTPUT MODES
+  testthat::it("returns different output formats (duckspatial_df, sf)", {
+    output_ddbs <- ddbh3_points_to_h3(duckspatial::ddbs_collect(test_data), resolution = 8, mode = "duckspatial")
+    output_sf   <- ddbh3_points_to_h3(duckspatial::ddbs_collect(test_data), resolution = 8, mode = "sf")
+    expect_s3_class(output_ddbs, "duckspatial_df")
+    expect_s3_class(output_sf, "sf")
+    expect_equal(duckspatial::ddbs_collect(output_ddbs), output_sf, ignore_attr = "class")
+    expect_s3_class(ddbh3_points_to_h3(test_data, resolution = 8, mode = "sf"), "sf")
   })
 
 })

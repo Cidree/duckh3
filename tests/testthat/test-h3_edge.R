@@ -81,6 +81,7 @@ check_edge_formats <- function(fun, new_column, type_check) {
     conn_test <- reset_conn_alt()
     duckspatial::ddbs_write_table(conn_test, ddbs_collect(edges_sf), "sf_edges")
     res <- fun("sf_edges", conn = conn_test)
+    expect_s3_class(res, "duckspatial_df")
     expect_in(new_column, colnames(dplyr::collect(res)))
   })
 
@@ -88,6 +89,18 @@ check_edge_formats <- function(fun, new_column, type_check) {
     res <- fun(edges_bigint) |> dplyr::collect()
     expect_in(new_column, colnames(res))
     expect_false(anyNA(res[[new_column]]))
+  })
+
+  testthat::it("returns different output formats (duckspatial_df, sf)", {
+    ## Non-spatial input: always lazy, mode is ignored
+    expect_s3_class(fun(edges_df, mode = "sf"), "tbl_duckdb_connection")
+    ## Spatial input
+    output_ddbs <- fun(edges_sf, mode = "duckspatial")
+    output_sf   <- fun(edges_sf, mode = "sf")
+    expect_s3_class(output_ddbs, "duckspatial_df")
+    expect_s3_class(output_sf, "sf")
+    expect_equal(duckspatial::ddbs_collect(output_ddbs), output_sf, ignore_attr = "class")
+    expect_s3_class(fun(edges_ddbs, mode = "sf"), "sf")
   })
 
 }
@@ -181,6 +194,19 @@ testthat::describe("ddbh3_h3_to_edges() works in different formats", {
     expect_in(h3_edge, res[[1]])
   })
 
+  ## OUTPUT MODES
+  testthat::it("returns different output formats (duckspatial_df, sf)", {
+    ## Non-spatial input: always lazy, mode is ignored
+    expect_s3_class(ddbh3_h3_to_edges(test_data_df, mode = "sf"), "tbl_duckdb_connection")
+    ## Spatial input
+    output_ddbs <- ddbh3_h3_to_edges(test_data_sf, mode = "duckspatial")
+    output_sf   <- ddbh3_h3_to_edges(test_data_sf, mode = "sf")
+    expect_s3_class(output_ddbs, "duckspatial_df")
+    expect_s3_class(output_sf, "sf")
+    expect_equal(duckspatial::ddbs_collect(output_ddbs), output_sf, ignore_attr = "class")
+    expect_s3_class(ddbh3_h3_to_edges(test_data_ddbs, mode = "sf"), "sf")
+  })
+
 })
 
 
@@ -235,10 +261,6 @@ testthat::describe("ddbh3_h3_to_edges() arguments work", {
   testthat::it("new_column argument works", {
     res <- ddbh3_h3_to_edges(test_data, new_column = "edges")
     expect_true("edges" %in% colnames(res))
-  })
-
-  testthat::it("mode argument works", {
-    expect_s3_class(ddbh3_h3_to_edges(test_data_sf, mode = "sf"), "sf")
   })
 
   testthat::it("database arguments work", {
@@ -319,6 +341,19 @@ testthat::describe("ddbh3_h3_to_edge() works in different formats", {
     expect_equal(dplyr::collect(res)$h3edge, h3_edge)
   })
 
+  ## OUTPUT MODES
+  testthat::it("returns different output formats (duckspatial_df, sf)", {
+    ## Non-spatial input: always lazy, mode is ignored
+    expect_s3_class(ddbh3_h3_to_edge(pair_tbl, h3start = "h3start", h3end = "h3end", mode = "sf"), "tbl_duckdb_connection")
+    ## Spatial input
+    output_ddbs <- ddbh3_h3_to_edge(test_data_sf, h3end = "h3string", mode = "duckspatial")
+    output_sf   <- ddbh3_h3_to_edge(test_data_sf, h3end = "h3string", mode = "sf")
+    expect_s3_class(output_ddbs, "duckspatial_df")
+    expect_s3_class(output_sf, "sf")
+    expect_equal(duckspatial::ddbs_collect(output_ddbs), output_sf, ignore_attr = "class")
+    expect_s3_class(ddbh3_h3_to_edge(test_data_ddbs, h3end = "h3string", mode = "sf"), "sf")
+  })
+
 })
 
 
@@ -357,10 +392,6 @@ testthat::describe("ddbh3_h3_to_edge() arguments work", {
   testthat::it("new_column argument works", {
     res <- ddbh3_h3_to_edge(pair_tbl, h3start = "h3start", h3end = "h3end", new_column = "e")
     expect_true("e" %in% colnames(res))
-  })
-
-  testthat::it("mode argument works", {
-    expect_s3_class(ddbh3_h3_to_edge(test_data_sf, h3end = "h3string", mode = "sf"), "sf")
   })
 
   testthat::it("database arguments work", {
@@ -622,6 +653,19 @@ testthat::describe("ddbh3_edge_to_spatial() works in different formats", {
   testthat::it("works with character vectors", {
     res <- ddbh3_edge_to_spatial(h3_edge_1)
     expect_length(res, 1)
+  })
+
+  ## OUTPUT MODES
+  testthat::it("returns different output formats (duckspatial_df, sf)", {
+    ## Builds geometries, so the output is spatial for any input
+    output_ddbs <- ddbh3_edge_to_spatial(edges_df, mode = "duckspatial")
+    output_sf   <- ddbh3_edge_to_spatial(edges_df, mode = "sf")
+    expect_s3_class(output_ddbs, "duckspatial_df")
+    expect_s3_class(output_sf, "sf")
+    expect_equal(duckspatial::ddbs_collect(output_ddbs), output_sf, ignore_attr = "class")
+    expect_s3_class(ddbh3_edge_to_spatial(edges_tbl, mode = "sf"), "sf")
+    expect_s3_class(ddbh3_edge_to_spatial(edges_sf, mode = "sf"), "sf")
+    expect_s3_class(ddbh3_edge_to_spatial(edges_ddbs, mode = "sf"), "sf")
   })
 
 })

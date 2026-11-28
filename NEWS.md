@@ -14,10 +14,13 @@
 * `ddbh3_default_conn(create = FALSE)` no longer errors when no default connection exists.
 * `ddbh3_vertex_to_lon()`, `ddbh3_vertex_to_lat()` and `ddbh3_is_vertex()` no longer reject valid H3 vertexes in vectorized mode, and `ddbh3_is_vertex()` returns `FALSE` for invalid input instead of erroring.
 * `ddbh3_create_conn()` and `ddbh3_default_conn()` set `geometry_always_xy = true`, which DuckDB >= 2.0 requires before spheroid functions such as `duckspatial::ddbs_area()` can run on H3 geometries. This keeps the pre-2.0 axis convention that duckspatial's measure functions are written for.
+* `ddbh3_child_pos_to_cell()` no longer errors when the child position column is stored as a double (e.g. `data.frame(h3child_pos = 0)`).
 
 ## ENHANCEMENTS
 
 * Remove arrow lambda syntax for compatibility with DuckDB v2.0 (#6).
+
+* The `@returns` documentation now states that spatial outputs are returned as `sf` with `mode = "sf"`, that `*_to_spatial()` functions and `ddbh3_h3_to_points()` always return spatial output, and that `mode` is ignored for non-spatial results (#10).
 
 * Vectorized mode is up to ~40x faster: input validation and evaluation now run in a single query, and the default connection is no longer re-initialised on every call. The h3 extension check is cached for the default connection.
 

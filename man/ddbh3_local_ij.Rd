@@ -69,7 +69,9 @@ names. If \code{NULL} (the default), the function returns the result as an
 \item \code{"sf"}: Eagerly collected sf object (uses memory)
 }
 Can be set globally via \code{\link[duckspatial]{ddbs_options}(mode = "...")} or
-per-function via this argument. Per-function overrides global setting.}
+per-function via this argument. Per-function overrides global setting.
+It only applies when the output has a geometry column, and is ignored
+otherwise.}
 
 \item{overwrite}{Boolean. whether to overwrite the existing table if it exists. Defaults
 to \code{FALSE}. This argument is ignored when \code{name} is \code{NULL}.}
@@ -83,8 +85,13 @@ coordinates}
 \value{
 One of the following, depending on the inputs:
 \describe{
-\item{\code{tbl_lazy}}{If \code{x} is not spatial.}
-\item{\code{duckspatial_df}}{If \code{x} is spatial (e.g. an \code{sf} or \code{duckspatial_df} object).}
+\item{\code{tbl_lazy}}{If the output has no geometry, i.e. \code{x} is not spatial
+and the function adds a column. \code{mode} is ignored in this case.}
+\item{\code{duckspatial_df}}{If the output has geometry (\code{x} is spatial, e.g. an
+\code{sf} or \code{duckspatial_df} object, or the function builds geometries, as
+\verb{*_to_spatial()} and \code{ddbh3_h3_to_points()} do) and \code{mode = "duckspatial"}
+(default).}
+\item{\code{sf}}{If the output has geometry and \code{mode = "sf"}.}
 \item{\code{TRUE} (invisibly)}{If \code{name} is provided, a table is created in the connection
 and \code{TRUE} is returned invisibly.}
 \item{vector}{If \code{x} is a character vector and \code{conn = NULL}, the function operates

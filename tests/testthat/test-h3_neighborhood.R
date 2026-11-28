@@ -106,6 +106,19 @@ testthat::describe("ddbh3_grid_disk() works in different formats", {
     expect_equal(ddbh3_bigint_to_strings(res[[1]]), ddbh3_grid_disk(h3_origin)[[1]])
   })
 
+  ## OUTPUT MODES
+  testthat::it("returns different output formats (duckspatial_df, sf)", {
+    ## Non-spatial input: always lazy, mode is ignored
+    expect_s3_class(ddbh3_grid_disk(test_data_df, mode = "sf"), "tbl_duckdb_connection")
+    ## Spatial input
+    output_ddbs <- ddbh3_grid_disk(test_data_sf, mode = "duckspatial")
+    output_sf   <- ddbh3_grid_disk(test_data_sf, mode = "sf")
+    expect_s3_class(output_ddbs, "duckspatial_df")
+    expect_s3_class(output_sf, "sf")
+    expect_equal(duckspatial::ddbs_collect(output_ddbs), output_sf, ignore_attr = "class")
+    expect_s3_class(ddbh3_grid_disk(test_data_ddbs, mode = "sf"), "sf")
+  })
+
 })
 
 
@@ -198,12 +211,6 @@ testthat::describe("ddbh3_grid_disk() arguments work", {
     res <- ddbh3_grid_disk(test_data, nested = TRUE) |> dplyr::collect()
     expect_equal(nrow(res), n_test)
     expect_type(res$h3neighbors, "list")
-  })
-
-  ## ARGUMENT 4 - MODE
-  testthat::it("mode argument works", {
-    expect_s3_class(ddbh3_grid_disk(test_data_sf, mode = "sf"), "sf")
-    expect_s3_class(ddbh3_grid_disk(test_data_sf, mode = "duckspatial"), "duckspatial_df")
   })
 
   ## ARGUMENT 5 - DATABASE ARGUMENTS
@@ -320,6 +327,19 @@ testthat::describe("ddbh3_grid_disk_distances() works in different formats", {
     expect_equal(res_vec, res_tbl$h3neighbors[[1]])
   })
 
+  ## OUTPUT MODES
+  testthat::it("returns different output formats (duckspatial_df, sf)", {
+    ## Non-spatial input: always lazy, mode is ignored
+    expect_s3_class(ddbh3_grid_disk_distances(test_data_df, mode = "sf"), "tbl_duckdb_connection")
+    ## Spatial input
+    output_ddbs <- ddbh3_grid_disk_distances(test_data_sf, mode = "duckspatial")
+    output_sf   <- ddbh3_grid_disk_distances(test_data_sf, mode = "sf")
+    expect_s3_class(output_ddbs, "duckspatial_df")
+    expect_s3_class(output_sf, "sf")
+    expect_equal(duckspatial::ddbs_collect(output_ddbs), output_sf, ignore_attr = "class")
+    expect_s3_class(ddbh3_grid_disk_distances(test_data_ddbs, mode = "sf"), "sf")
+  })
+
 })
 
 
@@ -380,10 +400,6 @@ testthat::describe("ddbh3_grid_disk_distances() arguments work", {
     res <- ddbh3_grid_disk_distances(test_data, nested = TRUE) |> dplyr::collect()
     expect_equal(nrow(res), n_test)
     expect_type(res$h3neighbors, "list")
-  })
-
-  testthat::it("mode argument works", {
-    expect_s3_class(ddbh3_grid_disk_distances(test_data_sf, mode = "sf"), "sf")
   })
 
   testthat::it("database arguments work", {
@@ -486,6 +502,19 @@ testthat::describe("ddbh3_grid_ring() works in different formats", {
     expect_length(res[[1]], 12)
   })
 
+  ## OUTPUT MODES
+  testthat::it("returns different output formats (duckspatial_df, sf)", {
+    ## Non-spatial input: always lazy, mode is ignored
+    expect_s3_class(ddbh3_grid_ring(test_data_df, mode = "sf"), "tbl_duckdb_connection")
+    ## Spatial input
+    output_ddbs <- ddbh3_grid_ring(test_data_sf, mode = "duckspatial")
+    output_sf   <- ddbh3_grid_ring(test_data_sf, mode = "sf")
+    expect_s3_class(output_ddbs, "duckspatial_df")
+    expect_s3_class(output_sf, "sf")
+    expect_equal(duckspatial::ddbs_collect(output_ddbs), output_sf, ignore_attr = "class")
+    expect_s3_class(ddbh3_grid_ring(test_data_ddbs, mode = "sf"), "sf")
+  })
+
 })
 
 
@@ -574,10 +603,6 @@ testthat::describe("ddbh3_grid_ring() arguments work", {
     res <- ddbh3_grid_ring(test_data, nested = TRUE) |> dplyr::collect()
     expect_equal(nrow(res), n_test)
     expect_type(res$h3neighbors, "list")
-  })
-
-  testthat::it("mode argument works", {
-    expect_s3_class(ddbh3_grid_ring(test_data_sf, mode = "sf"), "sf")
   })
 
   testthat::it("database arguments work", {
@@ -721,6 +746,19 @@ testthat::describe("ddbh3_grid_path_cells() works in different formats", {
     expect_length(res[[1]], 98)
   })
 
+  ## OUTPUT MODES
+  testthat::it("returns different output formats (duckspatial_df, sf)", {
+    ## Non-spatial input: always lazy, mode is ignored
+    expect_s3_class(ddbh3_grid_path_cells(pair_tbl, h3start = "h3start", h3end = "h3end", mode = "sf"), "tbl_duckdb_connection")
+    ## Spatial input
+    output_ddbs <- ddbh3_grid_path_cells(test_data_sf, h3end = "h3string", mode = "duckspatial")
+    output_sf   <- ddbh3_grid_path_cells(test_data_sf, h3end = "h3string", mode = "sf")
+    expect_s3_class(output_ddbs, "duckspatial_df")
+    expect_s3_class(output_sf, "sf")
+    expect_equal(duckspatial::ddbs_collect(output_ddbs), output_sf, ignore_attr = "class")
+    expect_s3_class(ddbh3_grid_path_cells(test_data_ddbs, h3end = "h3string", mode = "sf"), "sf")
+  })
+
 })
 
 
@@ -792,10 +830,6 @@ testthat::describe("ddbh3_grid_path_cells() arguments work", {
     expect_equal(nrow(res), 1)
     expect_type(res$h3path, "list")
     expect_length(res$h3path[[1]], 98)
-  })
-
-  testthat::it("mode argument works", {
-    expect_s3_class(ddbh3_grid_path_cells(test_data_sf, h3end = "h3string", mode = "sf"), "sf")
   })
 
   testthat::it("database arguments work", {
@@ -907,6 +941,19 @@ testthat::describe("ddbh3_grid_distance() works in different formats", {
     expect_equal(ddbh3_grid_distance(h3_origin, h3end = h3_dest), 97)
   })
 
+  ## OUTPUT MODES
+  testthat::it("returns different output formats (duckspatial_df, sf)", {
+    ## Non-spatial input: always lazy, mode is ignored
+    expect_s3_class(ddbh3_grid_distance(pair_tbl, h3start = "h3start", h3end = "h3end", mode = "sf"), "tbl_duckdb_connection")
+    ## Spatial input
+    output_ddbs <- ddbh3_grid_distance(test_data_sf, h3end = "h3string", mode = "duckspatial")
+    output_sf   <- ddbh3_grid_distance(test_data_sf, h3end = "h3string", mode = "sf")
+    expect_s3_class(output_ddbs, "duckspatial_df")
+    expect_s3_class(output_sf, "sf")
+    expect_equal(duckspatial::ddbs_collect(output_ddbs), output_sf, ignore_attr = "class")
+    expect_s3_class(ddbh3_grid_distance(test_data_ddbs, h3end = "h3string", mode = "sf"), "sf")
+  })
+
 })
 
 
@@ -965,10 +1012,6 @@ testthat::describe("ddbh3_grid_distance() arguments work", {
   testthat::it("new_column argument works", {
     res <- ddbh3_grid_distance(pair_tbl, h3start = "h3start", h3end = "h3end", new_column = "dist")
     expect_true("dist" %in% colnames(res))
-  })
-
-  testthat::it("mode argument works", {
-    expect_s3_class(ddbh3_grid_distance(test_data_sf, h3end = "h3string", mode = "sf"), "sf")
   })
 
   testthat::it("database arguments work", {
@@ -1095,6 +1138,19 @@ testthat::describe("ddbh3_is_neighbor() works in different formats", {
     DBI::dbWriteTable(conn_test, "pairs", pair_tbl)
     res <- ddbh3_is_neighbor("pairs", h3start = "h3start", h3end = "h3end", conn = conn_test)
     expect_in("isneighbor", colnames(dplyr::collect(res)))
+  })
+
+  ## OUTPUT MODES
+  testthat::it("returns different output formats (duckspatial_df, sf)", {
+    ## Non-spatial input: always lazy, mode is ignored
+    expect_s3_class(ddbh3_is_neighbor(pair_tbl, h3start = "h3start", h3end = "h3end", mode = "sf"), "tbl_duckdb_connection")
+    ## Spatial input
+    output_ddbs <- ddbh3_is_neighbor(test_data_sf, h3end = "h3string", mode = "duckspatial")
+    output_sf   <- ddbh3_is_neighbor(test_data_sf, h3end = "h3string", mode = "sf")
+    expect_s3_class(output_ddbs, "duckspatial_df")
+    expect_s3_class(output_sf, "sf")
+    expect_equal(duckspatial::ddbs_collect(output_ddbs), output_sf, ignore_attr = "class")
+    expect_s3_class(ddbh3_is_neighbor(test_data_ddbs, h3end = "h3string", mode = "sf"), "sf")
   })
 
 })

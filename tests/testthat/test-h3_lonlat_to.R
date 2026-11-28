@@ -101,6 +101,23 @@ testthat::describe("ddbh3_lonlat_to_h3() works in different formats", {
     expect_type(res_col$h3string, "character")
   })
 
+  ## OUTPUT MODES
+  testthat::it("returns different output formats (duckspatial_df, sf)", {
+    ## Same data in other formats
+    test_data_df   <- dplyr::collect(test_data)
+    test_data_sf   <- sf::st_as_sf(test_data_df, coords = c("lon", "lat"), crs = 4326, remove = FALSE)
+    test_data_ddbs <- duckspatial::as_duckspatial_df(test_data_sf)
+    ## Non-spatial input: always lazy, mode is ignored
+    expect_s3_class(ddbh3_lonlat_to_h3(test_data_df, mode = "sf"), "tbl_duckdb_connection")
+    ## Spatial input
+    output_ddbs <- ddbh3_lonlat_to_h3(test_data_sf, mode = "duckspatial")
+    output_sf   <- ddbh3_lonlat_to_h3(test_data_sf, mode = "sf")
+    expect_s3_class(output_ddbs, "duckspatial_df")
+    expect_s3_class(output_sf, "sf")
+    expect_equal(duckspatial::ddbs_collect(output_ddbs), output_sf, ignore_attr = "class")
+    expect_s3_class(ddbh3_lonlat_to_h3(test_data_ddbs, mode = "sf"), "sf")
+  })
+
 })
 
 
@@ -398,6 +415,22 @@ testthat::describe("ddbh3_lonlat_to_spatial() works in different formats", {
     ## Check geometry
     res_col <- dplyr::collect(res)
     expect_in("geometry", colnames(res_col))
+  })
+
+  ## OUTPUT MODES
+  testthat::it("returns different output formats (duckspatial_df, sf)", {
+    ## Same data in other formats
+    test_data_df   <- dplyr::collect(test_data)
+    test_data_sf   <- sf::st_as_sf(test_data_df, coords = c("lon", "lat"), crs = 4326, remove = FALSE)
+    test_data_ddbs <- duckspatial::as_duckspatial_df(test_data_sf)
+    ## Builds geometries, so the output is spatial for any input
+    output_ddbs <- ddbh3_lonlat_to_spatial(test_data_df, mode = "duckspatial")
+    output_sf   <- ddbh3_lonlat_to_spatial(test_data_df, mode = "sf")
+    expect_s3_class(output_ddbs, "duckspatial_df")
+    expect_s3_class(output_sf, "sf")
+    expect_equal(duckspatial::ddbs_collect(output_ddbs), output_sf, ignore_attr = "class")
+    expect_s3_class(ddbh3_lonlat_to_spatial(test_data_sf, mode = "sf"), "sf")
+    expect_s3_class(ddbh3_lonlat_to_spatial(test_data_ddbs, mode = "sf"), "sf")
   })
 
 })
