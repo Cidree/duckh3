@@ -43,6 +43,9 @@ Imports:
 Config/testthat/edition: 3
 Roxygen: list(markdown = TRUE)
 Suggests: 
+    knitr,
+    quarto,
     sf,
     testthat (>= 3.0.0)
+VignetteBuilder: quarto
 Config/roxygen2/version: 8.1.1

@@ -19,3 +19,5 @@ internal/*
 ^Meta$
 ^test_feat\.R$
 ^CLAUDE\.md$
+^vignettes/\.quarto$
+^vignettes/.*_files$

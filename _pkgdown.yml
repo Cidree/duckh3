@@ -237,6 +237,8 @@ navbar:
   - icon: fa-home
     href: index.html
     aria-label: Home
+  - text: Get started
+    href: articles/duckh3.html
   - text: Reference
     href: reference/index.html
   - text: News

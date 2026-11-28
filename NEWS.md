@@ -1,6 +1,7 @@
 
 # Development version
 
+* New introductory vignette, "Getting started" (`vignette("duckh3")`).
 * Updated the `duckdb` dependency to v2.0.0 See <https://r.duckdb.org/news/index.html#duckdb-200>.
 
 ## BUG FIXES

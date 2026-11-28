@@ -10,3 +10,7 @@ private
 /Meta/
 docs
 CLAUDE.md
+
+vignettes/.quarto/
+vignettes/*_files/
+vignettes/*.html

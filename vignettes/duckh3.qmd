@@ -1,0 +1,341 @@
+---
+title: "Getting started"
+date: today
+vignette: >
+  %\VignetteIndexEntry{Getting started}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
+knitr:
+  opts_chunk:
+    collapse: true
+    comment: "#>"
+    out.width: "100%"
+---
+
+```{r}
+#| include: false
+
+# Only run the code when NOT_CRAN is "true" (needs to download the h3
+# extension). Quarto ignores `!expr` in the YAML header, so set it here.
+knitr::opts_chunk$set(
+  eval = identical(tolower(Sys.getenv("NOT_CRAN")), "true")
+)
+
+# Limit threads to avoid a CRAN NOTE
+Sys.setenv(OMP_THREAD_LIMIT = 2)
+
+# Quarto spawns a new R subprocess during R CMD build and may not pick up
+# R_LIBS set by the build process; propagate it manually.
+local({
+  r_libs <- Sys.getenv("R_LIBS")
+  if (nzchar(r_libs)) {
+    paths <- unlist(strsplit(r_libs, .Platform$path.sep))
+    .libPaths(unique(c(paths, .libPaths())))
+  }
+})
+```
+
+# Getting started
+
+**{duckh3}** provides fast, memory-efficient functions for working with the [H3 hierarchical indexing system](https://h3geo.org/) in R. It wraps the [DuckDB H3 community extension](https://duckdb.org/community_extensions/extensions/h3) and integrates with **{duckspatial}**, **{dplyr}** and **{sf}**, so you can index, aggregate and analyse large datasets with DuckDB while staying in your usual R workflow.
+
+H3 divides the globe into hexagonal cells at 16 resolutions (0 to 15). Each cell has a unique 64-bit index, and every cell has one parent at a coarser resolution and several children at finer ones. That makes H3 useful for spatial binning, joins and neighbourhood analysis without needing any geometry at all.
+
+Let's start by loading the packages we need:
+
+```{r}
+#| label: setup
+#| message: false
+#| warning: false
+
+library(duckh3)
+library(duckspatial)
+library(dplyr)
+library(sf)
+```
+
+# Installation
+
+Install the stable release from CRAN:
+
+``` r
+# install.packages("pak")
+pak::pak("duckh3")
+```
+
+Or the latest GitHub version:
+
+``` r
+pak::pak("Cidree/duckh3")
+```
+
+# Setting up a connection
+
+Every {duckh3} function runs inside a DuckDB connection with the `h3` and `spatial` extensions loaded. Before using the package, create the **default connection** with `ddbh3_default_conn()`. It installs and loads the extensions (the first time it downloads them), registers the {duckh3} SQL macros, and stores the connection so other functions can find it:
+
+```{r}
+#| label: default-conn
+#| message: false
+
+ddbh3_default_conn(threads = 1)
+```
+
+The default connection is shared with {duckspatial}, so both packages operate on the same database. If you want a separate database (for example, a file on disk), create your own connection with `ddbh3_create_conn()` and pass it through the `conn` argument:
+
+```{r}
+#| label: user-conn
+#| message: false
+
+conn <- ddbh3_create_conn(threads = 1)
+```
+
+::: {.callout-note}
+H3 indexes are unsigned 64-bit integers. {duckh3} connections use `bigint = "integer64"` so these values are never rounded. If you make a connection yourself with `duckdb::dbConnect()`, set `bigint = "integer64"` too, or store indexes as strings.
+:::
+
+# Naming conventions
+
+All functions start with `ddbh3_` (*DuckDB H3*), and the name says what they take and what they return:
+
+| Pattern | Description |
+|---|---|
+| `ddbh3_lonlat_to_*()` | From longitude/latitude columns |
+| `ddbh3_points_to_*()` | From spatial point geometries |
+| `ddbh3_polygons_to_*()`, `ddbh3_lines_to_*()` | From polygons or lines (polyfill) |
+| `ddbh3_h3_to_*()` | From H3 cells to other representations |
+| `ddbh3_vertex_to_*()`, `ddbh3_edge_to_*()` | From H3 vertexes and directed edges |
+| `ddbh3_get_*()` | Get a property of a cell (resolution, parent, area...) |
+| `ddbh3_is_*()` | Check a property of an index (valid, pentagon...) |
+
+The suffix gives the output: `*_to_h3()` returns an H3 index, `*_to_spatial()` returns hexagon geometries, and `*_to_lon()` / `*_to_lat()` return the coordinates of the cell centre.
+
+# From coordinates to H3 cells
+
+H3 does not need spatial data. Any table with longitude and latitude columns is a valid input. {duckh3} ships a small example dataset of 100 points:
+
+```{r}
+#| label: load-points
+
+points_tbl <- read.csv(
+  system.file("extdata/example_pts.csv", package = "duckh3"),
+  row.names = 1
+)
+
+head(points_tbl)
+```
+
+`ddbh3_lonlat_to_h3()` adds a column with the H3 index of the cell that contains each point. Columns are called `lon` and `lat` by default; use the `lon` and `lat` arguments if yours have other names.
+
+```{r}
+#| label: lonlat-to-h3
+
+points_h3 <- ddbh3_lonlat_to_h3(points_tbl, resolution = 5)
+points_h3
+```
+
+The result is a **lazy table**: the query has been defined in DuckDB, but no data has been brought into R. This lets you chain several operations and have DuckDB optimise them together. Use `collect()` (or `dplyr::pull()`, `as.data.frame()`...) when you need the data in memory:
+
+```{r}
+#| label: collect
+
+points_h3 |>
+  collect() |>
+  head()
+```
+
+By default indexes are returned as strings (`h3string`). You can request the `UBIGINT` form instead, which is faster and smaller, and convert between both formats at any time:
+
+```{r}
+#| label: bigint
+
+points_bigint <- ddbh3_lonlat_to_h3(
+  points_tbl,
+  resolution = 5,
+  new_column = "h3bigint",
+  h3_format  = "bigint"
+)
+
+points_bigint |>
+  ddbh3_bigint_to_strings(h3 = "h3bigint") |>
+  select(id, h3bigint, h3string) |>
+  collect() |>
+  mutate(h3bigint = as.character(h3bigint))
+```
+
+# Vectorized mode
+
+When you pass a plain character vector instead of a table (and leave `conn = NULL`), {duckh3} works like a regular vectorised R function and returns a vector:
+
+```{r}
+#| label: vectorized
+
+cells <- c("85283473fffffff", "8928308280fffff", "not-an-index")
+
+ddbh3_is_h3(cells)
+
+ddbh3_get_resolution(cells[1:2])
+```
+
+This is handy for quick checks. Note that numeric vectors are rejected because doubles cannot store every H3 index exactly; use character strings or `bit64::integer64` instead.
+
+# Output types
+
+Functions that return geometries, like `ddbh3_h3_to_spatial()`, return a `duckspatial_df` by default: a lazy table with a geometry column that {duckspatial} functions understand.
+
+```{r}
+#| label: to-spatial
+
+hex_ddbs <- ddbh3_h3_to_spatial(points_h3)
+class(hex_ddbs)
+```
+
+Use `mode = "sf"` to get an `sf` object directly. You can also change the default for the whole session with `duckspatial::ddbs_options(mode = "sf")`.
+
+```{r}
+#| label: to-sf
+
+hex_sf <- ddbh3_h3_to_spatial(points_h3, mode = "sf")
+hex_sf
+```
+
+Finally, any function can write its result to a table in a DuckDB connection with the `name` argument, instead of returning it. Here we store the points in our own connection, then index the table by name:
+
+```{r}
+#| label: name
+
+DBI::dbWriteTable(conn, "points", points_tbl)
+
+ddbh3_lonlat_to_h3(
+  "points",
+  resolution = 7,
+  conn       = conn,
+  name       = "points_h3"
+)
+
+DBI::dbListTables(conn)
+```
+
+# Using {duckh3} inside `mutate()`
+
+{duckh3} registers DuckDB **macros** with the same names as the R functions. On lazy tables you can call them directly inside `dplyr::mutate()`, `filter()` or `summarise()`, and {dbplyr} sends them to DuckDB as SQL. This makes long pipelines very concise:
+
+```{r}
+#| label: macros
+
+points_lazy <- dplyr::copy_to(
+  duckspatial::ddbs_default_conn(),
+  points_tbl,
+  name = "points_lazy",
+  overwrite = TRUE
+)
+
+points_lazy |>
+  mutate(
+    h3       = ddbh3_lonlat_to_h3(lon, lat, 6),
+    h3parent = ddbh3_get_parent(h3, 2),
+    area_km2 = ddbh3_get_area(h3) / 1e6
+  ) |>
+  select(id, h3, h3parent, area_km2)
+```
+
+::: {.callout-warning}
+Macros only exist inside DuckDB, so they work on lazy tables (`tbl_duckdb_connection`, `duckspatial_df`), not on regular data frames. For data frames, use the exported R functions.
+:::
+
+# Hierarchy
+
+Each H3 cell has one parent at every coarser resolution and many children at every finer resolution. Moving up the hierarchy is a quick way to aggregate data:
+
+```{r}
+#| label: parent
+
+points_h3 |>
+  ddbh3_get_parent(resolution = 1) |>
+  count(h3parent, sort = TRUE)
+```
+
+Moving down returns several cells per input. By default the result is unnested (one row per child); use `nested = TRUE` to keep a list column instead:
+
+```{r}
+#| label: children
+
+points_h3 |>
+  head(1) |>
+  ddbh3_get_children(resolution = 6) |>
+  select(id, h3string, h3children)
+```
+
+`ddbh3_compact()` does the reverse: it replaces each complete set of children with their parent, which is a compact way to store large areas. `ddbh3_uncompact()` expands them back to a single resolution.
+
+# Neighbours and distances
+
+`ddbh3_grid_disk()` returns every cell within `k` steps of a cell (the "k-ring"), one row per neighbour. `ddbh3_grid_distance()` then gives the number of steps between two cells. Combined with `ddbh3_h3_to_spatial()`, we can map how far each neighbour is from the origin:
+
+```{r}
+#| label: grid-disk
+#| fig-height: 5
+
+disk <- points_h3 |>
+  head(1) |>
+  ddbh3_grid_disk(k = 3) |>
+  ddbh3_grid_distance(h3start = "h3string", h3end = "h3neighbors") |>
+  ddbh3_h3_to_spatial(h3 = "h3neighbors", mode = "sf")
+
+plot(
+  disk["grid_distance"],
+  pal    = hcl.colors(4, "Teal", rev = TRUE),
+  border = "white",
+  main   = "Grid distance from the origin cell"
+)
+```
+
+Grid distances can only be computed between cells that are reasonably close; for cells too far apart the result is `NA`.
+
+Cell size varies with latitude, so H3 cells of the same resolution do not all have the same area. `ddbh3_get_area()` measures each cell, and `ddbh3_get_hexagon_area_avg()` gives the average area at a resolution:
+
+```{r}
+#| label: area
+
+points_h3 |>
+  ddbh3_get_area(unit = "km^2") |>
+  summarise(
+    min_area  = min(h3area, na.rm = TRUE),
+    mean_area = mean(h3area, na.rm = TRUE),
+    max_area  = max(h3area, na.rm = TRUE)
+  )
+
+ddbh3_get_hexagon_area_avg(resolution = 5, unit = "km^2")
+```
+
+# From polygons to H3 cells
+
+`ddbh3_polygons_to_h3()` and `ddbh3_polygons_to_spatial()` fill polygons with H3 cells (polyfill). They accept `sf` objects, `duckspatial_df` objects or tables in a connection. Here we use the North Carolina counties that ship with {sf}:
+
+```{r}
+#| label: polyfill
+#| message: false
+#| fig-height: 5
+
+nc <- st_read(system.file("shape/nc.shp", package = "sf"), quiet = TRUE) |>
+  st_transform(4326)
+
+nc_subset <- nc[nc$NAME %in% c("Wake", "Durham", "Orange", "Chatham"), ]
+
+nc_hex <- ddbh3_polygons_to_spatial(nc_subset, resolution = 7, mode = "sf")
+
+plot(st_geometry(nc_hex), col = "#0A7EA4", border = "white", lwd = 0.3)
+plot(st_geometry(nc_subset), border = "#FF6B35", lwd = 2, add = TRUE)
+```
+
+The `containment` argument controls which cells are kept: `"overlap"` (default) keeps any cell that touches the polygon, while `"center"` keeps only cells whose centre falls inside it. For lines, use `ddbh3_lines_to_h3()` and `ddbh3_lines_to_spatial()`.
+
+```{r}
+#| label: cleanup
+#| include: false
+
+duckdb::dbDisconnect(conn)
+```
+
+# Learn more
+
+This vignette covered the main building blocks. The [function reference](https://cidree.github.io/duckh3/reference/index.html) lists everything else, grouped by topic: vertexes, directed edges, local IJ coordinates, icosahedron faces and more. For spatial operations on the resulting hexagons (joins, areas, interpolation), see [{duckspatial}](https://cidree.github.io/duckspatial/).
