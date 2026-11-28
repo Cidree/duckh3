@@ -117,8 +117,8 @@ testthat::describe("ddbh3_get_resolution() works in different formats", {
 
   ## GLOBAL MODE OPTION
   testthat::it("respects the global mode set with ddbs_options()", {
-    duckspatial::ddbs_options(mode = "sf")
-    on.exit(duckspatial::ddbs_options(mode = "duckspatial"), add = TRUE)
+    old_mode <- options(duckspatial.mode = "sf")
+    on.exit(options(old_mode), add = TRUE)
     test_data_df <- dplyr::collect(test_data)
     test_data_sf <- sf::st_as_sf(test_data_df, coords = c("lon", "lat"), crs = 4326)
     ## Spatial output follows the global mode...

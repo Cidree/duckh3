@@ -82,8 +82,8 @@ resolution of every input cell.}
 }
 Can be set globally via \code{\link[duckspatial]{ddbs_options}(mode = "...")} or
 per-function via this argument. Per-function overrides global setting.
-It only applies when the output has a geometry column: non-spatial
-results are always returned as a lazy table.}
+It only applies when the output has a geometry column, and is ignored
+otherwise.}
 }
 \value{
 For \code{ddbh3_compact()}, a \code{tbl_lazy} (or \code{TRUE} invisibly if \code{name}

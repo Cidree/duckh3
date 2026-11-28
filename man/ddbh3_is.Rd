@@ -110,8 +110,8 @@ names. If \code{NULL} (the default), the function returns the result as an
 }
 Can be set globally via \code{\link[duckspatial]{ddbs_options}(mode = "...")} or
 per-function via this argument. Per-function overrides global setting.
-It only applies when the output has a geometry column: non-spatial
-results are always returned as a lazy table.}
+It only applies when the output has a geometry column, and is ignored
+otherwise.}
 
 \item{overwrite}{Boolean. whether to overwrite the existing table if it exists. Defaults
 to \code{FALSE}. This argument is ignored when \code{name} is \code{NULL}.}

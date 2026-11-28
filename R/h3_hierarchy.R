@@ -486,7 +486,14 @@ ddbh3_child_pos_to_cell <- function(
 
 
   # 1. Build parameters string
-  built_fun <- glue::glue("h3_child_pos_to_cell(CAST({quote_ident(child_pos)} AS BIGINT), {quote_ident(parent)}, {resolution})")
+  ## cast doubles (R's default numeric) to BIGINT, but error on fractional
+  ## positions instead of silently rounding them
+  child_pos_q <- quote_ident(child_pos)
+  child_pos_int <- glue::glue(
+    "CAST(CASE WHEN {child_pos_q} = TRUNC({child_pos_q}) THEN {child_pos_q} ",
+    "ELSE error('child_pos must be a whole number') END AS BIGINT)"
+  )
+  built_fun <- glue::glue("h3_child_pos_to_cell({child_pos_int}, {quote_ident(parent)}, {resolution})")
 
 
   # 2. Pass to template

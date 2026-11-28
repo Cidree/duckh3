@@ -83,8 +83,8 @@ names. If \code{NULL} (the default), the function returns the result as an
 }
 Can be set globally via \code{\link[duckspatial]{ddbs_options}(mode = "...")} or
 per-function via this argument. Per-function overrides global setting.
-It only applies when the output has a geometry column: non-spatial
-results are always returned as a lazy table.}
+It only applies when the output has a geometry column, and is ignored
+otherwise.}
 
 \item{nested}{Logical. If \code{TRUE}, children are returned as a nested list
 column (one row per parent cell). If \code{FALSE} (default), the result is

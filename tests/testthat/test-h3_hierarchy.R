@@ -2070,6 +2070,15 @@ testthat::describe("ddbh3_child_pos_to_cell() returns correct cells", {
     expect_equal(res$h3children, "8839230591fffff")
   })
 
+  testthat::it("errors on fractional child positions", {
+    expect_error(
+      data.frame(h3child_pos = 2.6, h3string = "873923059ffffff") |>
+        ddbh3_child_pos_to_cell(resolution = 8) |>
+        dplyr::collect(),
+      "whole number"
+    )
+  })
+
   testthat::it("position 0 is the center child", {
     res <- test_data_cp_df |>
       dplyr::mutate(pos0 = 0L) |>
