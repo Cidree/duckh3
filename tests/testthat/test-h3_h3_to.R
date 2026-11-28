@@ -104,7 +104,24 @@ testthat::describe("ddbh3_h3_to_lon() works in different formats", {
     res_col <-duckspatial::ddbs_collect(res)
     expect_equal(res_col$lon, points_lonlat$lon, tolerance = 0.0001)
   })
-  
+
+  ## OUTPUT MODES
+  testthat::it("returns different output formats (duckspatial_df, sf)", {
+    ## Same data in other formats
+    test_data_df   <- dplyr::collect(test_data)
+    test_data_sf   <- sf::st_as_sf(test_data_df, coords = c("lon", "lat"), crs = 4326, remove = FALSE)
+    test_data_ddbs <- duckspatial::as_duckspatial_df(test_data_sf)
+    ## Non-spatial input: always lazy, mode is ignored
+    expect_s3_class(ddbh3_h3_to_lon(test_data_df, mode = "sf"), "tbl_duckdb_connection")
+    ## Spatial input
+    output_ddbs <- ddbh3_h3_to_lon(test_data_sf, mode = "duckspatial")
+    output_sf   <- ddbh3_h3_to_lon(test_data_sf, mode = "sf")
+    expect_s3_class(output_ddbs, "duckspatial_df")
+    expect_s3_class(output_sf, "sf")
+    expect_equal(duckspatial::ddbs_collect(output_ddbs), output_sf, ignore_attr = "class")
+    expect_s3_class(ddbh3_h3_to_lon(test_data_ddbs, mode = "sf"), "sf")
+  })
+
 })
 
 
@@ -312,7 +329,24 @@ testthat::describe("ddbh3_h3_to_lat() works in different formats", {
     res_col <-duckspatial::ddbs_collect(res)
     expect_equal(res_col$lat, points_lonlat$lat, tolerance = 0.0001)
   })
-  
+
+  ## OUTPUT MODES
+  testthat::it("returns different output formats (duckspatial_df, sf)", {
+    ## Same data in other formats
+    test_data_df   <- dplyr::collect(test_data)
+    test_data_sf   <- sf::st_as_sf(test_data_df, coords = c("lon", "lat"), crs = 4326, remove = FALSE)
+    test_data_ddbs <- duckspatial::as_duckspatial_df(test_data_sf)
+    ## Non-spatial input: always lazy, mode is ignored
+    expect_s3_class(ddbh3_h3_to_lat(test_data_df, mode = "sf"), "tbl_duckdb_connection")
+    ## Spatial input
+    output_ddbs <- ddbh3_h3_to_lat(test_data_sf, mode = "duckspatial")
+    output_sf   <- ddbh3_h3_to_lat(test_data_sf, mode = "sf")
+    expect_s3_class(output_ddbs, "duckspatial_df")
+    expect_s3_class(output_sf, "sf")
+    expect_equal(duckspatial::ddbs_collect(output_ddbs), output_sf, ignore_attr = "class")
+    expect_s3_class(ddbh3_h3_to_lat(test_data_ddbs, mode = "sf"), "sf")
+  })
+
 })
 
 
@@ -519,7 +553,24 @@ testthat::describe("ddbh3_strings_to_bigint() works in different formats", {
     res_col <-duckspatial::ddbs_collect(res)
     expect_s3_class(res_col$h3bigint, "integer64")
   })
-  
+
+  ## OUTPUT MODES
+  testthat::it("returns different output formats (duckspatial_df, sf)", {
+    ## Same data in other formats
+    test_data_df   <- dplyr::collect(test_data)
+    test_data_sf   <- sf::st_as_sf(test_data_df, coords = c("lon", "lat"), crs = 4326, remove = FALSE)
+    test_data_ddbs <- duckspatial::as_duckspatial_df(test_data_sf)
+    ## Non-spatial input: always lazy, mode is ignored
+    expect_s3_class(ddbh3_strings_to_bigint(test_data_df, mode = "sf"), "tbl_duckdb_connection")
+    ## Spatial input
+    output_ddbs <- ddbh3_strings_to_bigint(test_data_sf, mode = "duckspatial")
+    output_sf   <- ddbh3_strings_to_bigint(test_data_sf, mode = "sf")
+    expect_s3_class(output_ddbs, "duckspatial_df")
+    expect_s3_class(output_sf, "sf")
+    expect_equal(duckspatial::ddbs_collect(output_ddbs), output_sf, ignore_attr = "class")
+    expect_s3_class(ddbh3_strings_to_bigint(test_data_ddbs, mode = "sf"), "sf")
+  })
+
 })
 
 
@@ -741,7 +792,24 @@ testthat::describe("ddbh3_bigint_to_strings() works in different formats", {
     res_col <-duckspatial::ddbs_collect(res)
     expect_type(res_col$h3string, "character")
   })
-  
+
+  ## OUTPUT MODES
+  testthat::it("returns different output formats (duckspatial_df, sf)", {
+    ## Same data in other formats
+    test_data_df   <- dplyr::collect(test_data_bigint)
+    test_data_sf   <- sf::st_as_sf(test_data_df, coords = c("lon", "lat"), crs = 4326, remove = FALSE)
+    test_data_ddbs <- duckspatial::as_duckspatial_df(test_data_sf)
+    ## Non-spatial input: always lazy, mode is ignored
+    expect_s3_class(ddbh3_bigint_to_strings(test_data_df, mode = "sf"), "tbl_duckdb_connection")
+    ## Spatial input
+    output_ddbs <- ddbh3_bigint_to_strings(test_data_sf, mode = "duckspatial")
+    output_sf   <- ddbh3_bigint_to_strings(test_data_sf, mode = "sf")
+    expect_s3_class(output_ddbs, "duckspatial_df")
+    expect_s3_class(output_sf, "sf")
+    expect_equal(duckspatial::ddbs_collect(output_ddbs), output_sf, ignore_attr = "class")
+    expect_s3_class(ddbh3_bigint_to_strings(test_data_ddbs, mode = "sf"), "sf")
+  })
+
 })
 
 
@@ -959,7 +1027,24 @@ testthat::describe("ddbh3_h3_to_spatial() works in different formats", {
     expect_equal(geom1, geom2)
 
   })
-  
+
+  ## OUTPUT MODES
+  testthat::it("returns different output formats (duckspatial_df, sf)", {
+    ## Same data in other formats
+    test_data_df   <- dplyr::collect(test_data)
+    test_data_sf   <- sf::st_as_sf(test_data_df, coords = c("lon", "lat"), crs = 4326, remove = FALSE)
+    test_data_ddbs <- duckspatial::as_duckspatial_df(test_data_sf)
+    ## Builds geometries, so the output is spatial for any input
+    output_ddbs <- ddbh3_h3_to_spatial(test_data_df, mode = "duckspatial")
+    output_sf   <- ddbh3_h3_to_spatial(test_data_df, mode = "sf")
+    expect_s3_class(output_ddbs, "duckspatial_df")
+    expect_s3_class(output_sf, "sf")
+    expect_equal(duckspatial::ddbs_collect(output_ddbs), output_sf, ignore_attr = "class")
+    expect_s3_class(ddbh3_h3_to_spatial(test_data, mode = "sf"), "sf")
+    expect_s3_class(ddbh3_h3_to_spatial(test_data_sf, mode = "sf"), "sf")
+    expect_s3_class(ddbh3_h3_to_spatial(test_data_ddbs, mode = "sf"), "sf")
+  })
+
 })
 
 
@@ -1146,4 +1231,131 @@ testthat::describe("ddbh3_h3_to_spatial() can overwrite its own source table", {
 
     DBI::dbDisconnect(conn_src, shutdown = TRUE)
   })
+})
+
+
+
+# 8. h3_to_points --------------------------------------------------------
+
+## 8.1. Input data in different formats ----------
+
+testthat::describe("ddbh3_h3_to_points() works in different formats", {
+
+  ## Same data in other formats
+  test_data_df   <- dplyr::collect(test_data)
+  test_data_sf   <- sf::st_as_sf(test_data_df, coords = c("lon", "lat"), crs = 4326, remove = FALSE)
+  test_data_ddbs <- duckspatial::as_duckspatial_df(test_data_sf)
+
+  ## FORMAT 1 - TBL_DUCKDB_CONNECTION
+  testthat::it("returns the correct data for tbl_duckdb_connection", {
+    res <- ddbh3_h3_to_points(test_data)
+    expect_s3_class(res, "duckspatial_df")
+    expect_true(all(duckspatial::ddbs_geometry_type(res) == "POINT"))
+  })
+
+  ## FORMAT 2 - DATA.FRAME
+  testthat::it("returns the correct data for data.frame", {
+    res <- ddbh3_h3_to_points(test_data_df)
+    expect_s3_class(res, "duckspatial_df")
+    ## Points are the cell centres, close to the original coordinates
+    coords <- sf::st_coordinates(duckspatial::ddbs_collect(res))
+    expect_equal(unname(coords[, "X"]), points_lonlat$lon, tolerance = 0.0001)
+    expect_equal(unname(coords[, "Y"]), points_lonlat$lat, tolerance = 0.0001)
+  })
+
+  ## FORMAT 3 - SF
+  testthat::it("returns the correct data for sf", {
+    res <- ddbh3_h3_to_points(test_data_sf)
+    expect_s3_class(res, "duckspatial_df")
+    expect_true(all(duckspatial::ddbs_geometry_type(res) == "POINT"))
+  })
+
+  ## FORMAT 4 - DUCKSPATIAL_DF
+  testthat::it("returns the correct data for duckspatial_df", {
+    res <- ddbh3_h3_to_points(test_data_ddbs)
+    expect_s3_class(res, "duckspatial_df")
+    expect_true(all(duckspatial::ddbs_geometry_type(res) == "POINT"))
+  })
+
+  ## FORMAT 5 - TABLE IN DUCKDB
+  testthat::it("returns the correct data for table", {
+    conn_test <- reset_conn_alt()
+    duckspatial::ddbs_write_table(conn_test, test_data_sf, "sf_pts")
+    res <- ddbh3_h3_to_points("sf_pts", conn = conn_test)
+    expect_s3_class(res, "duckspatial_df")
+  })
+
+  ## FORMAT 6 - UBIGINT
+  testthat::it("works for bigint/strings", {
+    test_data_bigint <- ddbh3_strings_to_bigint(test_data) |>
+      dplyr::select(-h3string)
+    geom_bigint <- ddbh3_h3_to_points(test_data_bigint, h3 = "h3bigint") |>
+      duckspatial::ddbs_collect() |>
+      sf::st_geometry()
+    geom_string <- ddbh3_h3_to_points(test_data) |>
+      duckspatial::ddbs_collect() |>
+      sf::st_geometry()
+    expect_equal(geom_bigint, geom_string)
+  })
+
+  ## OUTPUT MODES
+  testthat::it("returns different output formats (duckspatial_df, sf)", {
+    ## Builds geometries, so the output is spatial for any input
+    output_ddbs <- ddbh3_h3_to_points(test_data_df, mode = "duckspatial")
+    output_sf   <- ddbh3_h3_to_points(test_data_df, mode = "sf")
+    expect_s3_class(output_ddbs, "duckspatial_df")
+    expect_s3_class(output_sf, "sf")
+    expect_equal(duckspatial::ddbs_collect(output_ddbs), output_sf, ignore_attr = "class")
+    expect_s3_class(ddbh3_h3_to_points(test_data, mode = "sf"), "sf")
+    expect_s3_class(ddbh3_h3_to_points(test_data_sf, mode = "sf"), "sf")
+    expect_s3_class(ddbh3_h3_to_points(test_data_ddbs, mode = "sf"), "sf")
+  })
+
+})
+
+
+## 8.2. Arguments work ------------
+
+testthat::describe("ddbh3_h3_to_points() arguments work", {
+
+  testthat::it("h3 argument works", {
+    res <- test_data |>
+      dplyr::rename(h3 = h3string) |>
+      ddbh3_h3_to_points(h3 = "h3")
+    expect_s3_class(res, "duckspatial_df")
+  })
+
+  testthat::it("database arguments work", {
+    conn_test <- reset_conn_alt()
+    test_data_df <- dplyr::collect(test_data)
+    expect_message(ddbh3_h3_to_points(test_data_df, conn = conn_test, name = "test_tbl"))
+    expect_no_message(ddbh3_h3_to_points(test_data_df, conn = conn_test, name = "test_tbl2", quiet = TRUE))
+    expect_error(ddbh3_h3_to_points(test_data_df, conn = conn_test, name = "test_tbl"))
+    expect_true(ddbh3_h3_to_points(test_data_df, conn = conn_test, name = "test_tbl", overwrite = TRUE))
+  })
+
+})
+
+
+## 8.3. Errors on weird inputs -----------
+
+describe("ddbh3_h3_to_points() errors", {
+
+  it("requires h3 argument as character", {
+    expect_error(ddbh3_h3_to_points(test_data, h3 = NULL))
+    expect_error(ddbh3_h3_to_points(test_data, h3 = TRUE))
+    expect_error(ddbh3_h3_to_points(test_data, h3 = 2))
+  })
+
+  it("fails on a missing column", {
+    expect_error(ddbh3_h3_to_points(test_data, h3 = "missing"))
+  })
+
+  it("validates x, conn, overwrite and quiet", {
+    expect_error(ddbh3_h3_to_points(x = 999))
+    expect_error(ddbh3_h3_to_points(test_data, conn = 999))
+    expect_error(ddbh3_h3_to_points(test_data, overwrite = 999))
+    expect_error(ddbh3_h3_to_points(test_data, quiet = 999))
+  })
+
 })

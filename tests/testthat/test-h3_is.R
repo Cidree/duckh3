@@ -104,7 +104,24 @@ testthat::describe("ddbh3_is_pentagon() works in different formats", {
     expect_in("ispentagon", colnames(res_col))
     expect_type(res_col$ispentagon, "logical")
   })
-  
+
+  ## OUTPUT MODES
+  testthat::it("returns different output formats (duckspatial_df, sf)", {
+    ## Same data in other formats
+    test_data_df   <- dplyr::collect(test_data)
+    test_data_sf   <- sf::st_as_sf(test_data_df, coords = c("lon", "lat"), crs = 4326, remove = FALSE)
+    test_data_ddbs <- duckspatial::as_duckspatial_df(test_data_sf)
+    ## Non-spatial input: always lazy, mode is ignored
+    expect_s3_class(ddbh3_is_pentagon(test_data_df, mode = "sf"), "tbl_duckdb_connection")
+    ## Spatial input
+    output_ddbs <- ddbh3_is_pentagon(test_data_sf, mode = "duckspatial")
+    output_sf   <- ddbh3_is_pentagon(test_data_sf, mode = "sf")
+    expect_s3_class(output_ddbs, "duckspatial_df")
+    expect_s3_class(output_sf, "sf")
+    expect_equal(duckspatial::ddbs_collect(output_ddbs), output_sf, ignore_attr = "class")
+    expect_s3_class(ddbh3_is_pentagon(test_data_ddbs, mode = "sf"), "sf")
+  })
+
 })
 
 
@@ -331,6 +348,23 @@ testthat::describe("ddbh3_is_h3() works in different formats", {
     expect_type(res_col$ish3, "logical")
   })
 
+  ## OUTPUT MODES
+  testthat::it("returns different output formats (duckspatial_df, sf)", {
+    ## Same data in other formats
+    test_data_df   <- dplyr::collect(test_data)
+    test_data_sf   <- sf::st_as_sf(test_data_df, coords = c("lon", "lat"), crs = 4326, remove = FALSE)
+    test_data_ddbs <- duckspatial::as_duckspatial_df(test_data_sf)
+    ## Non-spatial input: always lazy, mode is ignored
+    expect_s3_class(ddbh3_is_h3(test_data_df, mode = "sf"), "tbl_duckdb_connection")
+    ## Spatial input
+    output_ddbs <- ddbh3_is_h3(test_data_sf, mode = "duckspatial")
+    output_sf   <- ddbh3_is_h3(test_data_sf, mode = "sf")
+    expect_s3_class(output_ddbs, "duckspatial_df")
+    expect_s3_class(output_sf, "sf")
+    expect_equal(duckspatial::ddbs_collect(output_ddbs), output_sf, ignore_attr = "class")
+    expect_s3_class(ddbh3_is_h3(test_data_ddbs, mode = "sf"), "sf")
+  })
+
 })
 
 
@@ -545,6 +579,23 @@ testthat::describe("ddbh3_is_res_class_iii() works in different formats", {
     res_col <- dplyr::collect(res)
     expect_in("isclassiii", colnames(res_col))
     expect_type(res_col$isclassiii, "logical")
+  })
+
+  ## OUTPUT MODES
+  testthat::it("returns different output formats (duckspatial_df, sf)", {
+    ## Same data in other formats
+    test_data_df   <- dplyr::collect(test_data)
+    test_data_sf   <- sf::st_as_sf(test_data_df, coords = c("lon", "lat"), crs = 4326, remove = FALSE)
+    test_data_ddbs <- duckspatial::as_duckspatial_df(test_data_sf)
+    ## Non-spatial input: always lazy, mode is ignored
+    expect_s3_class(ddbh3_is_res_class_iii(test_data_df, mode = "sf"), "tbl_duckdb_connection")
+    ## Spatial input
+    output_ddbs <- ddbh3_is_res_class_iii(test_data_sf, mode = "duckspatial")
+    output_sf   <- ddbh3_is_res_class_iii(test_data_sf, mode = "sf")
+    expect_s3_class(output_ddbs, "duckspatial_df")
+    expect_s3_class(output_sf, "sf")
+    expect_equal(duckspatial::ddbs_collect(output_ddbs), output_sf, ignore_attr = "class")
+    expect_s3_class(ddbh3_is_res_class_iii(test_data_ddbs, mode = "sf"), "sf")
   })
 
 })
@@ -772,6 +823,23 @@ testthat::describe("ddbh3_is_vertex() works in different formats", {
     expect_type(res_col$isvertex, "logical")
   })
 
+  ## OUTPUT MODES
+  testthat::it("returns different output formats (duckspatial_df, sf)", {
+    ## Same data in other formats
+    test_data_df   <- dplyr::collect(test_data_vertex)
+    test_data_sf   <- sf::st_as_sf(test_data_df, coords = c("lon", "lat"), crs = 4326, remove = FALSE)
+    test_data_ddbs <- duckspatial::as_duckspatial_df(test_data_sf)
+    ## Non-spatial input: always lazy, mode is ignored
+    expect_s3_class(ddbh3_is_vertex(test_data_df, mode = "sf"), "tbl_duckdb_connection")
+    ## Spatial input
+    output_ddbs <- ddbh3_is_vertex(test_data_sf, mode = "duckspatial")
+    output_sf   <- ddbh3_is_vertex(test_data_sf, mode = "sf")
+    expect_s3_class(output_ddbs, "duckspatial_df")
+    expect_s3_class(output_sf, "sf")
+    expect_equal(duckspatial::ddbs_collect(output_ddbs), output_sf, ignore_attr = "class")
+    expect_s3_class(ddbh3_is_vertex(test_data_ddbs, mode = "sf"), "sf")
+  })
+
 })
 
 
@@ -968,6 +1036,23 @@ testthat::describe("ddbh3_is_edge() works in different formats", {
     expect_true(all(res$isedge))
   })
 
+  ## OUTPUT MODES
+  testthat::it("returns different output formats (duckspatial_df, sf)", {
+    ## Same data in other formats
+    test_data_df   <- dplyr::collect(test_data_edge)
+    test_data_sf   <- sf::st_as_sf(test_data_df, coords = c("lon", "lat"), crs = 4326, remove = FALSE)
+    test_data_ddbs <- duckspatial::as_duckspatial_df(test_data_sf)
+    ## Non-spatial input: always lazy, mode is ignored
+    expect_s3_class(ddbh3_is_edge(test_data_df, mode = "sf"), "tbl_duckdb_connection")
+    ## Spatial input
+    output_ddbs <- ddbh3_is_edge(test_data_sf, mode = "duckspatial")
+    output_sf   <- ddbh3_is_edge(test_data_sf, mode = "sf")
+    expect_s3_class(output_ddbs, "duckspatial_df")
+    expect_s3_class(output_sf, "sf")
+    expect_equal(duckspatial::ddbs_collect(output_ddbs), output_sf, ignore_attr = "class")
+    expect_s3_class(ddbh3_is_edge(test_data_ddbs, mode = "sf"), "sf")
+  })
+
 })
 
 
@@ -1058,6 +1143,23 @@ testthat::describe("ddbh3_is_index() works in different formats", {
       ddbh3_is_index(h3 = "h3bigint") |>
       dplyr::collect()
     expect_true(all(res$isindex))
+  })
+
+  ## OUTPUT MODES
+  testthat::it("returns different output formats (duckspatial_df, sf)", {
+    ## Same data in other formats
+    test_data_df   <- dplyr::collect(test_data)
+    test_data_sf   <- sf::st_as_sf(test_data_df, coords = c("lon", "lat"), crs = 4326, remove = FALSE)
+    test_data_ddbs <- duckspatial::as_duckspatial_df(test_data_sf)
+    ## Non-spatial input: always lazy, mode is ignored
+    expect_s3_class(ddbh3_is_index(test_data_df, mode = "sf"), "tbl_duckdb_connection")
+    ## Spatial input
+    output_ddbs <- ddbh3_is_index(test_data_sf, mode = "duckspatial")
+    output_sf   <- ddbh3_is_index(test_data_sf, mode = "sf")
+    expect_s3_class(output_ddbs, "duckspatial_df")
+    expect_s3_class(output_sf, "sf")
+    expect_equal(duckspatial::ddbs_collect(output_ddbs), output_sf, ignore_attr = "class")
+    expect_s3_class(ddbh3_is_index(test_data_ddbs, mode = "sf"), "sf")
   })
 
 })

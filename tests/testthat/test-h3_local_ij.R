@@ -104,11 +104,17 @@ testthat::describe("ddbh3_h3_to_local_ij() works in different formats", {
     expect_equal(res_bigint$j, res_string$j)
   })
 
-  testthat::it("returns a sf object with mode = 'sf'", {
-    expect_s3_class(
-      ddbh3_h3_to_local_ij(test_data_sf, origin = "origin", mode = "sf"),
-      "sf"
-    )
+  ## OUTPUT MODES
+  testthat::it("returns different output formats (duckspatial_df, sf)", {
+    ## Non-spatial input: always lazy, mode is ignored
+    expect_s3_class(ddbh3_h3_to_local_ij(test_data_df, origin = "origin", mode = "sf"), "tbl_duckdb_connection")
+    ## Spatial input
+    output_ddbs <- ddbh3_h3_to_local_ij(test_data_sf, origin = "origin", mode = "duckspatial")
+    output_sf   <- ddbh3_h3_to_local_ij(test_data_sf, origin = "origin", mode = "sf")
+    expect_s3_class(output_ddbs, "duckspatial_df")
+    expect_s3_class(output_sf, "sf")
+    expect_equal(duckspatial::ddbs_collect(output_ddbs), output_sf, ignore_attr = "class")
+    expect_s3_class(ddbh3_h3_to_local_ij(test_data_ddbs, origin = "origin", mode = "sf"), "sf")
   })
 
 })
@@ -254,6 +260,19 @@ testthat::describe("ddbh3_local_ij_to_h3() works in different formats", {
       dplyr::collect()
     expect_s3_class(res$h3cell, "integer64")
     expect_equal(res$h3cell, res$h3bigint)
+  })
+
+  ## OUTPUT MODES
+  testthat::it("returns different output formats (duckspatial_df, sf)", {
+    ## Non-spatial input: always lazy, mode is ignored
+    expect_s3_class(ddbh3_local_ij_to_h3(ij_df, origin = "origin", mode = "sf"), "tbl_duckdb_connection")
+    ## Spatial input
+    output_ddbs <- ddbh3_local_ij_to_h3(ddbh3_h3_to_local_ij(test_data_sf, origin = "origin", mode = "sf"), origin = "origin", mode = "duckspatial")
+    output_sf   <- ddbh3_local_ij_to_h3(ddbh3_h3_to_local_ij(test_data_sf, origin = "origin", mode = "sf"), origin = "origin", mode = "sf")
+    expect_s3_class(output_ddbs, "duckspatial_df")
+    expect_s3_class(output_sf, "sf")
+    expect_equal(duckspatial::ddbs_collect(output_ddbs), output_sf, ignore_attr = "class")
+    expect_s3_class(ddbh3_local_ij_to_h3(ddbh3_h3_to_local_ij(test_data_ddbs, origin = "origin"), origin = "origin", mode = "sf"), "sf")
   })
 
 })

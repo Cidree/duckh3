@@ -81,15 +81,19 @@ resolution of every input cell.}
 \item \code{"sf"}: Eagerly collected sf object (uses memory)
 }
 Can be set globally via \code{\link[duckspatial]{ddbs_options}(mode = "...")} or
-per-function via this argument. Per-function overrides global setting.}
+per-function via this argument. Per-function overrides global setting.
+It only applies when the output has a geometry column: non-spatial
+results are always returned as a lazy table.}
 }
 \value{
 For \code{ddbh3_compact()}, a \code{tbl_lazy} (or \code{TRUE} invisibly if \code{name}
 is provided). For \code{ddbh3_uncompact()}, the same outputs as the rest of
 the package:
 \describe{
-\item{\code{tbl_lazy}}{If \code{x} is not spatial.}
-\item{\code{duckspatial_df}}{If \code{x} is spatial (e.g. an \code{sf} or \code{duckspatial_df} object).}
+\item{\code{tbl_lazy}}{If \code{x} is not spatial. \code{mode} is ignored in this case.}
+\item{\code{duckspatial_df}}{If \code{x} is spatial (e.g. an \code{sf} or \code{duckspatial_df}
+object) and \code{mode = "duckspatial"} (default).}
+\item{\code{sf}}{If \code{x} is spatial and \code{mode = "sf"}.}
 \item{\code{TRUE} (invisibly)}{If \code{name} is provided, a table is created in the connection
 and \code{TRUE} is returned invisibly.}
 }

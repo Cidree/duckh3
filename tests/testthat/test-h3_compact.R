@@ -264,6 +264,19 @@ testthat::describe("ddbh3_uncompact() works in different formats", {
     expect_equal(nrow(res), 15)
   })
 
+  ## OUTPUT MODES
+  testthat::it("returns different output formats (duckspatial_df, sf)", {
+    ## Non-spatial input: always lazy, mode is ignored
+    expect_s3_class(ddbh3_uncompact(compact_df, h3 = "h3compact", resolution = 8, mode = "sf"), "tbl_duckdb_connection")
+    ## Spatial input
+    output_ddbs <- ddbh3_uncompact(ddbh3_h3_to_spatial(compact_df, h3 = "h3compact", mode = "sf"), h3 = "h3compact", resolution = 8, mode = "duckspatial")
+    output_sf   <- ddbh3_uncompact(ddbh3_h3_to_spatial(compact_df, h3 = "h3compact", mode = "sf"), h3 = "h3compact", resolution = 8, mode = "sf")
+    expect_s3_class(output_ddbs, "duckspatial_df")
+    expect_s3_class(output_sf, "sf")
+    expect_equal(duckspatial::ddbs_collect(output_ddbs), output_sf, ignore_attr = "class")
+    expect_s3_class(ddbh3_uncompact(ddbh3_h3_to_spatial(compact_df, h3 = "h3compact"), h3 = "h3compact", resolution = 8, mode = "sf"), "sf")
+  })
+
 })
 
 

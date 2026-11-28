@@ -96,8 +96,41 @@ testthat::describe("ddbh3_get_resolution() works in different formats", {
     res_col <-duckspatial::ddbs_collect(res)
     expect_all_equal(res_col$h3resolution, 10)
   })
-  
-  
+
+
+  ## OUTPUT MODES
+  testthat::it("returns different output formats (duckspatial_df, sf)", {
+    test_data_df <- dplyr::collect(test_data)
+    test_data_sf <- sf::st_as_sf(test_data_df, coords = c("lon", "lat"), crs = 4326)
+    test_data_ddbs <- duckspatial::as_duckspatial_df(test_data_sf)
+    ## Non-spatial input: always lazy, mode is ignored
+    expect_s3_class(ddbh3_get_resolution(test_data_df, mode = "sf"), "tbl_duckdb_connection")
+    ## Spatial input
+    output_ddbs <- ddbh3_get_resolution(test_data_sf, mode = "duckspatial")
+    output_sf   <- ddbh3_get_resolution(test_data_sf, mode = "sf")
+    expect_s3_class(output_ddbs, "duckspatial_df")
+    expect_s3_class(output_sf, "sf")
+    expect_equal(duckspatial::ddbs_collect(output_ddbs), output_sf, ignore_attr = "class")
+    expect_s3_class(ddbh3_get_resolution(test_data_ddbs, mode = "sf"), "sf")
+  })
+
+
+  ## GLOBAL MODE OPTION
+  testthat::it("respects the global mode set with ddbs_options()", {
+    duckspatial::ddbs_options(mode = "sf")
+    on.exit(duckspatial::ddbs_options(mode = "duckspatial"), add = TRUE)
+    test_data_df <- dplyr::collect(test_data)
+    test_data_sf <- sf::st_as_sf(test_data_df, coords = c("lon", "lat"), crs = 4326)
+    ## Spatial output follows the global mode...
+    expect_s3_class(ddbh3_get_resolution(test_data_sf), "sf")
+    expect_s3_class(ddbh3_h3_to_spatial(test_data_df), "sf")
+    ## ...unless overridden per function
+    expect_s3_class(ddbh3_get_resolution(test_data_sf, mode = "duckspatial"), "duckspatial_df")
+    ## Non-spatial output stays lazy
+    expect_s3_class(ddbh3_get_resolution(test_data_df), "tbl_duckdb_connection")
+  })
+
+
 })
 
 

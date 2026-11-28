@@ -106,6 +106,23 @@ testthat::describe("ddbh3_h3_to_vertex() works in different formats", {
     expect_type(res_col$h3vertex, "character")
   })
 
+  ## OUTPUT MODES
+  testthat::it("returns different output formats (duckspatial_df, sf)", {
+    ## Same data in other formats
+    test_data_df   <- dplyr::collect(test_data)
+    test_data_sf   <- sf::st_as_sf(test_data_df, coords = c("lon", "lat"), crs = 4326, remove = FALSE)
+    test_data_ddbs <- duckspatial::as_duckspatial_df(test_data_sf)
+    ## Non-spatial input: always lazy, mode is ignored
+    expect_s3_class(ddbh3_h3_to_vertex(test_data_df, mode = "sf"), "tbl_duckdb_connection")
+    ## Spatial input
+    output_ddbs <- ddbh3_h3_to_vertex(test_data_sf, mode = "duckspatial")
+    output_sf   <- ddbh3_h3_to_vertex(test_data_sf, mode = "sf")
+    expect_s3_class(output_ddbs, "duckspatial_df")
+    expect_s3_class(output_sf, "sf")
+    expect_equal(duckspatial::ddbs_collect(output_ddbs), output_sf, ignore_attr = "class")
+    expect_s3_class(ddbh3_h3_to_vertex(test_data_ddbs, mode = "sf"), "sf")
+  })
+
 })
 
 
@@ -351,6 +368,23 @@ testthat::describe("ddbh3_vertex_to_lon() works in different formats", {
     expect_type(res_col$lon_vertex, "double")
   })
 
+  ## OUTPUT MODES
+  testthat::it("returns different output formats (duckspatial_df, sf)", {
+    ## Same data in other formats
+    test_data_df   <- dplyr::collect(test_data_vertex)
+    test_data_sf   <- sf::st_as_sf(test_data_df, coords = c("lon", "lat"), crs = 4326, remove = FALSE)
+    test_data_ddbs <- duckspatial::as_duckspatial_df(test_data_sf)
+    ## Non-spatial input: always lazy, mode is ignored
+    expect_s3_class(ddbh3_vertex_to_lon(test_data_df, mode = "sf"), "tbl_duckdb_connection")
+    ## Spatial input
+    output_ddbs <- ddbh3_vertex_to_lon(test_data_sf, mode = "duckspatial")
+    output_sf   <- ddbh3_vertex_to_lon(test_data_sf, mode = "sf")
+    expect_s3_class(output_ddbs, "duckspatial_df")
+    expect_s3_class(output_sf, "sf")
+    expect_equal(duckspatial::ddbs_collect(output_ddbs), output_sf, ignore_attr = "class")
+    expect_s3_class(ddbh3_vertex_to_lon(test_data_ddbs, mode = "sf"), "sf")
+  })
+
 })
 
 
@@ -567,6 +601,23 @@ testthat::describe("ddbh3_vertex_to_lat() works in different formats", {
     expect_type(res_col$lat_vertex, "double")
   })
 
+  ## OUTPUT MODES
+  testthat::it("returns different output formats (duckspatial_df, sf)", {
+    ## Same data in other formats
+    test_data_df   <- dplyr::collect(test_data_vertex)
+    test_data_sf   <- sf::st_as_sf(test_data_df, coords = c("lon", "lat"), crs = 4326, remove = FALSE)
+    test_data_ddbs <- duckspatial::as_duckspatial_df(test_data_sf)
+    ## Non-spatial input: always lazy, mode is ignored
+    expect_s3_class(ddbh3_vertex_to_lat(test_data_df, mode = "sf"), "tbl_duckdb_connection")
+    ## Spatial input
+    output_ddbs <- ddbh3_vertex_to_lat(test_data_sf, mode = "duckspatial")
+    output_sf   <- ddbh3_vertex_to_lat(test_data_sf, mode = "sf")
+    expect_s3_class(output_ddbs, "duckspatial_df")
+    expect_s3_class(output_sf, "sf")
+    expect_equal(duckspatial::ddbs_collect(output_ddbs), output_sf, ignore_attr = "class")
+    expect_s3_class(ddbh3_vertex_to_lat(test_data_ddbs, mode = "sf"), "sf")
+  })
+
 })
 
 
@@ -781,6 +832,23 @@ testthat::describe("ddbh3_h3_to_vertexes() works in different formats", {
     res_col <- dplyr::collect(res)
     expect_in("h3vertex", colnames(res_col))
     expect_type(res_col$h3vertex, "character")
+  })
+
+  ## OUTPUT MODES
+  testthat::it("returns different output formats (duckspatial_df, sf)", {
+    ## Same data in other formats
+    test_data_df   <- dplyr::collect(test_data)
+    test_data_sf   <- sf::st_as_sf(test_data_df, coords = c("lon", "lat"), crs = 4326, remove = FALSE)
+    test_data_ddbs <- duckspatial::as_duckspatial_df(test_data_sf)
+    ## Non-spatial input: always lazy, mode is ignored
+    expect_s3_class(ddbh3_h3_to_vertexes(test_data_df, mode = "sf"), "tbl_duckdb_connection")
+    ## Spatial input
+    output_ddbs <- ddbh3_h3_to_vertexes(test_data_sf, mode = "duckspatial")
+    output_sf   <- ddbh3_h3_to_vertexes(test_data_sf, mode = "sf")
+    expect_s3_class(output_ddbs, "duckspatial_df")
+    expect_s3_class(output_sf, "sf")
+    expect_equal(duckspatial::ddbs_collect(output_ddbs), output_sf, ignore_attr = "class")
+    expect_s3_class(ddbh3_h3_to_vertexes(test_data_ddbs, mode = "sf"), "sf")
   })
 
 })
@@ -1075,6 +1143,23 @@ testthat::describe("ddbh3_vertex_to_spatial() works in different formats", {
     ## Check type
     res_col <- dplyr::collect(res)
     expect_in("geometry", colnames(res_col))
+  })
+
+  ## OUTPUT MODES
+  testthat::it("returns different output formats (duckspatial_df, sf)", {
+    ## Same data in other formats
+    test_data_df   <- dplyr::collect(test_data_vertex)
+    test_data_sf   <- sf::st_as_sf(test_data_df, coords = c("lon", "lat"), crs = 4326, remove = FALSE)
+    test_data_ddbs <- duckspatial::as_duckspatial_df(test_data_sf)
+    ## Builds geometries, so the output is spatial for any input
+    output_ddbs <- ddbh3_vertex_to_spatial(test_data_df, mode = "duckspatial")
+    output_sf   <- ddbh3_vertex_to_spatial(test_data_df, mode = "sf")
+    expect_s3_class(output_ddbs, "duckspatial_df")
+    expect_s3_class(output_sf, "sf")
+    expect_equal(duckspatial::ddbs_collect(output_ddbs), output_sf, ignore_attr = "class")
+    expect_s3_class(ddbh3_vertex_to_spatial(test_data_vertex, mode = "sf"), "sf")
+    expect_s3_class(ddbh3_vertex_to_spatial(test_data_sf, mode = "sf"), "sf")
+    expect_s3_class(ddbh3_vertex_to_spatial(test_data_ddbs, mode = "sf"), "sf")
   })
 
 })

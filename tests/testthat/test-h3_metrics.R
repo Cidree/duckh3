@@ -109,8 +109,17 @@ testthat::describe("ddbh3_get_area() works in different formats", {
     expect_equal(res_bigint$h3area, res_string$h3area)
   })
 
-  testthat::it("returns a sf object with mode = 'sf'", {
-    expect_s3_class(ddbh3_get_area(test_data_sf, mode = "sf"), "sf")
+  ## OUTPUT MODES
+  testthat::it("returns different output formats (duckspatial_df, sf)", {
+    ## Non-spatial input: always lazy, mode is ignored
+    expect_s3_class(ddbh3_get_area(test_data_df, mode = "sf"), "tbl_duckdb_connection")
+    ## Spatial input
+    output_ddbs <- ddbh3_get_area(test_data_sf, mode = "duckspatial")
+    output_sf   <- ddbh3_get_area(test_data_sf, mode = "sf")
+    expect_s3_class(output_ddbs, "duckspatial_df")
+    expect_s3_class(output_sf, "sf")
+    expect_equal(duckspatial::ddbs_collect(output_ddbs), output_sf, ignore_attr = "class")
+    expect_s3_class(ddbh3_get_area(test_data_ddbs, mode = "sf"), "sf")
   })
 
 })
@@ -234,6 +243,19 @@ testthat::describe("ddbh3_great_circle_distance() works in different formats", {
     DBI::dbWriteTable(conn_test, "pairs", pairs_df)
     res <- gc_distance("pairs", conn = conn_test)
     expect_in("distance", colnames(dplyr::collect(res)))
+  })
+
+  ## OUTPUT MODES
+  testthat::it("returns different output formats (duckspatial_df, sf)", {
+    ## Non-spatial input: always lazy, mode is ignored
+    expect_s3_class(gc_distance(pairs_df, mode = "sf"), "tbl_duckdb_connection")
+    ## Spatial input
+    output_ddbs <- gc_distance(pairs_sf, mode = "duckspatial")
+    output_sf   <- gc_distance(pairs_sf, mode = "sf")
+    expect_s3_class(output_ddbs, "duckspatial_df")
+    expect_s3_class(output_sf, "sf")
+    expect_equal(duckspatial::ddbs_collect(output_ddbs), output_sf, ignore_attr = "class")
+    expect_s3_class(gc_distance(duckspatial::as_duckspatial_df(pairs_sf), mode = "sf"), "sf")
   })
 
 })

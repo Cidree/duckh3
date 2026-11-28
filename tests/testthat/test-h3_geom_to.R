@@ -62,6 +62,16 @@ testthat::describe("ddbh3_polygons_to_h3() works in different formats", {
     expect_in("h3string", colnames(res_col))
   })
 
+  ## OUTPUT MODES
+  testthat::it("returns different output formats (duckspatial_df, sf)", {
+    output_ddbs <- ddbh3_polygons_to_h3(poly_sf, resolution = 3, mode = "duckspatial")
+    output_sf   <- ddbh3_polygons_to_h3(poly_sf, resolution = 3, mode = "sf")
+    expect_s3_class(output_ddbs, "duckspatial_df")
+    expect_s3_class(output_sf, "sf")
+    expect_equal(duckspatial::ddbs_collect(output_ddbs), output_sf, ignore_attr = "class")
+    expect_s3_class(ddbh3_polygons_to_h3(duckspatial::as_duckspatial_df(poly_sf), resolution = 3, mode = "sf"), "sf")
+  })
+
 })
 
 testthat::test_that("returns one row per input feature", {
@@ -197,6 +207,41 @@ describe("errors", {
 
 # 2. polygons_to_spatial() --------------------------------------------------
 
+testthat::describe("ddbh3_polygons_to_spatial() works in different formats", {
+
+  ## FORMAT 1 - SF
+  testthat::it("returns the correct data for sf", {
+    res <- ddbh3_polygons_to_spatial(poly_sf, resolution = 3)
+    expect_s3_class(res, "duckspatial_df")
+    expect_true(all(duckspatial::ddbs_geometry_type(res) == "POLYGON"))
+  })
+
+  ## FORMAT 2 - DUCKSPATIAL_DF
+  testthat::it("returns the correct data for duckspatial_df", {
+    res <- ddbh3_polygons_to_spatial(duckspatial::as_duckspatial_df(poly_sf), resolution = 3)
+    expect_s3_class(res, "duckspatial_df")
+  })
+
+  ## FORMAT 3 - TABLE IN DUCKDB
+  testthat::it("returns the correct data for table", {
+    conn_test2 <- reset_conn_alt()
+    duckspatial::ddbs_write_table(conn_test2, poly_sf, "geom_tbl")
+    res <- ddbh3_polygons_to_spatial("geom_tbl", resolution = 3, conn = conn_test2)
+    expect_s3_class(res, "duckspatial_df")
+  })
+
+  ## OUTPUT MODES
+  testthat::it("returns different output formats (duckspatial_df, sf)", {
+    output_ddbs <- ddbh3_polygons_to_spatial(poly_sf, resolution = 3, mode = "duckspatial")
+    output_sf   <- ddbh3_polygons_to_spatial(poly_sf, resolution = 3, mode = "sf")
+    expect_s3_class(output_ddbs, "duckspatial_df")
+    expect_s3_class(output_sf, "sf")
+    expect_equal(duckspatial::ddbs_collect(output_ddbs), output_sf, ignore_attr = "class")
+    expect_s3_class(ddbh3_polygons_to_spatial(duckspatial::as_duckspatial_df(poly_sf), resolution = 3, mode = "sf"), "sf")
+  })
+
+})
+
 testthat::test_that("returns one row per intersecting cell (POLYGON geometry)", {
   res <- ddbh3_polygons_to_spatial(poly_sf, resolution = 3) |> dplyr::collect()
   expect_true(nrow(res) >= 1)
@@ -233,6 +278,41 @@ describe("errors", {
 
 
 # 3. lines_to_h3() -----------------------------------------------------------
+
+testthat::describe("ddbh3_lines_to_h3() works in different formats", {
+
+  ## FORMAT 1 - SF
+  testthat::it("returns the correct data for sf", {
+    res <- ddbh3_lines_to_h3(line_sf, resolution = 3)
+    expect_s3_class(res, "duckspatial_df")
+    expect_type(dplyr::collect(res)$h3string, "list")
+  })
+
+  ## FORMAT 2 - DUCKSPATIAL_DF
+  testthat::it("returns the correct data for duckspatial_df", {
+    res <- ddbh3_lines_to_h3(duckspatial::as_duckspatial_df(line_sf), resolution = 3)
+    expect_s3_class(res, "duckspatial_df")
+  })
+
+  ## FORMAT 3 - TABLE IN DUCKDB
+  testthat::it("returns the correct data for table", {
+    conn_test2 <- reset_conn_alt()
+    duckspatial::ddbs_write_table(conn_test2, line_sf, "geom_tbl")
+    res <- ddbh3_lines_to_h3("geom_tbl", resolution = 3, conn = conn_test2)
+    expect_s3_class(res, "duckspatial_df")
+  })
+
+  ## OUTPUT MODES
+  testthat::it("returns different output formats (duckspatial_df, sf)", {
+    output_ddbs <- ddbh3_lines_to_h3(line_sf, resolution = 3, mode = "duckspatial")
+    output_sf   <- ddbh3_lines_to_h3(line_sf, resolution = 3, mode = "sf")
+    expect_s3_class(output_ddbs, "duckspatial_df")
+    expect_s3_class(output_sf, "sf")
+    expect_equal(duckspatial::ddbs_collect(output_ddbs), output_sf, ignore_attr = "class")
+    expect_s3_class(ddbh3_lines_to_h3(duckspatial::as_duckspatial_df(line_sf), resolution = 3, mode = "sf"), "sf")
+  })
+
+})
 
 testthat::test_that("returns one row per input feature", {
   res <- ddbh3_lines_to_h3(line_sf, resolution = 3) |> dplyr::collect()
@@ -275,6 +355,41 @@ describe("errors", {
 
 
 # 4. lines_to_spatial() -------------------------------------------------------
+
+testthat::describe("ddbh3_lines_to_spatial() works in different formats", {
+
+  ## FORMAT 1 - SF
+  testthat::it("returns the correct data for sf", {
+    res <- ddbh3_lines_to_spatial(line_sf, resolution = 3)
+    expect_s3_class(res, "duckspatial_df")
+    expect_true(all(duckspatial::ddbs_geometry_type(res) == "POLYGON"))
+  })
+
+  ## FORMAT 2 - DUCKSPATIAL_DF
+  testthat::it("returns the correct data for duckspatial_df", {
+    res <- ddbh3_lines_to_spatial(duckspatial::as_duckspatial_df(line_sf), resolution = 3)
+    expect_s3_class(res, "duckspatial_df")
+  })
+
+  ## FORMAT 3 - TABLE IN DUCKDB
+  testthat::it("returns the correct data for table", {
+    conn_test2 <- reset_conn_alt()
+    duckspatial::ddbs_write_table(conn_test2, line_sf, "geom_tbl")
+    res <- ddbh3_lines_to_spatial("geom_tbl", resolution = 3, conn = conn_test2)
+    expect_s3_class(res, "duckspatial_df")
+  })
+
+  ## OUTPUT MODES
+  testthat::it("returns different output formats (duckspatial_df, sf)", {
+    output_ddbs <- ddbh3_lines_to_spatial(line_sf, resolution = 3, mode = "duckspatial")
+    output_sf   <- ddbh3_lines_to_spatial(line_sf, resolution = 3, mode = "sf")
+    expect_s3_class(output_ddbs, "duckspatial_df")
+    expect_s3_class(output_sf, "sf")
+    expect_equal(duckspatial::ddbs_collect(output_ddbs), output_sf, ignore_attr = "class")
+    expect_s3_class(ddbh3_lines_to_spatial(duckspatial::as_duckspatial_df(line_sf), resolution = 3, mode = "sf"), "sf")
+  })
+
+})
 
 testthat::test_that("returns one row per intersecting cell (LINESTRING geometry)", {
   res <- ddbh3_lines_to_spatial(line_sf, resolution = 3) |> dplyr::collect()
