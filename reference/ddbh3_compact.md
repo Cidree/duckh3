@@ -201,7 +201,7 @@ library(dplyr)
 ## This is a mandatory step to use duckh3 functions
 ddbh3_default_conn(threads = 1)
 #> duckdb keeps downloaded extensions and secrets in a temporary directory:
-#> ℹ /tmp/RtmpEwo61p/duckdb
+#> ℹ /tmp/RtmpuK9Fi7/duckdb
 #> This is removed when the R session ends.
 #> • Extensions are re-downloaded each session.
 #> • Secrets are lost.
